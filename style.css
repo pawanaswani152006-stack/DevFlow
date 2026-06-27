@@ -3,24 +3,30 @@
     border:border-box;
     font-family:arial;
 }
+
+body{
+    background-color:rgb(15, 60, 80);
+}
+
 #nav-bar{
-    width:100%;
+    width:100vw;
     height:10vh;
-    background-color:black;
+    background-color:rgb(2, 17, 23);
     position:sticky;
+    top:0px;
     display:flex;
     justify-content:space-evenly;
     align-items:center;
 }
-.nav-button{
+.button{
     background-color:transparent;
     width:15vw;
-    color:white;
+    color:rgb(118, 184, 169);
     border:none;
     font-size:2rem;
     transition:all 1s linear 0s;
 }
-.nav-button:active{
+.button:active{
     transform:scale(0.8);
 }
 #logo{
@@ -30,4 +36,81 @@
     background-image:url("./images/logo.png");
     background-size:cover;
     color:blue;
+}
+
+#mainSection{
+    height:200vh;
+    width:100vw;
+    background-color:rgb(15, 60, 80);
+}
+#heroSection{
+    height:80vh;
+    width:100vw;
+    background-color:transparent;
+    display:flex;
+    align-items:center;
+    margin-top:30px;
+}
+#images{
+    height:80vh;
+    width:40vw;
+    background-color:transparent;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#image{
+    height:60vh;
+    width:30vw;
+    background-image:url("./images/heroImage1.webp");
+    background-size:cover;
+    background-repeat:no-repeat;
+}
+#heroSectionTextArea{
+    height:60vh;
+    width:60vw;
+    display:flex;
+    flex-wrap:wrap;
+    align-content:center;
+    justify-content:center;
+    background-color:transparent;
+}
+#heroSectionHeader{
+    width:60vw;
+}
+.heading{
+    font-size:2rem;
+    margin-left:40px;
+    line-height:60px;
+    color:rgb(156, 211, 234);
+}
+.para{
+    font-size:2rem;
+    margin-top:20px;
+    margin-left:40px;
+    margin-right:120px;
+    line-height:50px;
+    color:rgb(156, 211, 234);
+}
+#heroButtonContainer{
+    height:10vh;
+    width:55vw;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    background-color:transparent;
+    margin-top:30px;
+}
+#heroButton1,#heroButton2{
+    background-color:rgb(2, 17, 23);
+    border-radius:30px;
+    height:8vh;
+    font-size:2rem;
+    color:rgb(118, 184, 169);
+    margin-right:50px;
+}
+footer{
+    height:50vh;
+    width:100vw;
+    background-color:red;
 }
