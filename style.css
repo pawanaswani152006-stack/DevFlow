@@ -24,10 +24,13 @@ body{
     color:rgb(118, 184, 169);
     border:none;
     font-size:2rem;
-    transition:all 1s linear 0s;
+    transition:all 0.3s ease 0s;
 }
 .button:active{
     transform:scale(0.8);
+}
+.button:hover{
+    color:white;
 }
 #logo{
     height:10vh;
@@ -36,10 +39,12 @@ body{
     background-image:url("./images/logo.png");
     background-size:cover;
     color:blue;
+    /* box-shadow:
+         */
 }
 
 #mainSection{
-    height:200vh;
+    height:400vh;
     width:100vw;
     background-color:rgb(15, 60, 80);
 }
@@ -66,6 +71,9 @@ body{
     background-image:url("./images/heroImage1.webp");
     background-size:cover;
     background-repeat:no-repeat;
+    box-shadow:
+        10px 10px 10px rgba(0,0,0,0.8),
+        0px 30px 40px rgba(0,0,0,0.8);
 }
 #heroSectionTextArea{
     height:60vh;
@@ -109,29 +117,44 @@ body{
     font-size:2rem;
     color:rgb(118, 184, 169);
     margin-right:50px;
+    box-shadow:
+        0 10px 10px rgba(0,0,0,0.3),
+        0px 20px 30px rgba(0,0,0,0.3);
+    transition:all 0.3s linear 0s;
+}
+#heroButton1:hover{
+    color:white;
+}
+#heroButton2:hover{
+    color:white;
 }
 
 hr{
     border:2px solid rgb(5, 32, 33);
 }
 
-#problemSection{
+#problemSection,#solutionSection{
     margin-top:40px;
+    margin-bottom:40px;
 }
 #problemCardSection{
     margin-top:70px;
-    margin-left:40px;
+    margin-left:10px;
     display:flex;
     justify-content:space-around;
     flex-wrap:wrap;
 }
 .problemCard{
-    height:12vh;
-    width:30vw;
+    height:15vh;
+    width:28vw;
     background-color:rgb(80, 122, 141);
     border-radius:20px;
     margin-bottom:50px;
+    margin-left:10px;
     transition:all 0.2s linear 0s;
+    box-shadow:
+        0 5px 10px rgba(0,0,0,0.8),
+        0px 20px 30px rgba(0,0,0,0.8);
 }
 .problemHeading{
     font-size:2rem;
@@ -142,13 +165,44 @@ hr{
 .problemPara{
     font-size:1.3rem;
     margin-top:5px;
-    line-height:20px;
+    line-height:40px;
     color:rgb(194, 224, 237);
-    margin-left:8px;
+    margin-left:20px;
 }
 .problemCard:hover{
-    transform:translateY(-5px);
+    transform:translateY(-10px);
 }
+
+#dashboardContainer{
+    height:72vh;
+    width:100vw;
+    display:flex;
+    margin-top:60px;
+    margin-left:60px;
+}
+#solutionDashboard{
+    height:72vh;
+    width:65vw;
+    background-image:url("./images/dashboardPreview.png");
+    background-size:contain;
+    box-shadow:
+        10px 10px 10px rgba(0,0,0,0.8),
+        0px 30px 40px rgba(0,0,0,0.8);
+    margin-right:60px;
+    border-radius:20px;
+}
+#solutionChecklist{
+    height:72vh;
+    width:25vw;
+}
+.solutionPara{
+    font-size:2rem;
+    margin-top:20px;
+    margin-left:40px;
+    line-height:70px;
+    color:rgb(156, 211, 234);
+}
+
 footer{
     height:50vh;
     width:100vw;
