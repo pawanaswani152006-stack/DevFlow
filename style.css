@@ -49,7 +49,8 @@ body{
     background-color:transparent;
     display:flex;
     align-items:center;
-    margin-top:30px;
+    margin-top:50px;
+    margin-bottom:20px;
 }
 #images{
     height:80vh;
@@ -89,7 +90,7 @@ body{
     margin-top:20px;
     margin-left:40px;
     margin-right:120px;
-    line-height:50px;
+    line-height:70px;
     color:rgb(156, 211, 234);
 }
 #heroButtonContainer{
@@ -108,6 +109,45 @@ body{
     font-size:2rem;
     color:rgb(118, 184, 169);
     margin-right:50px;
+}
+
+hr{
+    border:2px solid rgb(5, 32, 33);
+}
+
+#problemSection{
+    margin-top:40px;
+}
+#problemCardSection{
+    margin-top:70px;
+    margin-left:40px;
+    display:flex;
+    justify-content:space-around;
+    flex-wrap:wrap;
+}
+.problemCard{
+    height:12vh;
+    width:30vw;
+    background-color:rgb(80, 122, 141);
+    border-radius:20px;
+    margin-bottom:50px;
+    transition:all 0.2s linear 0s;
+}
+.problemHeading{
+    font-size:2rem;
+    line-height:50px;
+    color:rgb(29, 52, 58);
+    margin-left:15px;
+}
+.problemPara{
+    font-size:1.3rem;
+    margin-top:5px;
+    line-height:20px;
+    color:rgb(194, 224, 237);
+    margin-left:8px;
+}
+.problemCard:hover{
+    transform:translateY(-5px);
 }
 footer{
     height:50vh;
