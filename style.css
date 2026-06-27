@@ -20,6 +20,7 @@ body{
     box-shadow:
         10px 10px 10px rgba(0,0,0,0.6),
         0px 30px 40px rgba(0,0,0,0.6);
+        z-index:2;
 }
 .button{
     background-color:transparent;
@@ -45,7 +46,7 @@ body{
 }
 
 #mainSection{
-    height:400vh;
+    height:600vh;
     width:100vw;
     background-color:rgb(15, 60, 80);
 }
@@ -135,7 +136,7 @@ hr{
     border:2px solid rgb(5, 32, 33);
 }
 
-#problemSection,#solutionSection{
+#problemSection{
     margin-top:40px;
     margin-bottom:40px;
 }
@@ -146,7 +147,7 @@ hr{
     justify-content:space-around;
     flex-wrap:wrap;
 }
-.problemCard{
+.problemCard,.featureCard{
     height:15vh;
     width:28vw;
     background-color:rgb(80, 122, 141);
@@ -159,13 +160,13 @@ hr{
         0 5px 10px rgba(0,0,0,0.8),
         0px 20px 30px rgba(0,0,0,0.8);
 }
-.problemHeading{
+.problemHeading,.featureHeading{
     font-size:2rem;
     line-height:50px;
     color:rgb(29, 52, 58);
     margin-left:15px;
 }
-.problemPara{
+.problemPara,.featurePara{
     font-size:1.3rem;
     margin-top:5px;
     line-height:40px;
@@ -176,6 +177,10 @@ hr{
     transform:translateY(-10px);
 }
 
+#solutionSection{
+    margin-top:40px;
+    margin-bottom:120px;
+}
 #dashboardContainer{
     height:72vh;
     width:100vw;
@@ -204,6 +209,55 @@ hr{
     margin-left:40px;
     line-height:70px;
     color:rgb(156, 211, 234);
+}
+
+#featuresSection{
+    margin-top:40px;
+    margin-bottom:50px;
+}
+#featureCardContainer{
+    margin-top:70px;
+    margin-left:10px;
+}
+.featureCard:hover{
+    transform:translateY(-10px);
+}
+.featureCard{
+    width:25vw;
+    box-shadow:
+        10px 20px 10px rgba(0,0,0,0.8),
+        10px 30px 30px rgba(0,0,0,0.8);
+}
+#cardContainer1{
+    width:100vw;
+    height:20vh;
+    display:flex;
+    justify-content:space-between;
+}
+#cardContainer2{
+    width:100vw;
+    height:20vh;
+    display:flex;
+    justify-content:space-between;
+    margin-top:50px;
+}
+#cardContainer3{
+    width:100vw;
+    height:20vh;
+    display:flex;
+    justify-content:space-between;
+    margin-top:70px;
+}
+#cardContainer4{
+    width:100vw;
+    height:20vh;
+    display:flex;
+    justify-content:space-between;
+    margin-top:70px;
+}
+.featureCard:hover{
+    transform:scale(1.1);
+    border:5px solid rgb(1, 36, 50)
 }
 
 footer{
