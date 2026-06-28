@@ -140,14 +140,14 @@ hr{
     margin-top:40px;
     margin-bottom:40px;
 }
-#problemCardSection{
+#problemCardSection,#roadmapCardContainer{
     margin-top:70px;
     margin-left:10px;
     display:flex;
     justify-content:space-around;
     flex-wrap:wrap;
 }
-.problemCard,.featureCard,.workingCard{
+.problemCard,.featureCard,.workingCard,.roadmapCards{
     height:15vh;
     width:28vw;
     background-color:rgb(80, 122, 141);
@@ -160,13 +160,13 @@ hr{
         0 5px 10px rgba(0,0,0,0.8),
         0px 20px 30px rgba(0,0,0,0.8);
 }
-.problemHeading,.featureHeading,.workingHeading{
+.problemHeading,.featureHeading,.workingHeading,.roadmapHeading{
     font-size:2rem;
     line-height:50px;
     color:rgb(29, 52, 58);
     margin-left:15px;
 }
-.problemPara,.featurePara,.workingPara{
+.problemPara,.featurePara,.workingPara,.roadmapPara{
     font-size:1.3rem;
     margin-top:5px;
     line-height:40px;
@@ -211,7 +211,7 @@ hr{
     color:rgb(156, 211, 234);
 }
 
-#featuresSection,#workSection{
+#featuresSection,#workSection,#roadmapSection,#CTAsection{
     margin-top:40px;
     margin-bottom:50px;
 }
@@ -257,7 +257,7 @@ hr{
 }
 .featureCard:hover{
     transform:scale(1.1);
-    border:5px solid rgb(1, 36, 50)
+    border:5px solid rgb(1, 36, 50);
 }
 
 #timeline{
@@ -307,6 +307,39 @@ hr{
 }
 #workingButton:hover{
     color:white;
+}
+
+.roadmapCards{
+    padding:0px;
+    border:3px dashed rgb(1, 36, 50);
+    background-color:rgba(80, 122, 141,0.6);
+}
+.roadmapHeading{
+    font-size:2rem;
+    display:flex;
+    justify-content:center;
+    margin:0px;
+    line-height:60px;
+}
+.roadmapPara{
+    font-size:2rem;
+    display:flex;
+    justify-content:center;
+    margin:0px;
+}
+
+#CTAsection{
+    height:60vh;
+    width:100vw;
+    background-color:transparent;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#mainCtaSection{
+    height:50vh;
+    width:50vw;
+    background-color:rgb(11, 99, 105);
 }
 
 footer{
