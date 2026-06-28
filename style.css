@@ -46,7 +46,7 @@ body{
 }
 
 #mainSection{
-    height:600vh;
+    height:1000vh;
     width:100vw;
     background-color:rgb(15, 60, 80);
 }
@@ -113,7 +113,7 @@ body{
     background-color:transparent;
     margin-top:30px;
 }
-#heroButton1,#heroButton2{
+#heroButton1,#heroButton2,#workingButton{
     background-color:rgb(2, 17, 23);
     border-radius:30px;
     height:8vh;
@@ -147,7 +147,7 @@ hr{
     justify-content:space-around;
     flex-wrap:wrap;
 }
-.problemCard,.featureCard{
+.problemCard,.featureCard,.workingCard{
     height:15vh;
     width:28vw;
     background-color:rgb(80, 122, 141);
@@ -160,13 +160,13 @@ hr{
         0 5px 10px rgba(0,0,0,0.8),
         0px 20px 30px rgba(0,0,0,0.8);
 }
-.problemHeading,.featureHeading{
+.problemHeading,.featureHeading,.workingHeading{
     font-size:2rem;
     line-height:50px;
     color:rgb(29, 52, 58);
     margin-left:15px;
 }
-.problemPara,.featurePara{
+.problemPara,.featurePara,.workingPara{
     font-size:1.3rem;
     margin-top:5px;
     line-height:40px;
@@ -211,7 +211,7 @@ hr{
     color:rgb(156, 211, 234);
 }
 
-#featuresSection{
+#featuresSection,#workSection{
     margin-top:40px;
     margin-bottom:50px;
 }
@@ -260,8 +260,57 @@ hr{
     border:5px solid rgb(1, 36, 50)
 }
 
+#timeline{
+    margin-top:70px;
+    display:flex;
+    justify-content:flex-start;
+}
+#line{
+    height:100vh;
+    width:5px;
+    background-color:rgb(88, 103, 105);
+    border-radius:10px;
+    margin-left:60px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:center;
+}
+.steps{
+    height:30px;
+    width:30px;
+    border-radius:50%;
+    background-color:rgb(0, 122, 130);
+}
+#workingCardContainer{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+}
+.workingCard{
+    margin-bottom:0px;
+    padding:20px;
+    height:12vh;
+    width:48vw;
+    margin-left:50px;
+    margin-top:5px;
+}
+.workingPara{
+    font-size:1.5rem;
+    line-height:30px;
+}
+#workingButton{
+    transition:all 0.3s linear 0s;
+    margin-left:50px;
+    margin-top:40px;
+}
+#workingButton:hover{
+    color:white;
+}
+
 footer{
     height:50vh;
     width:100vw;
-    background-color:red;
+    background-color:rgb(55, 213, 241);
 }
