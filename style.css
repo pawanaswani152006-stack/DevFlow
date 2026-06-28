@@ -4,6 +4,10 @@
     font-family:arial;
 }
 
+div{
+    scroll-margin-top:120px;
+}
+
 body{
     background-color:rgb(15, 60, 80);
 }
@@ -408,4 +412,15 @@ hr{
     display:flex;
     justify-content:center;
     align-items:center;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
 }
