@@ -46,9 +46,9 @@ body{
 }
 
 #mainSection{
-    height:1000vh;
     width:100vw;
     background-color:rgb(15, 60, 80);
+    margin-bottom:30px;
 }
 #heroSection{
     height:80vh;
@@ -362,8 +362,50 @@ hr{
     }
 }
 
-footer{
-    height:50vh;
+#footer{
     width:100vw;
-    background-color:rgb(55, 213, 241);
+    background-color:rgb(2, 34, 47);
+    padding-top:10px;
+}
+#footerHeading{
+    font-size:3rem;
+    font-weight: bolder;
+    color:rgb(61, 125, 152);
+    line-height:70px;
+    margin-left:20px;
+}
+.footerPara{
+    line-height:50px;
+    color:rgb(156, 211, 234);
+}
+#endSection{
+    width:100vw;
+    height:5vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#endPara{
+    font-size:1.2rem;
+    color:rgb(156, 211, 234);
+}
+#footerParaContainer{
+    display:flex;
+    justify-content:space-evenly;
+    align-items:center;
+    margin-top:40px;
+}
+#footerLogo{
+    display:inline-block;
+    height:13vh;
+    width:7vw;
+    border-radius:50%;
+    background-image:url("./images/logo.png");
+    background-size:cover;
+    background-color:white;
+}
+#footerHeadingContainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
