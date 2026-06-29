@@ -45,3 +45,33 @@ learnBtn.addEventListener("click",()=>{
         behavior: "smooth"
     });
 });
+
+let signIn=document.querySelector("#signBtn11");
+signIn.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signIn";
+});
+
+let start=document.querySelector("#startBtn");
+start.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signUp";
+});
+
+let start2=document.querySelector("#heroButton1");
+start2.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signUp";
+});
+
+let start3=document.querySelector("#workingButton");
+start3.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signUp";
+});
+
+let start4=document.querySelector("#ctaButton1");
+start4.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signUp";
+});
+
+let signIn2=document.querySelector("#ctaButton2");
+signIn2.addEventListener("click",()=>{
+    location.href="signIn.html?mode=signIn";
+});
