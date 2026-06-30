@@ -3,9 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="/style3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <title>Dashboard</title>
 </head>
 <body>
-    hello bro now you are log in...
+    <header id="navBar">
+        <div id="navLogoContainer">
+            <div id="logo"></div>
+            <p id="navLogoPara">DevFlow</p>
+        </div>
+        <div id="searchContainer">
+            <div id="searchIconContainer">
+                <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <input id="navInput" type="text" placeholder="Search by project name...">
+        </div>  
+        <button id="createButton"><span id="newIcon">+</span><pre> New Project</pre></button>
+        <button id="option">👤</button>
+    </header>
+
+    <div id="welcomeSection">
+        <p id="welcomePara1">Good Evening, Pawan</p>
+        <p id="welcomePara2">Ready to continue building today?</p>
+        <div id="filterContainer">
+            <p id="welcomePara3">Choose a project to continue...</p>
+            <div id="filterButtonContainer">
+                <button class="filterButton">All</button>
+                <button class="filterButton">Active</button>
+                <button class="filterButton">Completed</button>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div id="grid">
+        <div class="project">
+            <div class="projectImage"><i>DF</i></div>
+            <div class="projectData">
+                <div class="projectNameContainer">
+                    <p class="projectName">DevFlow</p>
+                </div>
+                <p class="projectPara">Description: <span class="projectAnsPara">DevFlow is type of product which create a perfect environment for coding.</span></p>
+                <p class="projectPara">Owener: <span class="projectAnsPara">Pawan and Chat Gpt</span></p>
+                <p class="projectPara">Tracking Mode: <span class="projectAnsPara">Manual</span></p>
+                <p class="projectPara">Due: <span class="projectAnsPara">7 July</span></p>
+                <div class="status"><div class="statusRepresenter"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
+            </div>
+        </div>
+    </div>
+    <form id="form" method="post" action="/dashboard">
+        <div id="newProjectHolder">
+            <div id="newProject">
+                <div id="newProjectHeading">Create Project</div>
+                <div id="newProjectDataContainer">
+                    <div>
+                        <p class="newPara">Project Name</p>
+                        <input required type="text" placeholder="Enter your project's name" class="newInput" id="projectName"> 
+                    </div>
+                    <div id="dateBox">
+                        <p class="newPara" style="margin-bottom:0px;margin-right:20px;">Deadine</p>
+                        <input required type="date" placeholder="Your project's deadline" id="date"> 
+                    </div>
+                    <div>
+                        <p class="newPara" style="margin-bottom:15px;">Tracking Mode</p>
+                        <div id="selection">
+                            <label>
+                                <input required type="radio" value="taskBased" name="Mode" id="taskBased" >Task Based
+                            </label>
+                            <label>
+                                <input required type="radio" value="manual" name="Mode" id="manual">Manual
+                            </label>
+                        </div>
+
+                    </div>
+                    <div>
+                        <p class="newPara">Description</p>
+                        <textarea required maxlength="80" placeholder="Maximum 80 characters" class="newInput" id="textArea"></textarea>
+                    </div>
+                </div>
+
+                <div id="newButtonHolder">
+                    <button type="submit" class="newButton" id="newProjectCreateButton">Create</button>
+                    <button type="button" class="newButton" id="newProjectCancelButton">Cancel</button>
+                </div>
+
+            </div>
+         </div>
+    </form>
+    <script src="/script3.js"></script>
 </body>
 </html>
