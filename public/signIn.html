@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style2.css">
+    <title>Sign In</title>
+</head>
+<body>
+
+    <div id="message">
+        <p id="msgPara">Password should be 8 characters long!</p>
+    </div>
+
+    <form method="post" action="/signIn" id="form01">
+        <div class="form" id="form1">
+
+            <div id="formElementsContainer">
+
+                <h1 class="formHeading">Welcome Back</h1>
+
+                <div id="elements">
+
+                    <div>
+
+                        <p class="para">Email</p>
+
+                        <input id="email" type="email" required placeholder="example@gmail.com" name="email">
+
+                    </div>
+
+                    <div>
+
+                        <p class="para">Password</p>
+
+                        <input id="password" type="password" required placeholder="Enter your password" name="password">
+
+                        <div id="forgotBtnContainer">
+
+                            <button id="forgotBtn">Forgot Password</button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="submit">
+
+                    <button type="submit" class="sign" id="mainSignIn">Sign In</button>
+
+                </div>
+
+                <div class="create">
+
+                    <p class="para2">New to DevFlow? <button class="createBtn" id="createBtn1">Create an account</button></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <form action="/signUp" method="post" id="form02">
+
+        <div class="form" id="form2">
+
+            <div id="formElementContainer2">
+
+                <h1 class="formHeading" id="formHeading2">Create Account</h1>
+
+                <div id="elements2">
+
+                    <div style="margin-top:10px;">
+
+                        <p class="para para22">Full Name</p>
+
+                        <input type="text" placeholder="John Doe" required name="fullName" id="fullNameSignUp">
+
+                    </div>
+
+                    <div style="margin-top:25px;">
+
+                        <p class="para para22">Email</p>
+
+                        <input type="email" placeholder="name@example.com" required name="email" id="emailSignUp">
+
+                    </div>
+
+                    <div style="margin-top:25px;">
+
+                        <p class="para para22">Password</p>
+
+                        <input type="password" required placeholder="At least 8 characters" name="password" id="passwordSignUp">
+
+                    </div>
+
+                    <div style="margin-top:25px;">
+
+                        <p class="para para22">Confirm Password</p>
+
+                        <input type="password" required placeholder="Re-enter your password" name="reEnteredPassword" id="reEnteredPassword">
+
+                    </div>
+
+                </div>
+
+                <div class="submit" id="submit2">
+
+                    <button type="submit" class="sign" id="sign2">Create Account</button>
+
+                </div>
+
+                <div class="create" id="create2">
+
+                    <p class="para2">Already have an account? <button type="button" id="signBtn2" class="createBtn">Sign In</button></p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    <script src="script2.js"></script>
+
+</body>
+</html>

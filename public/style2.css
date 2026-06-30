@@ -1,0 +1,255 @@
+*{
+    border:border-box;
+    margin:0px;
+    font-family:arial;
+}
+
+body{
+    background-color:rgb(15, 60, 80);
+}
+
+#message{
+    position:absolute;
+    z-index:2;
+    color:rgb(197, 63, 63);
+    top:2rem;
+    right:20px;
+    height:80px;
+    width:380px;
+    border-radius:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding-left:30px;
+    line-height:35px;
+    font-size:1.4rem;
+    line-height:25px;
+    background-color:rgba(255,70,70,0.22);
+    box-shadow:0 0px 20px rgb(247, 74, 74);
+    border:2px solid rgb(224, 135, 135);
+    transform:translateX(440px);
+    display:none;
+}
+
+@keyframes messageSlide{
+    form{
+        transform:translateX(440px);
+    }
+    to{
+        transform:translateX(0px);
+    }
+}
+
+@keyframes messageFade{
+    from{
+        transform:translateY(0px);
+        opacity:1;
+    }
+    to{
+        transform:translateY(150px);
+        opacity:0;
+    }
+}
+
+@keyframes messageDim{
+    from{
+        background-color:rgba(255,70,70,0.22);
+    }
+    to{
+        background-color:rgba(255,70,70,0.52);
+    }
+}
+
+.form{
+    background-color:transparent;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    width:100vw;
+}
+#form2{
+    display:none;
+}
+
+#formElementsContainer{
+    height:85vh;
+    width:30vw;
+    border-radius:50px;
+    background-color:rgb(196, 225, 227);
+    box-shadow:0 0 20px cyan;
+    border:2px solid rgba(255,255,255,1);
+}
+
+#formElementContainer2{
+    height:95vh;
+    width:30vw;
+    border-radius:50px;
+    background-color:rgb(196, 225, 227);
+    box-shadow:0 0 20px cyan;
+    border:2px solid rgba(255,255,255,1);
+    /* transform:rotateY(90deg); */
+    display:none;
+}
+
+@keyframes pageFlip{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(90deg);
+    }
+}
+@keyframes pageFlip2{
+    from{
+        transform:rotateY(90deg);
+    }
+    to{
+        transform:rotateY(0deg);
+    }
+}
+
+.formHeading{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:rgb(49, 102, 102);
+    margin-top:40px;
+    font-size:3rem;
+}
+
+#formHeading2{
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+#elements{
+    height:55vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+}
+
+#elements2{
+    height:60vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+}
+
+.submit{
+    width:30vw;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#submit2{
+    margin-top:30px;
+}
+
+.para{
+    margin-bottom:20px;
+    margin-left:20px;
+    font-size:2.5rem;
+    color:rgb(49, 102, 102);
+}
+
+.para22{
+    margin-bottom:10px;
+    font-size:2rem;
+}
+
+input{
+    height:40px;
+    width:28vw;
+    border-radius:20px;
+    border:none;
+    font-size:1.5rem;
+    padding-left:20px;
+    outline:none;
+    box-shadow:
+        0 8px 10px rgba(0,0,0,0.3),
+        0px 10px 30px rgba(0,0,0,0.3);
+}
+
+.sign{
+    background-color:rgb(35, 79, 87);
+    border-radius:30px;
+    height:8vh;
+    width:15vw;
+    font-size:2.3rem;
+    color:rgb(210, 237, 237);
+    border:none;
+    box-shadow:
+        0 10px 10px rgba(0,0,0,0.3),
+        0px 20px 30px rgba(0,0,0,0.3);
+    transition:all 0.3s ease 0s;
+}
+
+.sign:active{
+    transform:scale(0.8);
+}
+.sign:hover{
+    color:white;
+}
+
+#sign2{
+    font-size:1.5rem;
+    margin-top:10px;
+}
+
+.create{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:5px;
+    margin-bottom:30px;
+    width:30vw;
+    height:10vh;
+}
+
+#create2{
+    height:5vh;
+    margin-top:25px;
+}
+
+.para2{
+    color:black;
+    font-weight:300;
+    font-size:1.2rem;
+}
+
+.createBtn,#forgotBtn{
+    color:blue;
+    background-color:transparent;
+    border:none;
+    font-weight:300;
+    font-size:1.2rem;
+    transition:all 0.3s ease 0s;
+}
+
+#forgotBtn{
+    margin-right:30px;
+    font-size:1rem;
+}
+
+#forgotBtnContainer{
+    width:30vw;
+    margin-top:30px;
+    text-align:right;
+}
+
+#forgotBtn:active{
+    transform:scale(0.8);
+}
+.createBtn:active{
+    transform:scale(0.8);
+}
+
+#forgotBtn:hover{
+    text-decoration:underline;
+}
+.createBtn:hover{
+    text-decoration:underline;
+}
