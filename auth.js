@@ -10,6 +10,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/",router);
-app.use("/dashboard",router1);
+app.use("/dashboard/projects",router1);
 
 app.listen(8000,()=>console.log("server started..."));

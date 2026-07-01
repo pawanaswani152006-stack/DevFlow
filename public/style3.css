@@ -62,6 +62,9 @@ body{
     justify-content:center;
     align-items:center;
 }
+#createButton:hover{
+    color:white;
+}
 #newIcon{
     font-size:3.5rem;
     margin-right:5px;
@@ -146,13 +149,85 @@ hr{
 }
 #grid{
     margin-top:10vh;
+    display:flex;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    margin-bottom:10vh;
+}
+.gridEmptyState,.noSearchState{
+    margin-left:60px;
+    display:none;
+}
+#gridHeading,#noSearchHeading{
+    font-size:2.5rem;
+    color:rgb(138, 228, 207);
+    margin-bottom:30px;
+}
+#gridPara1,#gridPara2,#noSearchPara2{
+    font-size:2rem;
+    color:rgb(144, 201, 188);
+    line-height:70px;
+}
+@keyframes emptyFade{
+    form{
+        opacity:1;
+        transform:translateY(0);
+    }
+    to{
+        opacity:0;
+        transform:translateY(80px);
+    }
+}
+.noSearchState{
+    opacity:0;
+    transform:translateY(80px);
+    animation:noSearchAnimation 0.3s linear 0s forwards;
+}
+@keyframes noSearchAnimation{
+    from{
+        opacity:0;
+        transform:translateY(80px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
 }
 .project{
     height:60vh;
     width:20vw;
     background-color:rgb(193, 243, 245);
+    border-radius:20px;
+    transform:translateY(60px);
+    opacity:0;
+    box-shadow:0px 0px 20px cyan;
+    transition:all 0.3s linear 0s;
+}
+.projectAnimationHolder{
+    height:60vh;
+    width:20vw;
+    background-color:transparent;
     margin-left:60px;
     border-radius:20px;
+    margin-bottom:40px;
+    transition:all 0.3s linear 0s;
+    margin-top:3vh;
+}
+.projectAnimationHolder:hover{
+    transform:translateY(-20px);
+}
+.project:hover{
+    box-shadow:0px 0px 40px cyan;
+}
+@keyframes cardAnimation{
+    from{
+        transform:translateY(60px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0px);
+        opacity:1
+    }
 }
 .projectImage{
     width:20vw;
@@ -169,7 +244,7 @@ hr{
     display:flex;
     justify-content:center;
     align-items:center;
-    color:rgb(13, 12, 12)
+    color:rgb(13, 12, 12);
 }
 .projectData{
     height:40vh;
@@ -194,9 +269,9 @@ hr{
     margin-bottom:5px;
 }
 .projectName{
-    font-size:2rem;
+    font-size:1.7rem;
     font-weight:550;
-    line-height:30px;
+    line-height:40px;
     color:rgb(2, 52, 50);
 }
 .status{
@@ -223,7 +298,7 @@ hr{
     justify-content:center;
     align-items:center;
     background:rgba(0,0,0,0.5);
-    position:absolute;
+    position:fixed;
     z-index:999;
     inset:0;
     backdrop-filter:blur(2px);

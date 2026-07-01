@@ -29,29 +29,19 @@
         <div id="filterContainer">
             <p id="welcomePara3">Choose a project to continue...</p>
             <div id="filterButtonContainer">
-                <button class="filterButton">All</button>
-                <button class="filterButton">Active</button>
-                <button class="filterButton">Completed</button>
+                <button class="filterButton" id="allButton">All</button>
+                <button class="filterButton" id="activeButton">Active</button>
+                <button class="filterButton" id="completedButton">Completed</button>
             </div>
         </div>
     </div>
     <hr>
     <div id="grid">
-        <div class="project">
-            <div class="projectImage"><i>DF</i></div>
-            <div class="projectData">
-                <div class="projectNameContainer">
-                    <p class="projectName">DevFlow</p>
-                </div>
-                <p class="projectPara">Description: <span class="projectAnsPara">DevFlow is type of product which create a perfect environment for coding.</span></p>
-                <p class="projectPara">Owener: <span class="projectAnsPara">Pawan and Chat Gpt</span></p>
-                <p class="projectPara">Tracking Mode: <span class="projectAnsPara">Manual</span></p>
-                <p class="projectPara">Due: <span class="projectAnsPara">7 July</span></p>
-                <div class="status"><div class="statusRepresenter"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
-            </div>
-        </div>
+        <h1 class="gridEmptyState" id="gridHeading"><span style="font-size:3rem;">📁</span> No Projects Yet</h1>
+        <p class="gridEmptyState" id="gridPara1">Your workspace is waiting.</p>
+        <p class="gridEmptyState" id="gridPara2">Create your first project to start building.</p>
     </div>
-    <form id="form" method="post" action="/dashboard">
+    <form id="form" method="post" action="/dashboard/projects">
         <div id="newProjectHolder">
             <div id="newProject">
                 <div id="newProjectHeading">Create Project</div>
