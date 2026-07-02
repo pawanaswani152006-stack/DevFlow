@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style4.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <title>Document</title>
+</head>
+<body>
+    <header id="navBar">
+        <div id="navLogoContainer">
+            <div id="logo"></div>
+            <p id="navLogoPara">DevFlow</p>
+        </div>
+        <button class="createButton"><span id="newIcon">+</span><pre> Quick Add</pre></button>
+        <button class="createButton"><i class="fa-solid fa-circle-user" style="font-size:2.5rem;"></i><pre > Profile</pre></button>
+        <button class="createButton"><i class="fa-solid fa-gear"></i><pre> Project</pre></button>
+    </header>
+    <div id="mainArea">
+        <div id="sideBar">
+            <div id="sideBarButtons">
+                <h1 id="sideBarHeading">Navigation</h1>
+                <button class="button" id="overview"><i style="display:inline;" class="fa-solid fa-house-user"></i><pre> Overview</pre></button>
+                <button class="button"><i class="fa-solid fa-clipboard-list"></i><pre> Tasks</pre></button>
+                <button class="button"><i class="fa-solid fa-chart-line"></i><pre> Activity</pre></button>
+                <button class="button"><i class="fa-solid fa-message"></i><pre> Discussion</pre></button>
+            </div>
+        </div>
+        <div id="work">
+            <h1 id="workHeading">Dev Flow</h1>
+            <div id="firstRow">
+                <div class="row1Card">
+                    <h3 class="row1CardData"><i class="fa-solid fa-chart-line"></i> Progress <span class="row1Ans">70%</span></h3>
+                </div>
+                <div class="row1Card">
+                    <h3 class="row1CardData"><i class="fa-solid fa-clipboard-list"></i> Total Tasks <span class="row1Ans">10</span></h3>
+                </div>
+                <div class="row1Card">
+                    <h3 class="row1CardData"><i class="fa-solid fa-users"></i> Team Members <span class="row1Ans">5</span></h3>
+                </div>
+                <div class="row1Card">
+                    <h3 class="row1CardData"><i class="fa-solid fa-calendar-days"></i> Deadline <span class="row1Ans">7 July</span></h3>
+                </div>
+            </div>
+            <hr>
+            <div class="secondRow">
+                <div id="row2Card1">
+                    <h2 class="row2CardHeading"><i class="fa-solid fa-clipboard-list"></i> Recent Tasks</h2>
+                    <ul>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan </pre><span style="color:rgb(7, 72, 84);"> Create Homepage with perfect designing.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul </pre><span style="color:rgb(7, 72, 84);"> Create sign in and sign up pages.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin </pre><span style="color:rgb(7, 72, 84);"> Do authentication from backend.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik </pre><span style="color:rgb(7, 72, 84);"> Make dashboard page with all projects user have.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra </pre><span style="color:rgb(7, 72, 84);"> write backend code of dashbaoard page.</span></li>
+                    </ul>
+                    <button class="quickButtons">Assigned Members <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
+                </div>
+                <div id="row2Card2">
+                    <h2 class="row2CardHeading"><i class="fa-solid fa-chart-line"></i> Recent Activity</h2>
+                    <ul>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan </pre><span style="color:rgb(7, 72, 84);"> Homepage created.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul </pre><span style="color:rgb(7, 72, 84);"> Sign in and Sign up pages done.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin </pre><span style="color:rgb(7, 72, 84);"> Authentication done.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik </pre><span style="color:rgb(7, 72, 84);"> Dashboard created.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra </pre><span style="color:rgb(7, 72, 84);"> Dashboard backend written.</span></li>
+                    </ul>
+                    <button class="quickButtons">View Full Activity <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
+                </div>
+            </div>
+            <hr>
+            <div id="thirdRow">
+                <div id="row3Card">
+                    <h3 id="row3CardHeading"><i class="fa-solid fa-users"></i> Team</h3>
+                    <ul>
+                        <li style="margin-bottom:10px;"><i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> Pawan (Full Stack Developer) </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span></li>
+                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Rahul (Frontend Developer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
+                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user" style="display:inline-block"></i><pre style="display:inline-block;font-weight:549;"> Nitin (Cyber Security Engineer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
+                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Ritik (Backend Developer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
+                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Satendra (Cloud Engineer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
+                    </ul>
+                    <button class="quickButtons">Invite Memeber <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
+                    <button class="quickButtons">Manage Team <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/script4.js"></script>
+</body>
+</html>

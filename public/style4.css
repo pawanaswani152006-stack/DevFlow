@@ -1,0 +1,235 @@
+*{
+    margin:0px;
+    border:border-box;
+    font-family:arial;
+}
+body{
+    background-color:rgb(15, 60, 80);
+}
+body,html{
+    min-height:100vh;
+}
+#sideBarControl{
+    background:transparent;
+    font-size:5rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    position:sticky;
+    top:85vh;
+    left:90vw;
+    color:rgba(23, 149, 180, 0.648);
+    z-index:6;
+}
+#navBar{
+    width:100%;
+    height:10vh;
+    background-color:rgb(2, 34, 47);
+    position:sticky;
+    top:0px;
+    display:flex;
+    justify-content:space-evenly;
+    align-items:center;
+    border-radius:10px;
+    box-shadow:
+        10px 10px 10px rgba(0,0,0,0.6),
+        0px 30px 40px rgba(0,0,0,0.6);
+    z-index:2;
+}
+#navLogoContainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#logo{
+    height:70px;
+    width:70px;
+    border-radius:50%;
+    background-image:url("/images/logo.png");
+    background-size:cover;
+    background-color:white;
+    margin-right:10px;
+}
+#navLogoPara{
+    font-size:3rem;
+    color:rgb(49, 194, 213);
+}
+.createButton{
+    background-color:transparent;
+    width:15vw;
+    color:rgb(118, 184, 169);
+    border:none;
+    font-size:2rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.createButton:hover{
+    color:white;
+}
+#newIcon{
+    font-size:3.5rem;
+    margin-right:5px;
+}
+button{
+    transition:all 0.3s ease 0s;
+    cursor:pointer;
+}
+button:active{
+    transform:scale(0.8);
+}
+
+#mainArea{
+    display:flex;
+    margin-top:23px;
+}
+#sideBar{
+    height:78vh;
+    position:sticky;
+    left:0px;
+    top:0vh;
+    background-color:rgba(0, 19, 27, 1);
+    z-index:3;
+    border-top-right-radius:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:center;
+    padding:30px;
+    padding-top:40px;
+    top:13vh;
+}
+.button{
+    border:none;
+    outline:none;
+    background-color:transparent;
+    color:rgb(118, 184, 169);
+    font-size:2rem;
+    margin-bottom:40px;
+    width:200px;
+    display:flex;
+    align-items:center;
+    margin-right:15px;
+    margin-left:10px;
+    border-radius:20px;
+    height:6vh;
+}
+.button:hover{
+    color:white;
+    transform:scale(1.05);
+}
+.button:active{
+    transform:scale(0.8);
+}
+#work{
+    width:100%;
+    background-color:transparent;
+    padding:20px;
+    padding-left:80px;
+    margin-top:50px;
+}
+#sideBarHeading{
+    color:rgb(3, 140, 159);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:60px;
+    font-size:2.5rem;
+}
+#overview{
+    background-color:rgb(49, 82, 74)
+}
+#workHeading{
+    font-size:5rem;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    color:rgb(113, 231, 247);
+}
+#firstRow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background-color:transparent;
+    margin-top:70px;
+}
+.row1Card{
+    background-color:rgb(171, 217, 209);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:20px;
+    box-shadow:8px 20px 25px rgba(0,0,0,0.6);
+    padding:20px;
+}
+.row1CardData{
+    font-size:1.6rem;
+    color:rgb(3, 28, 22);
+}
+.row1Ans{
+    color:rgb(25, 115, 130);
+}
+
+hr{
+    margin-top:100px;
+    border:2px solid rgb(2, 31, 29);
+}
+
+.secondRow{
+    display:flex;
+    justify-content:space-around;
+    background-color:transparent;
+    align-items:center;
+}
+#row2Card1,#row2Card2,#row3Card{
+    margin-top:80px;
+    max-width:450px;
+    background-color:rgb(171, 217, 209);
+    padding:10px;
+    padding-top:30px;
+    box-shadow:8px 20px 25px rgba(0,0,0,0.6);
+    border-radius:30px;
+    padding-left:20px;
+    padding-right:20px;
+}
+.quickButtons{
+    border:none;
+    outline:none;
+    font-size:1.8rem;
+    background-color:transparent;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    color:rgb(7, 55, 57);
+    font-weight:550;
+    margin-bottom:20px;
+}
+.row2CardHeading,#row3CardHeading{
+    font-size:2rem;
+    color:rgb(7, 55, 57);
+}
+ul{
+    padding-left:0px;
+    font-size:1.8rem;
+    line-height:40px;
+    margin-bottom:30px;
+    list-style:none;
+    margin-top:20px;
+    color:rgb(3, 28, 22);
+}
+li{
+    margin-bottom:10px;
+}
+#thirdRow{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color:transparent;
+}
+#row3Card{
+    max-width:600px;
+    margin-bottom:40px;
+}

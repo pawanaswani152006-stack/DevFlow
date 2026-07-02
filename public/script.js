@@ -1,3 +1,8 @@
+const params=new URLSearchParams(window.location.search);
+const mode2=params.get("mode1");
+if(mode2==="signIn.html"){
+    location.href="signIn.html?mode=signIn";
+}
 const revealElements = document.querySelectorAll(".reveal");
 
 const observer = new IntersectionObserver((entries) => {
@@ -75,3 +80,4 @@ let signIn2=document.querySelector("#ctaButton2");
 signIn2.addEventListener("click",()=>{
     location.href="signIn.html?mode=signIn";
 });
+

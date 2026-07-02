@@ -73,22 +73,19 @@ body{
 }
 
 #formElementsContainer{
-    height:85vh;
-    width:30vw;
     border-radius:50px;
     background-color:rgb(196, 225, 227);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
+    padding:20px;
 }
 
 #formElementContainer2{
-    height:95vh;
-    width:30vw;
     border-radius:50px;
     background-color:rgb(196, 225, 227);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
-    /* transform:rotateY(90deg); */
+    padding:20px;
     display:none;
 }
 
@@ -114,31 +111,11 @@ body{
     justify-content:center;
     align-items:center;
     color:rgb(49, 102, 102);
-    margin-top:40px;
     font-size:3rem;
-}
-
-#formHeading2{
-    margin-top:20px;
-    margin-bottom:20px;
-}
-
-#elements{
-    height:55vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-around;
-}
-
-#elements2{
-    height:60vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-around;
+    padding:10px;
 }
 
 .submit{
-    width:30vw;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -149,23 +126,25 @@ body{
 }
 
 .para{
-    margin-bottom:20px;
-    margin-left:20px;
+    margin-bottom:10px;
     font-size:2.5rem;
     color:rgb(49, 102, 102);
+    margin-top:50px;
+    margin-left:5px;
 }
 
 .para22{
     margin-bottom:10px;
     font-size:2rem;
+    margin-top:25px;
 }
 
 input{
-    height:40px;
-    width:28vw;
+    width:93%;
     border-radius:20px;
     border:none;
     font-size:1.5rem;
+    padding:10px;
     padding-left:20px;
     outline:none;
     box-shadow:
@@ -176,15 +155,18 @@ input{
 .sign{
     background-color:rgb(35, 79, 87);
     border-radius:30px;
-    height:8vh;
-    width:15vw;
     font-size:2.3rem;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:50px;
+    padding-right:50px;
     color:rgb(210, 237, 237);
     border:none;
     box-shadow:
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
     transition:all 0.3s ease 0s;
+    margin-top:40px;
 }
 
 .sign:active{
@@ -197,20 +179,18 @@ input{
 #sign2{
     font-size:1.5rem;
     margin-top:10px;
+    padding:20px;
 }
 
 .create{
     display:flex;
     justify-content:center;
     align-items:center;
-    margin-top:5px;
-    margin-bottom:30px;
-    width:30vw;
-    height:10vh;
+    margin-top:30px;
+    margin-bottom:5px;
 }
 
 #create2{
-    height:5vh;
     margin-top:25px;
 }
 
@@ -230,13 +210,12 @@ input{
 }
 
 #forgotBtn{
-    margin-right:30px;
     font-size:1rem;
 }
 
 #forgotBtnContainer{
-    width:30vw;
-    margin-top:30px;
+    width:100%;
+    margin-top:20px;
     text-align:right;
 }
 

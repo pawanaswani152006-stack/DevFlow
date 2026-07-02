@@ -29,7 +29,8 @@ async function createProj(req,res){
         });
         return res.json({
             success:true,
-            msg:"Created"
+            msg:"Created",
+            project:newProject
         });  
     }catch(err){
         console.log("Error:",err);
@@ -41,7 +42,7 @@ async function getProjects(req,res){
         const projects=await project.find({owner:req.user.id});
         return res.json({arr:projects});
     }catch(err){
-        return res.redirect("signIn.html");
+        return res.redirect("/?mode1=signIn.html");
     }
 }
 

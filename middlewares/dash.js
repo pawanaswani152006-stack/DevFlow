@@ -7,19 +7,19 @@ async function checkAuth(req,res,next){
     const token=req.cookies.Token;
 
     if(!token){
-        return res.redirect("signIn.html");
+        return res.redirect("/");
     }
 
     try{
         const decoded=jwt.verify(token,secretKey);
         const user=await newUser.findById(decoded.id);
         if(!user){
-            return res.redirect("signIn.html");
+            return res.redirect("/");
         }
         req.user=decoded;
         next();
     }catch(err){
-        return res.redirectTo("signIn.html");
+        return res.redirect("/?mode1=signIn.html");
     }
 }
 

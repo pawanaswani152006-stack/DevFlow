@@ -52,10 +52,10 @@ form.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await res.json();
-    allProjects.push(body);
+    allProjects.push(result.project);
     if(result.success==true){
         cancelAnimation();
-        let div=await projectCard(projectName.value,textArea.value,trackingMode.value,date.value);
+        let div=await projectCard(projectName.value,textArea.value,trackingMode.value,date.value,result.project._id);
         setTimeout(()=>{
             emptyState.forEach((state)=>{
                 state.style.animation="emptyFade 0.1s linear 0s forwards"; 
@@ -113,18 +113,18 @@ async function reload(){
         });
     }else{
         projects.arr.forEach((project)=>{
-            let div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline));
+            let div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
             div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
 }
 reload();
 
-function projectCard(projectName,description,trackingMode,deadline){
+function projectCard(projectName,description,trackingMode,deadline,projectId){
     let div=document.createElement("div");
-    let div1=document.createElement("div");
+    let cardButton=document.createElement("button");
     div.classList.add("project");
-    div1.classList.add("projectAnimationHolder");
+    cardButton.classList.add("projectAnimationHolder");
     div.innerHTML=
         `<div class="projectImage"><i>DF</i></div>
         <div class="projectData">
@@ -137,8 +137,13 @@ function projectCard(projectName,description,trackingMode,deadline){
             <p class="projectPara">Due: <span class="projectAnsPara">${deadline}</span></p>
             <div class="status"><div class="statusRepresenter"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
         </div>`;
-        div1.appendChild(div)
-        grid.appendChild(div1);
+        cardButton.appendChild(div);
+        cardButton.dataset.projectId=projectId;
+        cardButton.addEventListener("click",()=>{
+            console.log("hello");
+            location.href=`/dashboard/projects/${cardButton.dataset.projectId}`;
+        })
+        grid.appendChild(cardButton);
         return div;
 }
 
@@ -169,7 +174,7 @@ function renderProjects(){
         grid.style.marginTop="10vh";
         grid.style.display="flex";
         filtered.forEach((project)=>{
-         div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline));
+         div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
          div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }

@@ -24,7 +24,7 @@ router.get("/dashboard",checkAuth,(req,res)=>{
             "dashboard.html"
         ));
     }catch(err){
-        return res.redirect("signIn.html");
+        return res.redirect("/?mode1=signIn.html");
     }
     
 })
