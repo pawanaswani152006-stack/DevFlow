@@ -1,6 +1,5 @@
 const jwt=require("jsonwebtoken");
 const secretKey="$$p@w@n$$#";
-let {isSuccess}=require("../controllers/authControl.js");
 const newUser=require("../models/logIn.js");
 
 async function checkAuth(req,res,next){
@@ -19,7 +18,8 @@ async function checkAuth(req,res,next){
         req.user=decoded;
         next();
     }catch(err){
-        return res.redirect("/?mode1=signIn.html");
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
     }
 }
 

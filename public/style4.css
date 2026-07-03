@@ -9,6 +9,114 @@ body{
 body,html{
     min-height:100vh;
 }
+#invitePageHolder{
+    height:100vh;
+    width:100vw;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:rgba(0,0,0,0.5);
+    position:fixed;
+    z-index:9999;
+    inset:0;
+    bottom:0px;
+    backdrop-filter:blur(2px);
+    display:none;
+}
+#invitePage{
+    border-radius:50px;
+    background-color:rgba(196, 225, 227,0.7);
+    box-shadow:0 0 20px cyan;
+    border:2px solid rgba(255,255,255,1);
+    padding:20px;
+    padding-right:10px;
+}
+@keyframes invitePage{
+    from{
+        transform:scale(0);
+    }
+    to{
+        trasnform:scale(1);
+    }
+}
+@keyframes cancelPage{
+    from{
+        transform:scale(1);
+    }
+    to{
+        transform:scale(0);
+    }
+}
+#inviteHeading{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:3rem;
+    padding:40px;
+    padding-top:0px;
+    padding-bottom:10px;
+    color:rgb(3, 43, 39);
+}
+#emailHolder,#spacialityHolder,#positionHolder{
+    margin-top:20px;
+    margin-bottom:50px;
+}
+.invitePara{
+    font-size:2rem;
+    margin-bottom:15px;
+    color:rgb(2, 39, 40);
+}
+.input{
+    border:none;
+    border-radius:15px;
+    border-top-left-radius:10px;
+    border-bottom-left-radius:10px;
+    outline:none;
+    font-size:1.5rem;
+    padding:5px;
+    padding-left:10px;
+    width:95%;
+    box-shadow:
+        0 10px 10px rgba(0,0,0,0.3),
+        0px 20px 30px rgba(0,0,0,0.3);
+}
+input[type="radio"]{
+    transform:scale(2);
+    margin-right:10px;
+    margin-left:10px;
+}
+label{
+    font-size:1.5rem;
+    display:flex inline-block;
+    justify-content:center;
+    align-items:center;
+}
+#inviteButtonsHolder{
+    display:flex;
+    align-items:center;
+    justify-content:space-around;
+    width:98%;
+    margin-bottom:25px;
+}
+.inviteButton{
+    font-size:2rem;
+    padding:5px;
+    padding-left:30px;
+    padding-right:30px;
+    border-radius:20px;
+    border:none;
+    outline:none;
+    cursor:pointer;
+    background-color:rgb(3, 45, 62);
+    color:rgb(122, 255, 224);
+    box-shadow:
+        0 10px 10px rgba(0,0,0,0.3),
+        0px 20px 30px rgba(0,0,0,0.3);
+}
+#inviteBtn{
+    padding-left:35px;
+    padding-right:35px;
+}
 #sideBarControl{
     background:transparent;
     font-size:5rem;
@@ -109,13 +217,13 @@ button:active{
     color:rgb(118, 184, 169);
     font-size:2rem;
     margin-bottom:40px;
-    width:200px;
     display:flex;
     align-items:center;
     margin-right:15px;
     margin-left:10px;
     border-radius:20px;
     height:6vh;
+    padding:15px;
 }
 .button:hover{
     color:white;
@@ -131,6 +239,22 @@ button:active{
     padding-left:80px;
     margin-top:50px;
 }
+@keyframes page1Flip{
+    from{
+        transform:rotatey(0deg);
+    }
+    to{
+        transform:rotateY(90deg);
+    }
+}
+@keyframes page2Flip{
+    from{
+        transform:rotateY(90deg);
+    }
+    to{
+        transform:rotateY(0deg);
+    }
+}
 #sideBarHeading{
     color:rgb(3, 140, 159);
     display:flex;
@@ -140,7 +264,7 @@ button:active{
     font-size:2.5rem;
 }
 #overview{
-    background-color:rgb(49, 82, 74)
+    background-color:rgb(49, 82, 74);
 }
 #workHeading{
     font-size:5rem;
@@ -233,3 +357,29 @@ li{
     max-width:600px;
     margin-bottom:40px;
 }
+#taskArea,#activityArea,#discussionArea,#notesArea{
+    display:none;
+    width:100%;
+    background-color:transparent;
+    padding:20px;
+    padding-left:80px;
+    margin-top:50px;
+    transform:rotateY(90deg);
+}
+#testing{
+    height:300px;
+    width:300px;
+    background-color:red;
+}
+/* 
+#activityArea{
+
+}
+
+#discussionArea{
+    
+}
+
+#notesArea{
+    
+} */

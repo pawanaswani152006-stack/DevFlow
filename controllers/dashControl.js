@@ -1,5 +1,7 @@
 const express=require("express");
 const project=require("../models/dashboard.js");
+const teamModel=require("../models/teamModel.js");
+const newUser=require("../models/logIn.js");
 
 async function createProj(req,res){
     try{
@@ -27,10 +29,12 @@ async function createProj(req,res){
             deadline:deadline,
             status:"Active"
         });
+        const ownerName=await newUser.findById(req.user.id).select("fullName");
         return res.json({
             success:true,
             msg:"Created",
-            project:newProject
+            project:newProject,
+            ownerName:ownerName.fullName
         });  
     }catch(err){
         console.log("Error:",err);
@@ -39,13 +43,19 @@ async function createProj(req,res){
 
 async function getProjects(req,res){
     try{
-        const projects=await project.find({owner:req.user.id});
-        return res.json({arr:projects});
+        const projects=await project.find({owner:req.user.id}).populate("owner","fullName");
+        const sharedProjects=await teamModel.find({memberEmail:req.user.email}).select("projectId");
+        for(const item of sharedProjects){
+            const share=await project.findById(item.projectId).populate("owner","fullName");
+            if(share) projects.push(share);
+        }
+        const dashboardOwner=await newUser.findById(req.user.id).select("fullName");
+        return res.json({arr:projects,dashboardOwner:dashboardOwner});
     }catch(err){
-        return res.redirect("/?mode1=signIn.html");
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
     }
 }
-
 module.exports={
     createProj,
     getProjects

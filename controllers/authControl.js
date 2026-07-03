@@ -89,7 +89,6 @@ async function varifyUser(req,res){
         return res.json({msg3:"Something went wrong."});
     }
 };
-
 module.exports={
     createUser,
     varifyUser,

@@ -14,6 +14,7 @@ let allProjects=[];
 let currentFilter="All";
 let searchText=searchInput.value;
 const noSearchElements=document.querySelectorAll(".noSearchState");
+const welcomePara1=document.querySelector("#welcomePara1");
 
 
 newBtn.addEventListener("click",()=>{
@@ -55,7 +56,7 @@ form.addEventListener("submit",async (e)=>{
     allProjects.push(result.project);
     if(result.success==true){
         cancelAnimation();
-        let div=await projectCard(projectName.value,textArea.value,trackingMode.value,date.value,result.project._id);
+        let div=await projectCard(result.ownerName,projectName.value,textArea.value,trackingMode.value,date.value,result.project._id);
         setTimeout(()=>{
             emptyState.forEach((state)=>{
                 state.style.animation="emptyFade 0.1s linear 0s forwards"; 
@@ -97,7 +98,7 @@ async function reload(){
         method:"get"
     });
     const projects=await data.json();
-    allProjects=projects.arr;
+    allProjects.push(...projects.arr);
     if(projects.arr.length===0){
         searchInput.disabled=true;
         allButton.disabled=true;
@@ -113,14 +114,19 @@ async function reload(){
         });
     }else{
         projects.arr.forEach((project)=>{
-            let div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
+            let div=projectCard(project.owner.fullName,project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
             div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
+    console.log(projects.arr);
+    const span=document.createElement("span");
+    span.innerHTML=
+        `Good Evening, ${projects.dashboardOwner.fullName}`
+    welcomePara1.appendChild(span);
 }
 reload();
 
-function projectCard(projectName,description,trackingMode,deadline,projectId){
+function projectCard(owner,projectName,description,trackingMode,deadline,projectId){
     let div=document.createElement("div");
     let cardButton=document.createElement("button");
     div.classList.add("project");
@@ -132,7 +138,7 @@ function projectCard(projectName,description,trackingMode,deadline,projectId){
                 <p class="projectName">${projectName}</p>
             </div>
             <p class="projectPara">Description: <span class="projectAnsPara">${description}</span></p>
-            <p class="projectPara">Owener: <span class="projectAnsPara">Pawan and Chat Gpt</span></p>
+            <p class="projectPara">Owener: <span class="projectAnsPara">${owner}</span></p>
             <p class="projectPara">Tracking Mode: <span class="projectAnsPara">${trackingMode}</span></p>
             <p class="projectPara">Due: <span class="projectAnsPara">${deadline}</span></p>
             <div class="status"><div class="statusRepresenter"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
@@ -140,7 +146,6 @@ function projectCard(projectName,description,trackingMode,deadline,projectId){
         cardButton.appendChild(div);
         cardButton.dataset.projectId=projectId;
         cardButton.addEventListener("click",()=>{
-            console.log("hello");
             location.href=`/dashboard/projects/${cardButton.dataset.projectId}`;
         })
         grid.appendChild(cardButton);
@@ -149,6 +154,7 @@ function projectCard(projectName,description,trackingMode,deadline,projectId){
 
 function renderProjects(){
     let filtered=allProjects;
+    console.log(allProjects);
     if(filtered.length!==0){
        if(currentFilter !== "All"){
             filtered=filtered.filter((project)=>{
@@ -163,6 +169,7 @@ function renderProjects(){
     }
     grid.innerHTML="";
     if(filtered.length===0){
+        console.log("hey");
         grid.style.marginTop="5vh";
         grid.innerHTML=
             `<h1 class="noSearchState" id="noSearchHeading" style="display:block;"><span style="font-size:3rem;color:none;background-color:transparent;"><i class="fa-solid fa-magnifying-glass-minus"></i></span> No matching projects found</h1>
@@ -170,11 +177,12 @@ function renderProjects(){
         grid.style.display="block";
         
     }else{
+        console.log("hey bro");
         let div;
         grid.style.marginTop="10vh";
         grid.style.display="flex";
         filtered.forEach((project)=>{
-         div=projectCard(project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
+         div=projectCard(project.owner.fullName,project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
          div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }

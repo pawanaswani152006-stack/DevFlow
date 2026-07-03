@@ -8,6 +8,38 @@
     <title>Document</title>
 </head>
 <body>
+
+    <form id="inviteForm" action="/dashboard/projects/:projectId/team" method="post">
+        <div id="invitePageHolder">
+            <div id="invitePage">
+                <h1 id="inviteHeading">Invite Member</h1>
+                <div id="inviteDataHolder">
+                    <div id="emailHolder">
+                        <p class="invitePara">Member's Email</p>
+                        <input type="text" placeholder="name@example.com" required class="input" id="emailInput">
+                    </div>
+                    <div id="spacialityHolder">
+                        <p class="invitePara">Member's Spaciality</p>
+                        <input type="text" placeholder="Enter the spaciality of member" required class="input" id="spacialityInput">
+                    </div>
+                    <div id="positionHolder">
+                        <p class="invitePara">Member's Role</p>
+                        <label>
+                            <input type="radio" name="position" class="positionInput" required value="Member" id="Member">Member
+                        </label>
+                        <label>
+                            <input type="radio" name="position" class="positionInput" required value="Admin" id="Admin">Admin
+                        </label>
+                    </div>
+                </div>
+                <div id="inviteButtonsHolder">
+                    <button class="inviteButton" id="inviteBtn">Invite</button>
+                    <button class="inviteButton" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <header id="navBar">
         <div id="navLogoContainer">
             <div id="logo"></div>
@@ -21,10 +53,11 @@
         <div id="sideBar">
             <div id="sideBarButtons">
                 <h1 id="sideBarHeading">Navigation</h1>
-                <button class="button" id="overview"><i style="display:inline;" class="fa-solid fa-house-user"></i><pre> Overview</pre></button>
-                <button class="button"><i class="fa-solid fa-clipboard-list"></i><pre> Tasks</pre></button>
-                <button class="button"><i class="fa-solid fa-chart-line"></i><pre> Activity</pre></button>
-                <button class="button"><i class="fa-solid fa-message"></i><pre> Discussion</pre></button>
+                <button id="overview" class="button"><i style="display:inline;" class="fa-solid fa-house-user"></i><pre> Overview</pre></button>
+                <button id="tasks" class="button"><i class="fa-solid fa-clipboard-list"></i><pre> Tasks</pre></button>
+                <button id="activity" class="button"><i class="fa-solid fa-chart-line"></i><pre> Activity</pre></button>
+                <button id="discussion" class="button"><i class="fa-solid fa-message"></i><pre> Discussion</pre></button>
+                <button id="notes" class="button"><i class="fa-solid fa-book-open"></i><pre> Notes</pre></button>
             </div>
         </div>
         <div id="work">
@@ -72,17 +105,26 @@
             <div id="thirdRow">
                 <div id="row3Card">
                     <h3 id="row3CardHeading"><i class="fa-solid fa-users"></i> Team</h3>
-                    <ul>
-                        <li style="margin-bottom:10px;"><i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> Pawan (Full Stack Developer) </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span></li>
-                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Rahul (Frontend Developer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
-                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user" style="display:inline-block"></i><pre style="display:inline-block;font-weight:549;"> Nitin (Cyber Security Engineer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
-                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Ritik (Backend Developer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
-                        <li style="margin-bottom:10px;"><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> Satendra (Cloud Engineer) </pre><span style="color:rgb(7, 72, 84);"> Member</span></li>
+                    <ul id="teamList">
                     </ul>
-                    <button class="quickButtons">Invite Memeber <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
+                    <button class="quickButtons" id="inviteCardButton">Invite Memeber <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
                     <button class="quickButtons">Manage Team <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
                 </div>
             </div>
+            
+        </div>
+        <div id="taskArea">
+            <h1>task area</h1>
+            <div id="testing"></div>
+        </div>
+        <div id="activityArea">
+            activity area
+        </div>
+        <div id="discussionArea">
+            discussion area
+        </div>
+        <div id="notesArea">
+            notes area
         </div>
     </div>
     <script src="/script4.js"></script>

@@ -3,6 +3,7 @@ const router1=express.Router();
 const checkAuth=require("../middlewares/dash.js");
 const {createProj,getProjects}=require("../controllers/dashControl.js");
 const path=require("path");
+const {addTeamMember,getTeamMembers,getSharedProjects}=require("../controllers/teamControl.js");
 
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -20,7 +21,26 @@ router1.get("/:projectId",checkAuth,(req,res)=>{
             "dashProject.html"
         ));
     }catch(err){
-            return res.redirect("/?mode1=signIn.html");
+            console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.post("/:projectId/team",checkAuth,(req,res)=>{
+    try{
+        addTeamMember(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/:projectId/team",checkAuth,(req,res)=>{
+    try{
+        getTeamMembers(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
     }
 })
 
