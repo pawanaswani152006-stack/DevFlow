@@ -26,12 +26,13 @@ async function addTeamMember(req,res){
         }
         const memberExist=await teamModel.findOne({
             projectId:projectId,
-            email:memberEmail
+            memberEmail:memberEmail
         })
         if(memberExist){
+            console.log("yha per");
             return res.json({existMsg:"Already in your team"});
         }
-
+        console.log("nhi yha per bro");
         const member=await teamModel.create({
             projectId:projectId,
             member:user._id,
@@ -56,10 +57,57 @@ async function getTeamMembers(req,res){
         const projectId=req.params.projectId;
         const teamMembers=await teamModel.find({projectId}).populate("member","fullName");
         const owner=await projectModel.findById(projectId).populate("owner","fullName");
-        return res.json({team:teamMembers,owner:owner.owner.fullName});
+        if(owner.owner._id.toString()===req.user.id){
+            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:"Owner",projectName:owner.projectName});
+        }else{
+            const memberPosition=await teamModel.find({projectId:projectId,member:req.user.id}).select("position");
+            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:memberPosition[0].position,projectName:owner.projectName});
+        }
+        
+        
     }catch(err){
         console.log("error:",err);
         return res.json({err:"something went worng"});
     }  
 }
-module.exports={addTeamMember,getTeamMembers};
+
+async function manageTeamMember(req,res){
+    try{
+        const projectId=req.params.projectId;
+        if(req.position==="Owner"){
+            const allMembers=await teamModel.find({projectId:projectId}).populate("member","fullName");
+            return res.json({arr:allMembers});
+        }
+    }catch(err){
+        console.log("error:",err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function updateRole(req,res){
+    try{
+        const teamId=req.params.teamId;
+        const team=await teamModel.findById(teamId).select("position");
+        const newPosition=team.position==="Admin"?"Member":"Admin";
+        const updated=await teamModel.findByIdAndUpdate(teamId,{
+            position:newPosition
+        },{
+            new:true
+        })
+        return res.json({updatedPosition:newPosition});
+    }catch(err){
+        console.log("error:",err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+async function deleteMember(req,res){
+    try{
+        const teamId=req.params.teamId;
+        await teamModel.findByIdAndDelete(teamId);
+        return res.json({msg:"deleted"});
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+module.exports={addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember};

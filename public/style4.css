@@ -9,7 +9,7 @@ body{
 body,html{
     min-height:100vh;
 }
-#invitePageHolder{
+#invitePageHolder,#manageFormPlaceHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -23,13 +23,17 @@ body,html{
     backdrop-filter:blur(2px);
     display:none;
 }
-#invitePage{
+#invitePage,#manageFormContainer{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
     padding:20px;
     padding-right:10px;
+}
+#manageFormContainer{
+    padding-right:20px;
+    padding-bottom:5px;
 }
 @keyframes invitePage{
     from{
@@ -47,7 +51,7 @@ body,html{
         transform:scale(0);
     }
 }
-#inviteHeading{
+#inviteHeading,#manageFormHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -289,7 +293,7 @@ button:active{
     box-shadow:8px 20px 25px rgba(0,0,0,0.6);
     padding:20px;
 }
-.row1CardData{
+.row1CardData,.managePara{
     font-size:1.6rem;
     color:rgb(3, 28, 22);
 }
@@ -319,7 +323,7 @@ hr{
     padding-left:20px;
     padding-right:20px;
 }
-.quickButtons{
+.quickButtons,.manageButton,#manageFormCancelButton{
     border:none;
     outline:none;
     font-size:1.8rem;
@@ -365,6 +369,29 @@ li{
     padding-left:80px;
     margin-top:50px;
     transform:rotateY(90deg);
+}
+#manageButtonsHolder{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    width:95%;
+}
+.managePara{
+    margin-bottom:15px;
+}
+.manageMember{
+    margin-top:20px;
+    margin-bottom:15px;
+}
+#manageFormCancelButton{
+    font-size:2.5rem;
+    padding-bottom:10px;
+}
+#manageCancelButtonHolder{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:99%;
 }
 #testing{
     height:300px;
