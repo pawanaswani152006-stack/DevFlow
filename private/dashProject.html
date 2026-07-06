@@ -40,6 +40,45 @@
         </div>
     </form>
 
+    <form id="taskAssignForm" action="/dashboard/projects/:projectId/task" method="post">
+        <div id="taskAssignmentPageHolder">
+            <div id="taskAssignmentPage">
+                <h1 id="taskAssignmentHeading">Assign Task</h1>
+                <div id="taskAssignmentDataHolder">
+                    <div class="taskDataHolder">
+                        <p class="taskAssignmentPara">Task</p>
+                        <input type="text" placeholder="Enter task to assign" required class="input" id="taskInput">
+                    </div>
+                    <div class="taskDataHolder">
+                        <p class="taskAssignmentPara">Assign to</p>
+                        <select id="taskSelection">
+                        </select>
+                    </div>
+                    <div class="taskDataHolder">
+                        <p class="taskAssignmentPara">Priority</p>
+                        <label>
+                            <input type="radio" name="taskPriority" required value="Low" class="taskPrioritySelection">Low
+                        </label>
+                        <label>
+                           <input type="radio" name="taskPriority" required value="Medium" class="taskPrioritySelection">Medium
+                        </label>
+                        <label>
+                            <input type="radio" name="taskPriority" required value="High" class="taskPrioritySelection">High
+                        </label>
+                    </div>
+                    <div class="taskDataHolder">
+                        <p class="taskAssignmentPara">Deadline</p>
+                        <input type="Date" required id="taskAssignmentDate">
+                    </div>
+                </div>
+                <div id="taskAssignmentButtonsHolder">
+                    <button class="taskAssignmentButton" id="taskAssignBtn">Assign</button>
+                    <button type="button" class="taskAssignmentButton" id="taskCancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
     <div id="manageFormPlaceHolder">
         <div id="manageFormContainer">
             <h1 id="manageFormHeading">Manage Team</h1>
@@ -52,6 +91,16 @@
         </div>
     </div>
 
+    <form method="patch" action="/dashboard/projects/:projectId/task/manage">
+        <div id="taskManage">
+            <div id="taskStatusUpdatePage">
+                <h1 id="taskStatusHeading">Update Status</h1>
+                <div id="taskStatusData">
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <header id="navBar">
         <div id="navLogoContainer">
@@ -127,8 +176,29 @@
             
         </div>
         <div id="taskArea">
-            <h1>task area</h1>
-            <div id="testing"></div>
+            <div id="taskHeader">
+                <h2 class="taskAreaHeading">Stay organized. Filter tasks and focus on what matters.</h2>
+                <div class="taskFilterButtonRow">
+                    <button class="taskFilterButtons" id="taskAllBtn">All</button>
+                    <button class="taskFilterButtons" id="myTaskBtn">My Tasks</button>
+                </div>
+                <div class="taskFilterButtonRow">
+                    <button class="taskFilterButtons" id="todoBtn">Todo</button>
+                    <button class="taskFilterButtons" id="inProgressBtn">In Progress</button>
+                    <button class="taskFilterButtons" id="completedBtn">Completed</button>
+                </div>
+                <div class="taskFilterButtonRow">
+                    <button class="taskFilterButtons" id="highPriorityBtn">High Priority</button>
+                    <button class="taskFilterButtons" id="mediumPriorityBtn">Medium Priority</button>
+                    <button class="taskFilterButtons" id="lowPriorityBtn">Low priority</button>
+                </div>
+            </div>
+            <div id="assignedTasks">
+                
+            </div>
+            <div id="taskButtonHolder">
+                <button id="taskButton"><span id="taskNewIcon">+</span> Assign Task</button>
+            </div>
         </div>
         <div id="activityArea">
             activity area

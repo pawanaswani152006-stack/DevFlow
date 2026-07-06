@@ -3,8 +3,9 @@ const router1=express.Router();
 const checkAuth=require("../middlewares/dash.js");
 const {createProj,getProjects}=require("../controllers/dashControl.js");
 const path=require("path");
-const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember}=require("../controllers/teamControl.js");
+const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
+const {createTask,getTasks}=require("../controllers/taskControl.js");
 
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -45,6 +46,15 @@ router1.get("/:projectId/team",checkAuth,(req,res)=>{
     }
 })
 
+router1.get("/:projectId/task/names",checkAuth,restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        getTeamMembersName(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
 router1.get("/:projectId/team/manage",checkAuth,restrictTo("Owner"),(req,res)=>{
     try{
         manageTeamMember(req,res);
@@ -66,6 +76,24 @@ router1.patch("/:projectId/team/manage/:teamId",checkAuth,restrictTo("Owner"),(r
 router1.delete("/:projectId/team/manage/:teamId",checkAuth,restrictTo("Owner"),(req,res)=>{
     try{
         deleteMember(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.post("/:projectId/task",checkAuth,restrictTo("Owner","Admin"),(req,res)=>{
+    try{
+        createTask(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/:projectId/task",checkAuth,(req,res)=>{
+    try{
+        getTasks(req,res);
     }catch(err){
         console.log("error",err);
         return res.json({msg:"something went wrong"});

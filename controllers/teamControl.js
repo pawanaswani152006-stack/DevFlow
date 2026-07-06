@@ -100,6 +100,7 @@ async function updateRole(req,res){
         return res.json({msg:"Something went wrong."});
     }
 }
+
 async function deleteMember(req,res){
     try{
         const teamId=req.params.teamId;
@@ -110,4 +111,16 @@ async function deleteMember(req,res){
         return res.json({msg:"Something went wrong."});
     }
 }
-module.exports={addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember};
+
+async function getTeamMembersName(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const names=await teamModel.find({projectId:projectId}).populate("member","fullName").select("member");
+        return res.json({names:names});
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+module.exports={addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName};

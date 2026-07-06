@@ -9,7 +9,7 @@ body{
 body,html{
     min-height:100vh;
 }
-#invitePageHolder,#manageFormPlaceHolder{
+#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -23,7 +23,7 @@ body,html{
     backdrop-filter:blur(2px);
     display:none;
 }
-#invitePage,#manageFormContainer{
+#invitePage,#manageFormContainer,#taskAssignmentPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
@@ -51,7 +51,7 @@ body,html{
         transform:scale(0);
     }
 }
-#inviteHeading,#manageFormHeading{
+#inviteHeading,#manageFormHeading,#taskAssignmentHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -65,7 +65,7 @@ body,html{
     margin-top:20px;
     margin-bottom:50px;
 }
-.invitePara{
+.invitePara,.taskAssignmentPara{
     font-size:2rem;
     margin-bottom:15px;
     color:rgb(2, 39, 40);
@@ -95,14 +95,14 @@ label{
     justify-content:center;
     align-items:center;
 }
-#inviteButtonsHolder{
+#inviteButtonsHolder,#taskAssignmentButtonsHolder{
     display:flex;
     align-items:center;
     justify-content:space-around;
     width:98%;
     margin-bottom:25px;
 }
-.inviteButton{
+.inviteButton,.taskAssignmentButton{
     font-size:2rem;
     padding:5px;
     padding-left:30px;
@@ -241,7 +241,7 @@ button:active{
     background-color:transparent;
     padding:20px;
     padding-left:80px;
-    margin-top:50px;
+    margin-top:10px;
 }
 @keyframes page1Flip{
     from{
@@ -367,7 +367,7 @@ li{
     background-color:transparent;
     padding:20px;
     padding-left:80px;
-    margin-top:50px;
+    margin-top:20px;
     transform:rotateY(90deg);
 }
 #manageButtonsHolder{
@@ -393,20 +393,106 @@ li{
     align-items:center;
     width:99%;
 }
-#testing{
-    height:300px;
-    width:300px;
-    background-color:red;
+#taskHeader{
+    border-bottom:2px solid black;
+    margin-bottom:20px;
 }
-/* 
-#activityArea{
-
+.taskAreaHeading{
+    font-size:2.5rem;
+    margin-bottom:40px;
+    color:rgb(113, 231, 247);
 }
-
-#discussionArea{
-    
+.taskFilterButtonRow,.singleTaskButtonHolder{
+    display:flex;
+    background-color:transparent;
+    margin-bottom:25px;
 }
-
-#notesArea{
-    
-} */
+.singleTaskButtonHolder{
+    margin-bottom:0px;
+}
+.taskFilterButtons,.singleTaskButton,#taskButton{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px;
+    padding-left:20px;
+    padding-right:20px;
+    border:none;
+    outline:none;
+    border-radius:20px;
+    margin-right:20px;
+    font-size:1.5rem;
+    background-color:rgb(152, 240, 247);
+    color:rgb(2, 35, 35);
+}
+.singleTaskButton{
+    background-color:rgb(0, 106, 117);
+    color:rgb(152, 218, 207);
+}
+.taskHr{
+    margin-top:15px;
+    border:1px solid;
+    margin-bottom:15px;
+}
+.singleTaskHolder{
+    padding-left:40px;
+    padding:20px;
+    padding-right:5px;
+    background-color:rgb(171, 217, 209);
+    box-shadow:0 10px 20px rgba(0,0,0,0.8);
+    margin-bottom:30px;
+    border-radius:20px;
+}
+.taskPara{
+    font-size:1.5rem;
+    color:rgb(4, 78, 78);
+}
+.taskInfoHolderRow{
+    display:flex;
+    align-items:center;
+    margin-bottom:20px;
+}
+.taskInfoPara{
+    margin-right:50px;
+    font-size:1.3rem;
+    color:rgb(1, 28, 28);
+}
+.taskInfoAns{
+    margin-left:15px;
+    color:white;
+    color:rgb(6, 82, 82);
+}
+#assignedTasks{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    align-items:center;
+}
+#taskButtonHolder{
+    display:flex;
+    align-items:center;
+    margin-bottom:20px;
+    margin-top:20px;
+}
+#taskButton{
+    font-size:3rem;
+    color:rgb(0, 66, 66);
+}
+#taskNewIcon{
+    font-size:4rem;
+    margin-right:5px;
+}
+.taskDataHolder{
+    margin-bottom:30px;
+    margin-top:20px;
+}
+select,#taskAssignmentDate{
+    border:none;
+    outline:none;
+    font-size:1.5rem;
+    border-radius:20px;
+    padding:10px;
+    appearance:none;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+}
