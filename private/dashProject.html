@@ -91,12 +91,66 @@
         </div>
     </div>
 
-    <form method="patch" action="/dashboard/projects/:projectId/task/manage">
+    <form method="patch" action="/dashboard/projects/:projectId/task/:taskId/status" id="taskStatusForm">
         <div id="taskManage">
             <div id="taskStatusUpdatePage">
                 <h1 id="taskStatusHeading">Update Status</h1>
-                <div id="taskStatusData">
-                    <p></p>
+                <div id="currStatus">
+                    <pre class="statusPara">Current Status <span id="currStatusAns"></span></pre>
+                </div>
+                <div id="editStatusHolder">
+                    <p class="statusPara">Select New Status</p>
+                    <label style="color:rgb(4, 50, 50);">
+                        <input type="radio" name="editStatus" value="Todo" class="editTaskStatus" required>Todo
+                    </label>
+                    <label style="color:rgb(4, 50, 50);">
+                        <input type="radio" name="editStatus" value="In Progress" class="editTaskStatus" required>In Progress
+                    </label>
+                    <label style="color:rgb(4, 50, 50);">
+                        <input type="radio" name="editStatus" value="Completed" class="editTaskStatus" required>Completed
+                    </label>
+                </div>
+                <div id="editTaskButtonsHolder">
+                    <button class="editTaskButton" id="statusUpdateBtn">Update</button>
+                    <button type="button" class="editTaskButton" id="statusCancelBtn">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="taskEditForm" action="/dashboard/projects/:projectId/task/:taskId/edit" method="patch">
+        <div id="taskEditPageHolder">
+            <div id="taskEditPage">
+                <h1 id="taskEditHeading">Edit Task</h1>
+                <div id="taskAllEditDataHolder">
+                    <div class="taskEditDataHolder">
+                        <p class="taskEditPara">Task</p>
+                        <input type="text" placeholder="Enter task to assign" required class="input" id="taskEditInput">
+                    </div>
+                    <div class="taskEditDataHolder">
+                        <p class="taskEditPara">Assign to</p>
+                        <select id="taskEditSelection"></select>
+                    </div>
+                    <div class="taskEditDataHolder">
+                        <p class="taskEditPara">Priority</p>
+                        <label>
+                            <input type="radio" name="taskEditPriority" required value="Low" class="taskEditPrioritySelection">Low
+                        </label>
+                        <label>
+                           <input type="radio" name="taskEditPriority" required value="Medium" class="taskEditPrioritySelection">Medium
+                        </label>
+                        <label>
+                            <input type="radio" name="taskEditPriority" required value="High" class="taskEditPrioritySelection">High
+                        </label>
+                    </div>
+                    <div class="taskEditDataHolder">
+                        <p class="taskEditPara">Deadline</p>
+                        <input type="Date" required id="taskEditDate">
+                    </div>
+                </div>
+                <div id="taskEditButtonsHolder">
+                    <button class="taskEditButton" id="taskEditBtn">Edit</button>
+                    <button type="button" class="taskEditButton" id="taskEditCancelBtn">Cancel</button>
                 </div>
             </div>
         </div>

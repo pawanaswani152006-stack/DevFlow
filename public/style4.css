@@ -9,7 +9,7 @@ body{
 body,html{
     min-height:100vh;
 }
-#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder{
+#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -23,7 +23,7 @@ body,html{
     backdrop-filter:blur(2px);
     display:none;
 }
-#invitePage,#manageFormContainer,#taskAssignmentPage{
+#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
@@ -51,7 +51,7 @@ body,html{
         transform:scale(0);
     }
 }
-#inviteHeading,#manageFormHeading,#taskAssignmentHeading{
+#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -65,7 +65,7 @@ body,html{
     margin-top:20px;
     margin-bottom:50px;
 }
-.invitePara,.taskAssignmentPara{
+.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara{
     font-size:2rem;
     margin-bottom:15px;
     color:rgb(2, 39, 40);
@@ -95,14 +95,14 @@ label{
     justify-content:center;
     align-items:center;
 }
-#inviteButtonsHolder,#taskAssignmentButtonsHolder{
+#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder{
     display:flex;
     align-items:center;
     justify-content:space-around;
     width:98%;
     margin-bottom:25px;
 }
-.inviteButton,.taskAssignmentButton{
+.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton{
     font-size:2rem;
     padding:5px;
     padding-left:30px;
@@ -442,6 +442,19 @@ li{
     box-shadow:0 10px 20px rgba(0,0,0,0.8);
     margin-bottom:30px;
     border-radius:20px;
+    transform:translateY(40px);
+    opacity:0;
+    animation:taskCardAnimation 0.3s linear 0s forwards;
+}
+@keyframes taskCardAnimation{
+    from{
+        transform:translateY(40px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0px);
+        opacity:1;
+    }
 }
 .taskPara{
     font-size:1.5rem;
@@ -482,11 +495,11 @@ li{
     font-size:4rem;
     margin-right:5px;
 }
-.taskDataHolder{
+.taskDataHolder,.taskEditDataHolder{
     margin-bottom:30px;
     margin-top:20px;
 }
-select,#taskAssignmentDate{
+select,#taskAssignmentDate,#taskEditDate{
     border:none;
     outline:none;
     font-size:1.5rem;
@@ -495,4 +508,33 @@ select,#taskAssignmentDate{
     appearance:none;
     -webkit-appearance:none;
     -moz-appearance:none;
+}
+#currStatusAns{
+    color:rgb(2, 105, 105);
+    font-weight:bold;
+}
+.statusPara{
+    margin-top:30px;
+}
+#taskStatusHeading{
+    padding:50px;
+    padding-bottom:0px;
+    padding-top:10px;
+}
+#editTaskButtonsHolder{
+    margin-top:40px;
+    margin-bottom:20px;
+}
+#taskEditHeading{
+    padding-left:80px;
+    padding-right:80px;
+    padding-bottom:0px;
+}
+#taskEditBtn{
+    padding-left:50px;
+    padding-right:50px;
+}
+#taskEditButtonsHolder{
+    margin-bottom:15px;
+    margin-top:40px;
 }

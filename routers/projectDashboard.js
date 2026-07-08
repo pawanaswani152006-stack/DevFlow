@@ -5,7 +5,7 @@ const {createProj,getProjects}=require("../controllers/dashControl.js");
 const path=require("path");
 const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
-const {createTask,getTasks}=require("../controllers/taskControl.js");
+const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -97,6 +97,43 @@ router1.get("/:projectId/task",checkAuth,(req,res)=>{
     }catch(err){
         console.log("error",err);
         return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.delete("/:projectId/task/:taskId",checkAuth,restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        deleteTask(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/task/:taskId",checkAuth,(req,res)=>{
+    try{
+        getStatus(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/task/:taskId",checkAuth,(req,res)=>{
+    try{
+        updateStatus(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/task/:taskId/edit",checkAuth,restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        console.log("hello shi aaya hue");
+        editTaskCard(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
     }
 })
 

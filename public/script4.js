@@ -36,7 +36,22 @@ const taskInput=document.querySelector("#taskInput");
 const taskSelection=document.querySelector("#taskSelection");
 const taskDeadline=document.querySelector("#taskAssignmentDate");
 const assignedTasks=document.querySelector("#assignedTasks");
+const statusCancelBtn=document.querySelector("#statusCancelBtn");
+const taskStatusPageHolder=document.querySelector("#taskManage");
+const taskStatusUpdatePage=document.querySelector("#taskStatusUpdatePage");
+const currStatusAns=document.querySelector("#currStatusAns");
+const taskStatusForm=document.querySelector("#taskStatusForm");
+let currTaskId=null;
 let filteredTasks=[];
+
+const taskEditForm=document.querySelector("#taskEditForm");
+const taskEditPageHolder=document.querySelector("#taskEditPageHolder");
+const taskEditPage=document.querySelector("#taskEditPage");
+const taskEditInput=document.querySelector("#taskEditInput");
+const taskEditDate=document.querySelector("#taskEditDate");
+const taskEditBtn=document.querySelector("#taskEditBtn");
+const taskEditCancelBtn=document.querySelector("#taskEditCancelBtn");
+const taskEditSelection=document.querySelector("#taskEditSelection");
 
 function pageFlipAnimation(curr,currBtn){
     overviewArea.style.animation="page1Flip 0.3s linear 0s forwards";
@@ -336,9 +351,9 @@ taskAssignForm.addEventListener("submit",async (e)=>{
         </div>
         <hr class="taskHr">
         <div class="singleTaskButtonHolder">
-            <button class="singleTaskButton" id="taskStatusButton">Status</button>
-            <button class="singleTaskButton" id="taskEditButton">Edit</button>
-            <button class="singleTaskButton" id="taskDeleteButton">Delete</button>
+            <button class="singleTaskButton taskStatusButton">Status</button>
+            <button class="singleTaskButton taskEditsButton">Edit</button>
+            <button class="singleTaskButton taskDeleteButton">Delete</button>
         </div>`;
     assignedTasks.appendChild(div);
     taskAssignmentPage.style.animation="cancelPage 0.3s linear 0s forwards";
@@ -346,6 +361,63 @@ taskAssignForm.addEventListener("submit",async (e)=>{
         taskAssignmentPageHolder.style.display="none";
         document.body.style.overflow="auto";
     },300);
+    filterTask="All";
+    taskUpdation();
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskDeleteButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"delete"
+            });
+            filteredTasks=filteredTasks.filter((task)=>{
+                return task._id!==taskId;
+            })
+            taskReload();
+        }
+    })
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskStatusButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            currTaskId=row.dataset.taskId;
+            const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"get"
+            });
+            const nonEditStatus=await currStatus.json();
+            currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
+            taskStatusPageHolder.style.display="flex";
+            taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
+            document.body.style.overflow="hidden";
+        }
+    })
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskEditsButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            currTaskId=row.dataset.taskId;
+            const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"get"
+            });
+            const response=await result.json();
+            taskEditPageHolder.style.display="flex";
+            taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
+            document.body.style.overflow="hidden";
+            taskEditInput.value=response.task.task;
+            taskEditDate.value=response.task.deadline.split("T")[0];
+            currTaskPriority=response.task.priority.trim();
+            taskEditSelection.innerHTML="";
+            response.names.forEach((name)=>{
+                const option=document.createElement("option");
+                option.innerText=`${name.member.fullName}`;
+                option.value=name.member._id.toString();
+                if(response.task.assignedTo.toString()===name.member._id.toString()){
+                    option.selected=true;
+                }
+                taskEditSelection.appendChild(option);
+            })
+        }
+    })
 })
 
 let currentUser="";
@@ -358,13 +430,14 @@ async function taskReload(){
         method:"get"
     });
     const allTasks=await taskElements.json();
-    if(allTasks.allTasks.length===0){
-        return;
-    }
     filteredTasks=allTasks.allTasks;
     currentUser=allTasks.user.fullName;
     currUserId=allTasks.user._id.toString();
     currUserRole=allTasks.userRole;
+    assignedTasks.innerHTML="";
+    if(allTasks.allTasks.length===0){
+        return;
+    }
     allTasks.allTasks.forEach((task)=>{
     const customizedTaskDeadline=dateCreater(task.deadline);
     const div=document.createElement("div");
@@ -397,23 +470,77 @@ async function taskReload(){
         <hr class="taskHr">
         <div class="singleTaskButtonHolder">
             <button class="singleTaskButton taskStatusButton">Status</button>
-            <button class="singleTaskButton taskEditButton">Edit</button>
+            <button class="singleTaskButton taskEditsButton">Edit</button>
             <button class="singleTaskButton taskDeleteButton">Delete</button>
         </div>`;
     }
     assignedTasks.appendChild(div);
     });
     if(currUserRole==="Member"){
-        const taskEditButton=document.querySelectorAll(".taskEditButton");
+        const taskEditsButton=document.querySelectorAll(".taskEditsButton");
         const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
         const taskStatusButton=document.querySelectorAll(".taskStatusButton");
-        taskEditButton.forEach((button)=>{
+        taskEditsButton.forEach((button)=>{
             button.style.display="none";
         })
         taskDeleteButton.forEach((button)=>{
             button.style.display="none";
         })
     }
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskDeleteButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"delete"
+            });
+            filteredTasks=filteredTasks.filter((task)=>{
+                return task._id!==taskId;
+            })
+            taskReload();
+        }
+    });
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskStatusButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            currTaskId=row.dataset.taskId;
+            const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"get"
+            });
+            const nonEditStatus=await currStatus.json();
+            currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
+            taskStatusPageHolder.style.display="flex";
+            taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
+            document.body.style.overflow="hidden";
+        }
+    })
+    document.addEventListener("click",async (e)=>{
+        if(e.target.classList.contains("taskEditsButton")){
+            const row=e.target.closest(".singleTaskHolder");
+            const taskId=row.dataset.taskId;
+            currTaskId=row.dataset.taskId;
+            const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                method:"get"
+            });
+            const response=await result.json();
+            taskEditPageHolder.style.display="flex";
+            taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
+            document.body.style.overflow="hidden";
+            taskEditInput.value=response.task.task;
+            taskEditDate.value=response.task.deadline.split("T")[0];
+            taskEditSelection.innerHTML="";
+            response.names.forEach((name)=>{
+                const option=document.createElement("option");
+                option.innerText=`${name.member.fullName}`;
+                option.value=name.member._id.toString();
+                if(response.task.assignedTo.toString()===name.member._id.toString()){
+                    option.selected=true;
+                }
+                taskEditSelection.appendChild(option);
+            })
+        }
+    })
 }
 taskReload();
 
@@ -511,14 +638,14 @@ async function taskUpdation(){
                 <hr class="taskHr">
                 <div class="singleTaskButtonHolder">
                     <button class="singleTaskButton taskStatusButton">Status</button>
-                    <button class="singleTaskButton taskEditButton">Edit</button>
+                    <button class="singleTaskButton taskEditsButton">Edit</button>
                     <button class="singleTaskButton taskDeleteButton">Delete</button>
                 </div>`;
             }
             assignedTasks.appendChild(div);
         });
         if(currUserRole==="Member"){
-            const taskEditButton=document.querySelectorAll(".taskEditButton");
+            const taskEditsButton=document.querySelectorAll(".taskEditsButton");
             const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
             const taskStatusButton=document.querySelectorAll(".taskStatusButton");
             taskEditButton.forEach((button)=>{
@@ -528,20 +655,131 @@ async function taskUpdation(){
                 button.style.display="none";
             })
         }
+        const projectId=window.location.pathname.split("/").pop();
+        document.addEventListener("click",async (e)=>{
+            if(e.target.classList.contains("taskDeleteButton")){
+                const row=e.target.closest(".singleTaskHolder");
+                const taskId=row.dataset.taskId;
+                await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                    method:"delete"
+                });
+                filteredTasks=filteredTasks.filter((task)=>{
+                    return task._id!==taskId;
+                })
+                taskUpdation();
+            }
+        })
+        document.addEventListener("click",async (e)=>{
+            if(e.target.classList.contains("taskStatusButton")){
+                const row=e.target.closest(".singleTaskHolder");
+                const taskId=row.dataset.taskId;
+                currTaskId=row.dataset.taskId;
+                const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                    method:"get"
+                });
+                const nonEditStatus=await currStatus.json();
+                currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
+                taskStatusPageHolder.style.display="flex";
+                taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
+                document.body.style.overflow="hidden";
+            }
+        })
+        document.addEventListener("click",async (e)=>{
+            if(e.target.classList.contains("taskEditsButton")){
+                const row=e.target.closest(".singleTaskHolder");
+                const taskId=row.dataset.taskId;
+                currTaskId=row.dataset.taskId;
+                const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+                    method:"get"
+                });
+                const response=await result.json();
+                taskEditPageHolder.style.display="flex";
+                taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
+                document.body.style.overflow="hidden";
+                taskEditInput.value=response.task.task;
+                taskEditDate.value=response.task.deadline.split("T")[0];
+                currTaskPriority=response.task.priority.trim();
+                taskEditSelection.innerHTML="";
+                response.names.forEach((name)=>{
+                    const option=document.createElement("option");
+                    option.innerText=`${name.member.fullName}`;
+                    option.value=name.member._id.toString();
+                    if(response.task.assignedTo.toString()===name.member._id.toString()){
+                        option.selected=true;
+                    }
+                    taskEditSelection.appendChild(option);
+                })
+        }
+    })
     }
 }
 
-document.addEventListener("click",async (e)=>{
-    if
-    (e.target.classList.contains("taskDeleteButton")){
-        const row=e.target.closest(".singleTaskHolder");
-        const taskId=row.dataset.taskId;
-    
-        const projectId=window.location.pathname.split("/").pop();
-        const result=await fetch(`/dashboard/projects/${projectId}/task/manage/${taskId}`,{
-            method:"patch"
-        });
-        const respond=await result.json();
-        console.log(respond);
+statusCancelBtn.addEventListener("click",()=>{
+    taskStatusUpdatePage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        taskStatusPageHolder.style.display="none";
+        document.body.style.overflow="auto";
+    },300);
+})
+
+taskStatusForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const projectId=window.location.pathname.split("/").pop();
+    const taskId=currTaskId;
+    const updatedTaskInput=document.querySelector('input[name="editStatus"]:checked');
+    const body={
+        newStatus:updatedTaskInput.value
+    };
+    const editStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+        method:"PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=editStatus.json();
+    console.log("hello bro");
+    taskStatusUpdatePage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        taskStatusPageHolder.style.display="none";
+        document.body.style.overflow="auto";
+        taskReload();
+    },300);
+})
+
+taskEditCancelBtn.addEventListener("click",()=>{
+    taskEditPage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        taskEditPageHolder.style.display="none";
+        document.body.style.overflow="auto";
+    },300);
+})
+taskEditForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const projectId=document.location.pathname.split("/").pop();
+    const taskId=currTaskId;
+    const radio=document.querySelector(`input[name="taskEditPriority"]:checked`);
+    body={
+        task:taskEditInput.value,
+        assignTo:taskEditSelection.value,
+        priority:radio.value,
+        deadline:taskEditDate.value
+    };
+    const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}/edit`,{
+        method:"PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const response=await result.json();
+    if(response.msg==="success"){
+        taskEditPage.style.animation="cancelPage 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            taskEditPageHolder.style.display="none";
+            document.body.style.overflow="auto";
+        },300);
+        taskReload();
     }
+
 })
