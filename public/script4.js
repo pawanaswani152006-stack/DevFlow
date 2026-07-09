@@ -1,3 +1,9 @@
+const socket=io();
+
+socket.on("receiveMessage",(data)=>{
+    console.log(data);
+})
+
 const workHeading=document.querySelector("#workHeading");
 const overview=document.querySelector("#overview");
 const tasks=document.querySelector("#tasks");
@@ -167,7 +173,8 @@ inviteForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await member.json();
-    console.log(result);
+    activityReload();
+    discussionOptionReload();
     if(result.success===true){
         invitePage.style.animation="cancelPage 0.3s linear 0s forwards";
         setTimeout(()=>{
@@ -225,6 +232,7 @@ document.addEventListener("click",async (e)=>{
             method:"PATCH"
         });
         const respond=await result.json();
+        activityReload();
         updatePage();
     }
 })
@@ -240,7 +248,9 @@ document.addEventListener("click",async (e)=>{
             method:"delete"
         });
         const respond=await result.json();
+        activityReload();
         updatePage();
+        discussionOptionReload();
     }
 })
 
@@ -333,6 +343,7 @@ taskAssignForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await taskCreated.json();
+    activityReload();
     const customizedTaskDeadline=dateCreater(result.createdTask.deadline);
     filteredTasks.push(...[result.createdTask]);
     const div=document.createElement("div");
@@ -374,6 +385,7 @@ taskAssignForm.addEventListener("submit",async (e)=>{
                 return task._id!==taskId;
             })
             taskReload();
+            activityReload();
         }
     })
     document.addEventListener("click",async (e)=>{
@@ -498,6 +510,7 @@ async function taskReload(){
                 return task._id!==taskId;
             })
             taskReload();
+            activityReload();
         }
     });
     document.addEventListener("click",async (e)=>{
@@ -667,6 +680,7 @@ async function taskUpdation(){
                     return task._id!==taskId;
                 })
                 taskUpdation();
+                activityReload();
             }
         })
         document.addEventListener("click",async (e)=>{
@@ -744,6 +758,7 @@ taskStatusForm.addEventListener("submit",async (e)=>{
         taskStatusPageHolder.style.display="none";
         document.body.style.overflow="auto";
         taskReload();
+        activityReload();
     },300);
 })
 
@@ -780,6 +795,206 @@ taskEditForm.addEventListener("submit",async (e)=>{
             document.body.style.overflow="auto";
         },300);
         taskReload();
+        activityReload();
     }
-
 })
+
+let allActivitiesForFilter=[];
+const activityHolder=document.querySelector("#activityHolder");
+async function activityReload(){
+    const projectId=document.location.pathname.split("/").pop();
+    const activity=await fetch(`/dashboard/projects/${projectId}/activity`,{
+        method:"get"
+    });
+    const allActivities=await activity.json();
+    if(allActivities.msg==="success"){
+        allActivitiesForFilter=allActivities.activity;
+        activityHolder.innerHTML="";
+        allActivities.activity.forEach((singleActivity)=>{
+            const div=document.createElement("div");
+            const hr=document.createElement("hr");
+            div.classList.add("singleActivityHolder");
+            hr.classList.add("activityHr");
+            div.innerHTML=
+                `<p class="activityPara">${singleActivity.message}</p>
+                <p class="activityTimeline" data-created-at="${singleActivity.createdAt.toString()}">${getRelativeTime(singleActivity.createdAt.toString())}</p>`;
+            activityHolder.prepend(hr);
+            activityHolder.prepend(div);
+        });
+    }
+}
+activityReload();
+
+function getRelativeTime(createdAt){
+    let created=new Date(createdAt);
+    let now=new Date();
+    let diff=now-created;
+    let seconds=Math.floor(diff / 1000);
+    let minutes=Math.floor(diff / (1000*60));
+    let hours=Math.floor(diff / (1000*60*60));
+    let days=Math.floor(diff / (1000*60*60*24));
+    
+    if(seconds<60) return "Just now";
+    if(minutes<60) return `${minutes} min ago`;
+    if(hours<24) return `${hours} ${hours===1?"hour":"hours"} ago`;
+    if(days<7) return `${days} ${days===1?"day":"days"} ago`;
+
+    return created.toLocaleDateString("en-IN",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+}
+
+function updateActivityTime(){
+    let allTime=document.querySelectorAll(".activityTimeline");
+    if(allTime.length!==0){
+        allTime.forEach((item)=>{
+            let createdAt=item.dataset.createdAt;
+            let time=getRelativeTime(createdAt);
+            item.innerText=time;
+        })
+    }
+}
+setInterval(updateActivityTime,60000);
+
+const activityAllButton=document.querySelector("#activityAllButton");
+const activityTaskButton=document.querySelector("#activityTaskButton");
+const activityTeamButton=document.querySelector("#activityTeamButton");
+let activityFilter="All";
+
+activityAllButton.addEventListener("click",()=>{
+    activityFilter="All";
+    activityFilterUpdation()
+});
+
+activityTaskButton.addEventListener("click",()=>{
+    activityFilter="Task";
+    activityFilterUpdation()
+});
+
+activityTeamButton.addEventListener("click",()=>{
+    activityFilter="Team";
+    activityFilterUpdation()
+});
+
+function activityFilterUpdation(){
+    let filtered=allActivitiesForFilter;
+    if(activityFilter==="Task"){
+        filtered=filtered.filter((activity)=>{
+            return (activity.type==="task_created" || activity.type==="task_updated" || activity.type==="task_deleted" || activity.type==="task_status_changed");
+        })
+    }
+    if(activityFilter==="Team"){
+        filtered=filtered.filter((activity)=>{
+            return (activity.type==="member_invited" || activity.type==="member_removed" || activity.type==="role_changed");
+        })
+    }
+    if(filtered.length!==0){
+        activityHolder.innerHTML="";
+        filtered.forEach((singleActivity)=>{
+            const div=document.createElement("div");
+            const hr=document.createElement("hr");
+            div.classList.add("singleActivityHolder");
+            hr.classList.add("activityHr");
+            div.innerHTML=
+                `<p class="activityPara">${singleActivity.message}</p>
+                <p class="activityTimeline" data-created-at="${singleActivity.createdAt.toString()}">${getRelativeTime(singleActivity.createdAt.toString())}</p>`;
+            activityHolder.prepend(hr);
+            activityHolder.prepend(div);
+        });
+    }
+}
+
+const chatOptions=document.querySelector("#chatOptions");
+const messageDisplay=document.querySelector("#messageDisplay");
+const leaveMessageDisplay=document.querySelector("#leaveMessageDisplay");
+const msgSendForm=document.querySelector("#msgSendForm");
+const msgInput=document.querySelector("#msgInput");
+const msgSendButton=document.querySelector("#msgSendButton");
+
+async function discussionOptionReload(){
+    const projectId=document.location.pathname.split("/").pop();
+    const options=await fetch(`/dashboard/projects/${projectId}/discussion`,{
+        method:"get"
+    })
+    const option=await options.json();
+    chatOptions.innerHTML="";
+    option.memberList.forEach((member)=>{
+        if(member.member._id.toString()!==currUserId.toString()){
+            const button=document.createElement("button");
+            button.classList.add("chatButtonOption");
+            button.classList.add("memberChatOption");
+            button.dataset.chatType="dm";
+            button.dataset.id=member.member._id.toString();
+            button.innerHTML=
+                `<i class="fa-solid fa-circle-user"></i><pre> ${member.member.fullName}</pre>`;
+            chatOptions.appendChild(button);
+        }
+    })
+    if(option.specialOption.owner._id.toString()!==currUserId.toString()){
+        const button=document.createElement("button");
+        button.classList.add("chatButtonOption");
+        button.classList.add("memberChatOption");
+        button.dataset.chatType="dm";
+        button.dataset.id=option.specialOption.owner._id.toString();
+        button.innerHTML=
+            `<i class="fa-solid fa-circle-user"></i><pre> ${option.specialOption.owner.fullName}</pre>`;
+        chatOptions.prepend(button);
+    }
+    const button=document.createElement("button");
+    button.classList.add("chatButtonOption");
+    button.classList.add("teamChatOption");
+    button.dataset.chatType="team";
+    button.dataset.id=projectId;
+    button.innerHTML=
+        `<i class="fa-solid fa-people-roof"></i><pre> ${option.specialOption.projectName}</pre>`;
+    chatOptions.prepend(button);
+}
+discussionOptionReload();
+
+let roomId;
+document.addEventListener("click",(e)=>{
+    if(e.target.closest(".chatButtonOption")){
+        const projectId=document.location.pathname.split("/").pop();
+        const button=e.target.closest(".chatButtonOption");
+        let chatType=button.dataset.chatType;
+        if(chatType==="team"){
+            roomId=projectId;
+        }else{
+            roomId=createDmRoomId(projectId,currUserId,button.dataset.id);
+        }
+        socket.emit("joinRoom",roomId);
+        chatOptions.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            chatOptions.style.display="none";
+            messageDisplay.style.display="flex";
+            messageDisplay.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+        },300);
+    }
+})
+
+function createDmRoomId(projectId,memberId1,memberId2){
+    let users=[memberId1,memberId2];
+    users.sort();
+    return `${projectId}-${users[0]}-${users[1]}`;
+}
+
+leaveMessageDisplay.addEventListener("click",()=>{
+    socket.emit("leaveRoom",roomId);
+    messageDisplay.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        chatOptions.style.display="block";
+        messageDisplay.style.display="none";
+        chatOptions.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+msgSendForm.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    let message=msgInput.value;
+    socket.emit("sendMessage",{
+        roomId:roomId,
+        message:message
+    });
+});

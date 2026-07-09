@@ -393,16 +393,16 @@ li{
     align-items:center;
     width:99%;
 }
-#taskHeader{
+#taskHeader,#activityHeader{
     border-bottom:2px solid black;
     margin-bottom:20px;
 }
-.taskAreaHeading{
+.taskAreaHeading,#activityHeading{
     font-size:2.5rem;
     margin-bottom:40px;
     color:rgb(113, 231, 247);
 }
-.taskFilterButtonRow,.singleTaskButtonHolder{
+.taskFilterButtonRow,.singleTaskButtonHolder,#activityFilterButtonsHolder{
     display:flex;
     background-color:transparent;
     margin-bottom:25px;
@@ -410,7 +410,7 @@ li{
 .singleTaskButtonHolder{
     margin-bottom:0px;
 }
-.taskFilterButtons,.singleTaskButton,#taskButton{
+.taskFilterButtons,.singleTaskButton,#taskButton,.activityFilterButton{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -537,4 +537,71 @@ select,#taskAssignmentDate,#taskEditDate{
 #taskEditButtonsHolder{
     margin-bottom:15px;
     margin-top:40px;
+}
+.activityPara{
+    font-size:2.5rem;
+    line-height:50px;
+    margin-bottom:15px;
+    color:rgb(176, 252, 252);
+}
+.activityTimeline{
+    font-size:1.5rem;
+    color:rgb(176, 252, 252);
+    margin-bottom:15px;
+}
+.activityHr{
+    margin-top:20px;
+    margin-bottom:20px;
+}
+.singleActivityHolder{
+    transform:translateY(40px);
+    opacity:0;
+    animation:activityAnimation 0.3s linear 0s forwards;
+}
+@keyframes activityAnimation{
+    from{
+        transform:translateY(40px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0px);
+        opacity:1;
+    }
+}
+.chatButtonOption{
+    display:block;
+    font-size:4rem;
+    margin-bottom:40px;
+    display:flex;
+    justify-content:flex-start;
+    align-items:center;
+    background-color:transparent;
+    border:none;
+    outline:none;
+    color:rgb(126, 230, 230);
+}
+#messageDisplay{
+    opacity:0;
+    display:none;
+    transform:translateY(40px);
+}
+@keyframes chatScreenOnAnimation{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
+}
+@keyframes chatScreenOfAnimation{
+    from{
+        opacity:1;
+        transform:translateY(0px);
+    }
+    to{
+        opacity:0;
+        transform:translateY(40px);
+    }
 }

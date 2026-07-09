@@ -255,15 +255,35 @@
             </div>
         </div>
         <div id="activityArea">
-            activity area
+            <div id="activityHeader">
+                <h2 id="activityHeading">Track every important update inside this project.</h2>
+                <div id="activityFilterButtonsHolder">
+                    <button class="activityFilterButton" id="activityAllButton">All</button>
+                    <button class="activityFilterButton" id="activityTaskButton">Task</button>
+                    <button class="activityFilterButton" id="activityTeamButton">Team</button>
+                </div>
+            </div>
+            <div id="activityHolder">
+            </div>
         </div>
         <div id="discussionArea">
-            discussion area
+            <div id="chatOptions">
+                
+            </div>
+            <div id="messageDisplay">
+                <button id="leaveMessageDisplay">Exit</button>
+                <form id="msgSendForm">
+                    <input id="msgInput" type="text" required>
+                    <button id="msgSendButton">Send</button>
+                </form>
+                
+            </div>
         </div>
         <div id="notesArea">
             notes area
         </div>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/script4.js"></script>
 </body>
 </html>

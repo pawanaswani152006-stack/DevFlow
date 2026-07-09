@@ -3,6 +3,7 @@ const taskModel=require("../models/taskModel.js");
 const newUser=require("../models/logIn.js");
 const teamModel=require("../models/teamModel.js");
 const project=require("../models/dashboard.js");
+const {createActivity}=require("./activityControl.js");
 
 async function createTask(req,res){
     try{
@@ -40,6 +41,9 @@ async function createTask(req,res){
             deadline:taskDeadline
         });
         const assignedName=await taskModel.findById(createdTask._id).populate("assignedTo","fullName");
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} assigned a task to "${assignedName.assignedTo.fullName}"`
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_created",res);
         return res.json({createdTask:assignedName});
     }catch(err){
         console.log("Error:",err);
@@ -71,7 +75,11 @@ async function getTasks(req,res){
 async function deleteTask(req,res){
     try{
         const taskId=req.params.taskId;
+        const assignedName=await taskModel.findById(taskId).populate("assignedTo","fullName").select("assignedTo");
         await taskModel.findByIdAndDelete(taskId);
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} deleted a task which is assigned to "${assignedName.assignedTo.fullName}"`;
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_deleted",res);
         return res.json({msg:"Success"});
     }catch(err){
         console.log("Error:",err);
@@ -99,6 +107,10 @@ async function updateStatus(req,res){
         const status=await taskModel.findByIdAndUpdate(taskId,{
             status:body.newStatus
         });
+        const assignedName=await taskModel.findById(taskId).populate("assignedTo","fullName").select("assignedTo");
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} update status of task , which is assigned to "${assignedName.assignedTo.fullName}" , to ${body.newStatus}`;
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_status_changed",res);
         return res.json({success:"true"});
     }catch(err){
         console.log("Error:",err);
@@ -142,6 +154,10 @@ async function editTaskCard(req,res){
             priority:priority,
             deadline:customizedDeadline
         });
+        const assignedName=await taskModel.findById(taskId).populate("assignedTo","fullName").select("assignedTo");
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} edit task , which is currently assigned to "${assignedName.assignedTo.fullName}"`;
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_updated",res);
         return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);

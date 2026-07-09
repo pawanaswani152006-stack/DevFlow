@@ -3,6 +3,7 @@ const teamModel=require("../models/teamModel.js");
 const newUser=require("../models/logIn.js");
 const validator=require("validator");
 const projectModel=require("../models/dashboard.js");
+const {createActivity}=require("./activityControl.js");
 
 async function addTeamMember(req,res){
     try{
@@ -32,7 +33,6 @@ async function addTeamMember(req,res){
             console.log("yha per");
             return res.json({existMsg:"Already in your team"});
         }
-        console.log("nhi yha per bro");
         const member=await teamModel.create({
             projectId:projectId,
             member:user._id,
@@ -41,6 +41,9 @@ async function addTeamMember(req,res){
             spaciality:spaciality,
             invitedBy:req.user.id
         });
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} add new team member "${user.fullName}"`
+        createActivity(req.user.id.toString(),activityMessage,projectId,"member_invited",res);
         return res.json({
             success:true,
             member:user
@@ -94,6 +97,10 @@ async function updateRole(req,res){
         },{
             new:true
         })
+        const user=await teamModel.findById(teamId).populate("member","fullName").select("member");
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} changed role of "${user.member.fullName}" to ${newPosition}`
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"role_changed",res);
         return res.json({updatedPosition:newPosition});
     }catch(err){
         console.log("error:",err);
@@ -104,7 +111,11 @@ async function updateRole(req,res){
 async function deleteMember(req,res){
     try{
         const teamId=req.params.teamId;
+        const user=await teamModel.findById(teamId).populate("member","fullName").select("member");
         await teamModel.findByIdAndDelete(teamId);
+        const actorName=await newUser.findById(req.user.id).select("fullName");
+        const activityMessage=`${actorName.fullName} removed "${user.member.fullName}" from team`
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"member_removed",res);
         return res.json({msg:"deleted"});
     }catch(err){
         console.log("Error:",err);

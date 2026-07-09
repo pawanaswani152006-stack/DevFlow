@@ -6,6 +6,8 @@ const path=require("path");
 const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
 const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
+const {getActivities}=require("../controllers/activityControl.js");
+const {getOptions}=require("../controllers/chatControl.js");
 
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -131,6 +133,24 @@ router1.patch("/:projectId/task/:taskId/edit",checkAuth,restrictTo("Admin","Owne
     try{
         console.log("hello shi aaya hue");
         editTaskCard(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/activity",checkAuth,(req,res)=>{
+    try{
+        getActivities(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/discussion",checkAuth,(req,res)=>{
+    try{
+        getOptions(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});
