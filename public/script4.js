@@ -1,9 +1,5 @@
 const socket=io();
 
-socket.on("receiveMessage",(data)=>{
-    console.log(data);
-})
-
 const workHeading=document.querySelector("#workHeading");
 const overview=document.querySelector("#overview");
 const tasks=document.querySelector("#tasks");
@@ -921,7 +917,7 @@ async function discussionOptionReload(){
     const option=await options.json();
     chatOptions.innerHTML="";
     option.memberList.forEach((member)=>{
-        if(member.member._id.toString()!==currUserId.toString()){
+        if(member.member._id.toString()!==option.currUserId){
             const button=document.createElement("button");
             button.classList.add("chatButtonOption");
             button.classList.add("memberChatOption");
@@ -932,7 +928,7 @@ async function discussionOptionReload(){
             chatOptions.appendChild(button);
         }
     })
-    if(option.specialOption.owner._id.toString()!==currUserId.toString()){
+    if(option.specialOption.owner._id.toString()!==option.currUserId){
         const button=document.createElement("button");
         button.classList.add("chatButtonOption");
         button.classList.add("memberChatOption");
@@ -954,15 +950,19 @@ async function discussionOptionReload(){
 discussionOptionReload();
 
 let roomId;
+let receiver;
+let chatType;
 document.addEventListener("click",(e)=>{
     if(e.target.closest(".chatButtonOption")){
         const projectId=document.location.pathname.split("/").pop();
         const button=e.target.closest(".chatButtonOption");
-        let chatType=button.dataset.chatType;
+        chatType=button.dataset.chatType;
         if(chatType==="team"){
             roomId=projectId;
+            receiver=null;
         }else{
             roomId=createDmRoomId(projectId,currUserId,button.dataset.id);
+            receiver=button.dataset.id;
         }
         socket.emit("joinRoom",roomId);
         chatOptions.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
@@ -992,9 +992,23 @@ leaveMessageDisplay.addEventListener("click",()=>{
 
 msgSendForm.addEventListener("submit",(e)=>{
     e.preventDefault();
+    const projectId=document.location.pathname.split("/").pop();
     let message=msgInput.value;
-    socket.emit("sendMessage",{
+    const body={
+        projectId:projectId,
         roomId:roomId,
+        chatType:chatType,
+        sender:currUserId,
+        receiver:receiver,
         message:message
-    });
+    };
+    socket.emit("sendMessage",body);
 });
+
+const MsgHolder=document.querySelector("#MsgHolder");
+socket.on("receiveMessage",(data)=>{
+    const para=document.createElement("p");
+    para.innerText=`${data.message}`;
+    MsgHolder.appendChild(para);
+    msgInput.value="";
+})
