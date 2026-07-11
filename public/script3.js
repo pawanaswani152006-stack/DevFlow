@@ -141,7 +141,7 @@ function projectCard(owner,projectName,description,trackingMode,deadline,project
             <p class="projectPara">Owener: <span class="projectAnsPara">${owner}</span></p>
             <p class="projectPara">Tracking Mode: <span class="projectAnsPara">${trackingMode}</span></p>
             <p class="projectPara">Due: <span class="projectAnsPara">${deadline}</span></p>
-            <div class="status"><div class="statusRepresenter"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
+            <div class="status"><div class="statusRepresenter" style="margin-bottom:15px;"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
         </div>`;
         cardButton.appendChild(div);
         cardButton.dataset.projectId=projectId;

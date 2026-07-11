@@ -194,18 +194,15 @@ hr{
     }
 }
 .project{
-    height:60vh;
-    width:20vw;
     background-color:rgb(193, 243, 245);
     border-radius:20px;
     transform:translateY(60px);
     opacity:0;
     box-shadow:0px 0px 20px cyan;
     transition:all 0.3s linear 0s;
+    padding-bottom:5px;
 }
 .projectAnimationHolder{
-    height:60vh;
-    width:20vw;
     background-color:transparent;
     margin-left:60px;
     border-radius:20px;
@@ -214,13 +211,9 @@ hr{
     margin-top:3vh;
     border:none;
     outline:none;
-    display:flex;
-    flex-direction:column;
-    justify-content:flex-start;
 }
 .projectAnimationHolder:hover{
     transform:translateY(-20px);
-    color:
 }
 .project:hover{
     color:black;
@@ -240,10 +233,8 @@ hr{
     }
 }
 .projectImage{
-    width:20vw;
-    height:20vh;
     background:
-    linear-gradient(0deg,#4facfe,#00f2fe);
+        linear-gradient(0deg,#4facfe,#00f2fe);
     border-radius:20px;
     border-bottom-left-radius:0px;
     border-bottom-right-radius:0px;
@@ -255,24 +246,21 @@ hr{
     justify-content:center;
     align-items:center;
     color:rgb(13, 12, 12);
+    padding:70px;
 }
 .projectData{
-    height:40vh;
-    width:20vw;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-around;
-    align-items:flex-start;
-    /* padding-top:10px; */
+    max-width:300px;
+    min-width:300px;
 }
 .projectPara{
     font-size:1rem;
     line-height:30px;
     font-weight:525;
     margin-left:20px;
+    text-align: left;
+    margin-bottom:15px;
 }
 .projectNameContainer{
-    width:20vw;
     display:flex;
     justify-content:flex-start;
     padding-left:20px;
@@ -284,6 +272,7 @@ hr{
     font-weight:550;
     line-height:40px;
     color:rgb(2, 52, 50);
+    margin-bottom:15px;
 }
 .status{
     display:flex;
@@ -291,6 +280,7 @@ hr{
     align-items:center;
     padding-left:20px;
     margin-bottom:10px;
+    margin-top:20px;
 }
 .statusRepresenter{
     height:20px;

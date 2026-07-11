@@ -371,20 +371,6 @@ taskAssignForm.addEventListener("submit",async (e)=>{
     filterTask="All";
     taskUpdation();
     document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskDeleteButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"delete"
-            });
-            filteredTasks=filteredTasks.filter((task)=>{
-                return task._id!==taskId;
-            })
-            taskReload();
-            activityReload();
-        }
-    })
-    document.addEventListener("click",async (e)=>{
         if(e.target.classList.contains("taskStatusButton")){
             const row=e.target.closest(".singleTaskHolder");
             const taskId=row.dataset.taskId;
@@ -495,20 +481,6 @@ async function taskReload(){
             button.style.display="none";
         })
     }
-    document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskDeleteButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"delete"
-            });
-            filteredTasks=filteredTasks.filter((task)=>{
-                return task._id!==taskId;
-            })
-            taskReload();
-            activityReload();
-        }
-    });
     document.addEventListener("click",async (e)=>{
         if(e.target.classList.contains("taskStatusButton")){
             const row=e.target.closest(".singleTaskHolder");
@@ -657,7 +629,7 @@ async function taskUpdation(){
             const taskEditsButton=document.querySelectorAll(".taskEditsButton");
             const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
             const taskStatusButton=document.querySelectorAll(".taskStatusButton");
-            taskEditButton.forEach((button)=>{
+            taskEditsButton.forEach((button)=>{
                 button.style.display="none";
             })
             taskDeleteButton.forEach((button)=>{
@@ -886,8 +858,8 @@ function activityFilterUpdation(){
             return (activity.type==="member_invited" || activity.type==="member_removed" || activity.type==="role_changed");
         })
     }
+    activityHolder.innerHTML="";
     if(filtered.length!==0){
-        activityHolder.innerHTML="";
         filtered.forEach((singleActivity)=>{
             const div=document.createElement("div");
             const hr=document.createElement("hr");
@@ -923,6 +895,7 @@ async function discussionOptionReload(){
             button.classList.add("memberChatOption");
             button.dataset.chatType="dm";
             button.dataset.id=member.member._id.toString();
+            button.dataset.name=member.member.fullName;
             button.innerHTML=
                 `<i class="fa-solid fa-circle-user"></i><pre> ${member.member.fullName}</pre>`;
             chatOptions.appendChild(button);
@@ -934,6 +907,7 @@ async function discussionOptionReload(){
         button.classList.add("memberChatOption");
         button.dataset.chatType="dm";
         button.dataset.id=option.specialOption.owner._id.toString();
+        button.dataset.name=option.specialOption.owner.fullName;
         button.innerHTML=
             `<i class="fa-solid fa-circle-user"></i><pre> ${option.specialOption.owner.fullName}</pre>`;
         chatOptions.prepend(button);
@@ -943,6 +917,7 @@ async function discussionOptionReload(){
     button.classList.add("teamChatOption");
     button.dataset.chatType="team";
     button.dataset.id=projectId;
+    button.dataset.name=option.specialOption.projectName;
     button.innerHTML=
         `<i class="fa-solid fa-people-roof"></i><pre> ${option.specialOption.projectName}</pre>`;
     chatOptions.prepend(button);
@@ -952,11 +927,14 @@ discussionOptionReload();
 let roomId;
 let receiver;
 let chatType;
+let msgHeading=document.querySelector("#msgHeading");
 document.addEventListener("click",(e)=>{
     if(e.target.closest(".chatButtonOption")){
         const projectId=document.location.pathname.split("/").pop();
         const button=e.target.closest(".chatButtonOption");
+        msgInput.focus();
         chatType=button.dataset.chatType;
+        msgHeading.innerText=button.dataset.name;
         if(chatType==="team"){
             roomId=projectId;
             receiver=null;
@@ -968,9 +946,18 @@ document.addEventListener("click",(e)=>{
         chatOptions.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
         setTimeout(()=>{
             chatOptions.style.display="none";
-            messageDisplay.style.display="flex";
+            messageDisplay.style.display="block";
             messageDisplay.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
         },300);
+        chatReload();
+        setTimeout(()=>{
+            requestAnimationFrame(()=>{
+                console.log(MsgHolder.scrollHeight);
+                console.log(MsgHolder.clientHeight);
+                MsgHolder.scrollTop=MsgHolder.scrollHeight;
+            })
+        },300);
+
     }
 })
 
@@ -990,25 +977,197 @@ leaveMessageDisplay.addEventListener("click",()=>{
     },300);
 })
 
-msgSendForm.addEventListener("submit",(e)=>{
+let currMsgId;
+let isEdit=false;
+msgSendForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const projectId=document.location.pathname.split("/").pop();
     let message=msgInput.value;
-    const body={
-        projectId:projectId,
-        roomId:roomId,
-        chatType:chatType,
-        sender:currUserId,
-        receiver:receiver,
-        message:message
-    };
-    socket.emit("sendMessage",body);
+    if(isEdit){
+        const body={
+            msg:message
+        }
+        const msg=await fetch(`/dashboard/projects/${projectId}/chat/${currMsgId}`,{
+            method:"PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify(body)
+        });
+        isEdit=false;
+        chatReload();
+    }else{
+        const body={
+            projectId:projectId,
+            roomId:roomId,
+            chatType:chatType,
+            sender:currUserId,
+            receiver:receiver,
+            message:message
+        };
+        socket.emit("sendMessage",body);
+    }
 });
 
 const MsgHolder=document.querySelector("#MsgHolder");
 socket.on("receiveMessage",(data)=>{
-    const para=document.createElement("p");
-    para.innerText=`${data.message}`;
-    MsgHolder.appendChild(para);
+    const div=document.createElement("div");
+    if(currUserId===data.sender._id){
+        div.classList.add("ourMsgParaHolder");
+        div.innerHTML=
+        `<div class="singleMsgParaHolder">
+            <p class="msgSenderHolder"><i class="fa-solid fa-user"></i> ${data.sender.fullName}</p>
+            <p class="msgPara">${data.message}</p>
+            <div class="singleMsgButtonHolder">
+                <button class="singleMsgCopyButton"><i class="fa-regular fa-copy"></i></button>    
+                <button class="singleMsgEditButton"><i class="fa-solid fa-pen-to-square"></i></button>    
+                <button class="singleMsgDeleteButton"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="singleMsgButtonTimeline">
+                    <p class="singleMsgButtonTime">${msgTimeline(data.createdAt)}</p>
+                </div>    
+            </div>
+        </div>`;
+    }else{
+        div.classList.add("otherMsgParaHolder");
+        div.innerHTML=
+        `<div class="singleMsgParaHolder">
+            <p class="msgSenderHolder"><i class="fa-solid fa-user"></i> ${data.sender.fullName}</p>
+            <p class="msgPara">${data.message}</p>
+            <div class="singleMsgButtonHolder">
+                <button class="singleMsgCopyButton"><i class="fa-regular fa-copy"></i></button>
+                <div class="singleMsgButtonTimeline">
+                    <p class="singleMsgButtonTime">${msgTimeline(data.createdAt)}</p>
+                </div>    
+            </div>
+        </div>`;
+    }
+    div.dataset.id=data._id;
+    div.dataset.msg=data.message;
+    MsgHolder.prepend(div);
     msgInput.value="";
+})
+
+async function chatReload(){
+    const projectId=document.location.pathname.split("/").pop();
+    const result=await fetch(`/dashboard/projects/${projectId}/chat/${roomId}`,{
+        method:"get"
+    });
+    const response=await result.json();
+    MsgHolder.innerHTML="";
+    if(response.Messages.length!==0){
+        response.Messages.forEach((message)=>{
+            const div=document.createElement("div");
+            div.dataset.id=message._id;
+            div.dataset.msg=message.message;
+            if(currUserId===message.sender._id){
+                div.classList.add("ourMsgParaHolder");
+                div.innerHTML=
+                `<div class="singleMsgParaHolder">
+                    <p class="msgSenderHolder"><i class="fa-solid fa-user"></i> ${message.sender.fullName}</p>
+                    <p class="msgPara">${message.message}</p>
+                    <div class="singleMsgButtonHolder">
+                        <button class="singleMsgCopyButton"><i class="fa-regular fa-copy"></i></button>    
+                        <button class="singleMsgEditButton"><i class="fa-solid fa-pen-to-square"></i></button>    
+                        <button class="singleMsgDeleteButton"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="singleMsgButtonTimeline">
+                            <p class="singleMsgButtonTime">${msgTimeline(message.createdAt)}</p>
+                        </div>    
+                    </div>
+                </div>`;
+            }else{
+                div.classList.add("otherMsgParaHolder");
+                div.innerHTML=
+                `<div class="singleMsgParaHolder">
+                    <p class="msgSenderHolder"><i class="fa-solid fa-user"></i> ${message.sender.fullName}</p>
+                    <p class="msgPara">${message.message}</p>
+                    <div class="singleMsgButtonHolder">
+                        <button class="singleMsgCopyButton"><i class="fa-regular fa-copy"></i></button>    
+                        <div class="singleMsgButtonTimeline">
+                            <p class="singleMsgButtonTime">${msgTimeline(message.createdAt)}</p>
+                        </div>    
+                    </div>
+                </div>`;
+            }
+            MsgHolder.prepend(div);
+        })
+        msgInput.value="";
+        MsgHolder.scrollTop=MsgHolder.scrollHeight;
+    }
+}
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".singleMsgDeleteButton")){
+        const projectId=document.location.pathname.split("/").pop();
+        let div1=e.target.closest(".ourMsgParaHolder");
+        let div2=e.target.closest(".otherMsgParaHolder");
+        let msgId;
+        if(div1){
+            msgId=div1.dataset.id;
+        }else{
+            msgId=div2.dataset.id;
+        }
+        await fetch(`/dashboard/projects/${projectId}/chat/${msgId}`,{
+            method:"delete"
+        });
+        chatReload();
+    }
+})
+
+function msgTimeline(createdAt){
+    let created=new Date(createdAt);
+    let now=new Date();
+    let diff=now-created;
+    const days=Math.floor(diff/(1000*60*60*24));
+    if(days===0){
+        return created.toLocaleTimeString("en-us",{
+            hour:"numeric",
+            minute:"2-digit",
+            hour12:true
+    })
+    }
+    if(days===1){
+        return "Yesterday";
+    }
+    return created.toLocaleDateString(("en-IN",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    }))
+}
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".singleMsgCopyButton")){
+        let div1=e.target.closest(".ourMsgParaHolder");
+        let div2=e.target.closest(".otherMsgParaHolder");
+        let button=e.target.closest(".singleMsgCopyButton");
+        let msg;
+        if(div1){
+            msg=div1.dataset.msg;
+        }else{
+            msg=div2.dataset.msg;
+        }
+        navigator.clipboard.writeText(msg);
+        button.innerHTML='<i class="fa-solid fa-circle-check"></i>';
+        setTimeout(()=>{
+            button.innerHTML='<i class="fa-regular fa-copy"></i>';
+        },500);
+    }
+})
+
+document.addEventListener("click",(e)=>{
+    if(e.target.closest(".singleMsgEditButton")){
+        let div1=e.target.closest(".ourMsgParaHolder");
+        let div2=e.target.closest(".otherMsgParaHolder");
+        let button=e.target.closest(".singleMsgCopyButton");
+        let msg;
+        isEdit=true;
+        if(div1){
+            msgInput.value=div1.dataset.msg;
+            currMsgId=div1.dataset.id;
+        }else{
+            msgInput.value=div2.dataset.msg;
+            currMsgId=div1.dataset.id;
+        }
+        msgInput.focus();
+    }
 })

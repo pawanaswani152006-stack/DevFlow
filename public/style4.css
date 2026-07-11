@@ -605,3 +605,104 @@ select,#taskAssignmentDate,#taskEditDate{
         transform:translateY(40px);
     }
 }
+#MsgHolder{
+    min-height:60vh;
+    margin-top:40px;
+    margin-bottom:10px;
+    display:flex;
+    flex-direction:column-reverse;
+    overflow-y:auto;
+}
+#AllMsgsHolder{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#msgInput{
+    width:90%;
+    border-radius:0px;
+    border-top-left-radius:10px;
+    border-bottom-left-radius:10px;
+    margin:0px;
+}
+#MsgHeader{
+    display:flex;
+    align-items:center;
+    font-size:1.5rem;
+    border-bottom:2px solid rgb(4, 36, 42);
+    position:sticky;
+    top:17vh;
+    padding-bottom:15px;
+    color:rgb(92, 205, 205);
+    background-color:rgb(15, 60, 80)
+}
+#leaveMessageDisplay{
+    margin-right:5px;
+    font-size:2.5rem;
+    background-color:transparent;
+    border:none;
+    outline:none;
+    color:rgb(92, 205, 205);
+}
+#discussionArea{
+    padding-top:10px;
+}
+.msgPara{
+    font-size:1.5rem;
+    background-color:transparent;
+    display:flex;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+.singleMsgParaHolder{
+    max-width:60%;
+    padding:10px;
+    background-color:rgb(218, 255, 255);
+    display:inline-block;
+    margin-bottom:20px;
+    border-radius:15px;
+}
+#msgSendButton{
+    border:none;
+    font-size:1.5rem;
+    outline:none;
+    padding:5px;
+    margin:0px;
+    border-left:1px solid black;
+    border-top-right-radius:10px;
+    border-bottom-right-radius:10px;
+}
+.ourMsgParaHolder{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+}
+.otherMsgParaHolder{
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+}
+.singleMsgCopyButton,.singleMsgEditButton,.singleMsgDeleteButton{
+    border:none;
+    outline:none;
+    background-color:transparent;
+    font-size:1.2rem;
+}
+.singleMsgButtonHolder{
+    display:flex;
+    align-items:center;
+}
+.singleMsgButtonTimeline{
+    width:100%;
+    margin-left:10px;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+}
+p{
+    overflow-wrap:anywhere;
+}
+.msgSenderHolder{
+    margin-bottom:5px;
+    font-size:1.2rem;
+}

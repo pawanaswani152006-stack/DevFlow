@@ -9,6 +9,8 @@ async function createActivity(actor,msg,projectId,type,res){
             type:type,
             message:msg
         });
+        console.log("hello bro activity");
+        return;
     }catch(err){
         console.log("Error:",err);
         return res.json({error:"something went wrong"});

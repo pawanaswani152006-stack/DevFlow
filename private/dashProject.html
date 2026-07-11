@@ -267,18 +267,19 @@
             </div>
         </div>
         <div id="discussionArea">
-            <div id="chatOptions">
-                
-            </div>
+            <div id="chatOptions"></div>
             <div id="messageDisplay">
-                <button id="leaveMessageDisplay">Exit</button>
-                <form id="msgSendForm">
-                    <input id="msgInput" type="text" required>
-                    <button id="msgSendButton">Send</button>
-                </form>
-                <div id="MsgHolder">
-                    
+                <div id="MsgHeader">
+                    <button id="leaveMessageDisplay"><i class="fa-solid fa-arrow-left-long"></i></button>
+                    <h1 id="msgHeading"></h1>
                 </div>
+                <div id="MsgHolder"></div>
+                <form id="msgSendForm">
+                    <div id="AllMsgsHolder">
+                        <input type="text" required class="input" id="msgInput" placeholder="Enter your Message">
+                        <button id="msgSendButton"><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+                    </div>
+                </form>
             </div>
         </div>
         <div id="notesArea">

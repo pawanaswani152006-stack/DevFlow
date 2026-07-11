@@ -63,7 +63,6 @@ async function getTasks(req,res){
             return res.json({allTasks:allTasks,user:currUser,userRole:"Owner"});
         }
         const userRole=await teamModel.findOne({projectId:projectId,member:req.user.id}).select("position");
-        console.log(currUser);
         return res.json({allTasks:allTasks,user:currUser,userRole:userRole.position});
     }catch(err){
         console.log("Error:",err);
@@ -74,10 +73,12 @@ async function getTasks(req,res){
 
 async function deleteTask(req,res){
     try{
+        console.log("hello deleted");
         const taskId=req.params.taskId;
         const assignedName=await taskModel.findById(taskId).populate("assignedTo","fullName").select("assignedTo");
         await taskModel.findByIdAndDelete(taskId);
         const actorName=await newUser.findById(req.user.id).select("fullName");
+        console.log(assignedName);
         const activityMessage=`${actorName.fullName} deleted a task which is assigned to "${assignedName.assignedTo.fullName}"`;
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_deleted",res);
         return res.json({msg:"Success"});

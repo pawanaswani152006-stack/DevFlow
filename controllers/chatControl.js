@@ -46,12 +46,50 @@ async function saveMessageInfo(body){
             receiver:receiver,
             message:message
         });
-        console.log(createdMsg);
-        return createdMsg;
+        const msg=await chatModel.findById(createdMsg._id).populate("sender","fullName");
+        return msg;
     }catch(err){
         console.log("Error:",err);
         return;
     }
 }
 
-module.exports={getOptions,saveMessageInfo};
+async function getMessages(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const roomId=req.params.roomId;
+        const messages=await chatModel.find({projectId:projectId,roomId:roomId}).populate("sender","fullName");
+        return res.json({Messages:messages});
+    }catch(err){
+        console.log("Error:",err);
+        return;
+    }
+}
+
+async function deleteMsg(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const msgId=req.params.msgId;
+        await chatModel.findByIdAndDelete(msgId)
+        return res.json({Messages:"success"});
+    }catch(err){
+        console.log("Error:",err);
+        return;
+    }
+}
+
+async function editMsg(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const msgId=req.params.msgId;
+        await chatModel.findByIdAndUpdate(msgId,{
+            message:req.body.msg
+        })
+        return res.json({Messages:"success"});
+    }catch(err){
+        console.log("Error:",err);
+        return;
+    }
+}
+
+module.exports={getOptions,saveMessageInfo,getMessages,deleteMsg,editMsg};

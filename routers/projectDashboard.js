@@ -7,7 +7,7 @@ const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,get
 const restrictTo=require("../middlewares/authorization.js");
 const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 const {getActivities}=require("../controllers/activityControl.js");
-const {getOptions}=require("../controllers/chatControl.js");
+const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
 
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -151,6 +151,33 @@ router1.get("/:projectId/activity",checkAuth,(req,res)=>{
 router1.get("/:projectId/discussion",checkAuth,(req,res)=>{
     try{
         getOptions(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/chat/:roomId",checkAuth,(req,res)=>{
+    try{
+        getMessages(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.delete("/:projectId/chat/:msgId",checkAuth,(req,res)=>{
+    try{
+        deleteMsg(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/chat/:msgId",checkAuth,(req,res)=>{
+    try{
+        editMsg(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});
