@@ -283,9 +283,70 @@
             </div>
         </div>
         <div id="notesArea">
-            notes area
+            <div id="notesNavigationHolder">
+                <h1 id="notesHeading">Keep your thoughts, personal documents, and team resources organized in one place.</h1>
+                <div id="notesButtonHolder">
+                    <button class="notesButton" id="personalNotesButton">Personal Notes</button>
+                    <button class="notesButton" id="personalPDFsButton">My PDFs</button>
+                    <button class="notesButton" id="teamPDFsButton">Team PDFs</button>
+                </div>
+            </div>
+            <div id="personalNotesHolder">
+                <div id="personalNotesHeader">
+                    <h2 id="personalNotesHeading">Write your note here...</h2>
+                    <form id="personalNotesForm">
+                        <div id="personalNoteInputHolder">
+                            <textarea id="personalNotesInput" required placeholder="Enter your note here"></textarea>
+                            <button id="personalNoteSubmitButton">Save Note</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="personalNotesGrid"></div>
+            </div>
+            <div id="personalPDFsHolder">
+                <div id="personalNotesHeader">
+                    <h2 id="personalPdfsHeading">Keep your personal documents organized and always within reach.</h2>
+                    <button id="personalPdfUploadButton">Upload PDF</button>
+                </div>
+                <div id="personalPDFsGrid">
+                    <button class="personalPDFButton">
+                        <div class="personalPDFIcon">
+                            <i>PDF</i>
+                        </div>
+                        <div class="personalPDFName"><p class="personalPDFNamePara">3rd Year Class Schedule 2026</p></div>
+                    </button>
+                    <button class="personalPDFButton">
+                        <div class="personalPDFIcon">
+                            <i>PDF</i>
+                        </div>
+                        <div class="personalPDFName"><p class="personalPDFNamePara">Java Pdf</p></div>
+                    </button>
+                </div>
+            </div>
+            <div id="teamPDFsHolder">Team PDFs</div>
         </div>
     </div>
+    <form id="pdfUploadForm">
+        <div id="pdfUploadHolder">
+            <div id="pdfUploadPage">
+                <h1 id="pdfFormHeading">Upload PDF</h1>
+                <div id="pdfUploadDataHolder">
+                    <div class="pdfDataHolder">
+                        <p class="pdfUploadPara">Select PDF</p>
+                        <input type="file" required id="pdfFileInput">
+                    </div>
+                    <div class="pdfDataHolder">
+                        <p class="pdfUploadPara">PDF's Name</p>
+                        <input type="text" required id="pdfFileNameInput" class="input" placeholder="Enter the name of file">
+                    </div>
+                </div>
+                <div id="pdfFormButtonHolder">
+                    <button class="pdfUploadButton" id="pdfSubmitButton">Upload</button>
+                    <button class="pdfUploadButton" id="pdfCancelButton" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </form>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/script4.js"></script>
 </body>

@@ -9,7 +9,7 @@ body{
 body,html{
     min-height:100vh;
 }
-#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder{
+#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder,#pdfUploadHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -23,7 +23,7 @@ body,html{
     backdrop-filter:blur(2px);
     display:none;
 }
-#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage{
+#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage,#pdfUploadPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
@@ -51,7 +51,7 @@ body,html{
         transform:scale(0);
     }
 }
-#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading{
+#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading,#pdfFormHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -65,7 +65,7 @@ body,html{
     margin-top:20px;
     margin-bottom:50px;
 }
-.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara{
+.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara,.pdfUploadPara{
     font-size:2rem;
     margin-bottom:15px;
     color:rgb(2, 39, 40);
@@ -95,14 +95,14 @@ label{
     justify-content:center;
     align-items:center;
 }
-#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder{
+#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder,#pdfFormButtonHolder{
     display:flex;
     align-items:center;
     justify-content:space-around;
     width:98%;
     margin-bottom:25px;
 }
-.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton{
+.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton{
     font-size:2rem;
     padding:5px;
     padding-left:30px;
@@ -397,10 +397,14 @@ li{
     border-bottom:2px solid black;
     margin-bottom:20px;
 }
-.taskAreaHeading,#activityHeading{
+.taskAreaHeading,#activityHeading,#notesHeading,#personalNotesHeading,#personalPdfsHeading{
     font-size:2.5rem;
     margin-bottom:40px;
     color:rgb(113, 231, 247);
+}
+#notesHeading{
+    font-size:3rem;
+    line-height:70px;
 }
 .taskFilterButtonRow,.singleTaskButtonHolder,#activityFilterButtonsHolder{
     display:flex;
@@ -410,7 +414,7 @@ li{
 .singleTaskButtonHolder{
     margin-bottom:0px;
 }
-.taskFilterButtons,.singleTaskButton,#taskButton,.activityFilterButton{
+.taskFilterButtons,.singleTaskButton,#taskButton,.activityFilterButton,.notesButton,#personalNoteSubmitButton,.singleNoteButton,#personalPdfUploadButton{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -705,4 +709,125 @@ p{
 .msgSenderHolder{
     margin-bottom:5px;
     font-size:1.2rem;
+}
+#notesButtonHolder{
+    display:flex;
+    align-items:center;
+}
+#personalNotesHolder,#personalPDFsHolder,#teamPDFsHolder{
+    display:none;
+    transform:translateY(40px);
+    opacity:0;
+}
+#personalNoteInputHolder{
+    display:flex;
+    align-items:center;
+}
+#personalNotesInput{
+    min-width:500px;
+    max-width:500px;
+    height:100px;
+    font-size:1.5rem;
+    border:none;
+    outline:none;
+    padding:10px;
+    padding-left:15px;
+    margin-right:15px;
+    border-radius:20px;
+    background-color:rgb(204, 243, 243);
+    color:rgb(2, 56, 56);
+    scrollbar-width:none;
+}
+#personalNotesInput::-webkit-scrollbar{
+    display:none;
+}
+.NotePara{
+    font-size:2.5rem;
+    color:rgb(140, 236, 236);
+    line-height:60px;
+}
+.singleNoteButtonsHolder{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+}
+.singleNoteButton{
+    background-color:rgb(13, 113, 113);
+    color:rgb(175, 238, 238);
+}
+.singleNoteTimelineHolder{
+    width:100%;
+    text-align:right;
+    padding-right:20px;
+}
+.singleNoteHolder{
+    margin-top:30px;
+    padding-bottom:30px;
+    border-bottom:4px solid rgb(3, 26, 23);
+}
+.singleNoteTimeline{
+    font-size:1.3rem;
+    color:rgb(154, 225, 225);
+}
+#notesNavigationHolder,#personalNotesHeader{
+    padding-bottom:45px;
+    border-bottom:3px solid rgb(8, 45, 52);
+}
+#personalPdfsHeading{
+    line-height:60px;
+}
+#personalPDFsGrid{
+    display:flex;
+    flex-wrap:wrap;
+    margin-top:40px;
+}
+.personalPDFIcon{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+    /* padding-top:20px;
+    padding-bottom:20px; */
+    background:
+        linear-gradient(0deg,#c14646,#920303);
+    font-size:2.5rem;
+    font-weight:bold;
+    color:#04282e;
+    border-top-left-radius:10px;
+    border-top-right-radius:10px;
+}
+.personalPDFButton{
+    border:none;
+    background-color:transparent;
+    outline:none;
+    min-width:200px;
+    max-width:200px;
+    margin-right:30px;
+    margin-bottom:50px;
+}
+.personalPDFNamePara{
+    font-size:1.5rem;
+    color:rgb(4, 40, 48);
+    line-height:35px;
+}
+.personalPDFName{
+    padding:5px;
+    padding-top:10px;
+    padding-bottom:10px;
+    background-color:rgb(185, 237, 255);
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;
+}
+#pdfFormButtonHolder{
+    margin-top:40px;
+    margin-bottom:10px;
+}
+.pdfDataHolder{
+    margin-bottom:20px;
+    margin-top:20px;
+}
+#pdfFileInput{
+     font-size:1.5rem;
+     border:none;
+     outline:none;
 }

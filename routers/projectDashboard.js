@@ -1,4 +1,5 @@
 const express=require("express");
+const multer=require("multer");
 const router1=express.Router();
 const checkAuth=require("../middlewares/dash.js");
 const {createProj,getProjects}=require("../controllers/dashControl.js");
@@ -8,7 +9,12 @@ const restrictTo=require("../middlewares/authorization.js");
 const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
+const {createNote,getNotes,deleteNote,editNote,pdf}=require("../controllers/notesControl.js");
 
+const storage=multer.memoryStorage();
+const upload=multer({
+    storage:storage
+});
 
 router1.get("/",checkAuth,(req,res)=>{
     getProjects(req,res);
@@ -178,6 +184,51 @@ router1.delete("/:projectId/chat/:msgId",checkAuth,(req,res)=>{
 router1.patch("/:projectId/chat/:msgId",checkAuth,(req,res)=>{
     try{
         editMsg(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.post("/:projectId/personalNote",checkAuth,(req,res)=>{
+    try{
+        createNote(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/personalNote",checkAuth,(req,res)=>{
+    try{
+        getNotes(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/personalNote/:noteId",checkAuth,(req,res)=>{
+    try{
+        editNote(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.delete("/:projectId/personalNote/:noteId",checkAuth,(req,res)=>{
+    try{
+        deleteNote(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.post("/:projectId/pdf",checkAuth,upload.single("pdf"),(req,res)=>{
+    try{
+        pdf(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});

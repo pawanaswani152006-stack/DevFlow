@@ -1171,3 +1171,216 @@ document.addEventListener("click",(e)=>{
         msgInput.focus();
     }
 })
+
+const notesNavigationHolder=document.querySelector("#notesNavigationHolder");
+const personalNotesHolder=document.querySelector("#personalNotesHolder");
+const personalPDFsHolder=document.querySelector("#personalPDFsHolder");
+const teamPDFsHolder=document.querySelector("#teamPDFsHolder");
+const personalNotesButton=document.querySelector("#personalNotesButton");
+const personalPDFsButton=document.querySelector("#personalPDFsButton");
+const teamPDFsButton=document.querySelector("#teamPDFsButton");
+
+personalNotesButton.addEventListener("click",()=>{
+    notesNavigationHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    personalPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    teamPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="none";
+        personalPDFsHolder.style.display="none";
+        teamPDFsHolder.style.display="none";
+        personalNotesHolder.style.display="block";
+        personalNotesHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+personalPDFsButton.addEventListener("click",()=>{
+    notesNavigationHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    personalNotesHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    teamPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="none";
+        personalPDFsHolder.style.display="block";
+        teamPDFsHolder.style.display="none";
+        personalNotesHolder.style.display="none";
+        personalPDFsHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+teamPDFsButton.addEventListener("click",()=>{
+    notesNavigationHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    personalPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    personalNotesHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="none";
+        personalPDFsHolder.style.display="none";
+        teamPDFsHolder.style.display="block";
+        personalNotesHolder.style.display="none";
+        teamPDFsHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+const personalNotesGrid=document.querySelector("#personalNotesGrid");
+const personalNotesForm=document.querySelector("#personalNotesForm");
+const personalNotesInput=document.querySelector("#personalNotesInput");
+let currNoteId;
+let isNoteEdit=false
+
+personalNotesForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const note=personalNotesInput.value;
+    const projectId=document.location.pathname.split("/").pop();
+    const body={
+        note:note
+    }
+    if(isNoteEdit){
+        await fetch(`/dashboard/projects/${projectId}/personalNote/${currNoteId}`,{
+            method:"PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify(body)
+        })
+        getPersonalNotes();
+        isNoteEdit=false;
+    }else{
+        const result=await fetch(`/dashboard/projects/${projectId}/personalNote`,{
+            method:"post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify(body)
+        })
+        const response=await result.json();
+        if(response.createdNote){
+            const div=document.createElement("div");
+            div.dataset.id=response.createdNote._id;
+            div.dataset.note=response.createdNote.note;
+            div.classList.add("singleNoteHolder");
+            div.innerHTML=
+                `<p class="NotePara">${response.createdNote.note}</p>
+                <div class="singleNoteButtonsHolder">
+                    <button class="singleNoteButton singleNoteCopyButton">Copy</button>
+                    <button class="singleNoteButton singleNoteEditButton">Edit</button>
+                    <button class="singleNoteButton singleNoteDeleteButton">Delete</button>
+                    <div class="singleNoteTimelineHolder">
+                        <p class="singleNoteTimeline">${noteTimeline(response.createdNote.note)}</p>
+                    </div>
+                </div>`;
+            personalNotesGrid.prepend(div);
+            personalNotesInput.value="";
+        }
+    }
+})
+
+function noteTimeline(createdAt){
+    const created=new Date();
+    return created.toLocaleDateString("en-IN",{
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+    });
+}
+
+async function getPersonalNotes(){
+    const projectId=document.location.pathname.split("/").pop();
+    const result=await fetch(`/dashboard/projects/${projectId}/personalNote`,{
+        method:"get"
+    });
+    const response=await result.json();
+    personalNotesGrid.innerHTML="";
+    if(response.msg==="success"){
+        if(response.personalNotes.length!==0){
+            response.personalNotes.forEach((note)=>{
+                const div=document.createElement("div");
+                div.dataset.id=note._id;
+                div.dataset.note=note.note;
+                div.classList.add("singleNoteHolder");
+                div.innerHTML=
+                    `<p class="NotePara">${note.note}</p>
+                    <div class="singleNoteButtonsHolder">
+                        <button class="singleNoteButton singleNoteCopyButton">Copy</button>
+                        <button class="singleNoteButton singleNoteEditButton">Edit</button>
+                        <button class="singleNoteButton singleNoteDeleteButton">Delete</button>
+                        <div class="singleNoteTimelineHolder">
+                            <p class="singleNoteTimeline">${noteTimeline(note.createdAt)}</p>
+                        </div>
+                    </div>`;
+                personalNotesGrid.prepend(div);
+                personalNotesInput.value="";
+            })
+        }
+    }
+}
+getPersonalNotes();
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".singleNoteDeleteButton")){
+        const projectId=document.location.pathname.split("/").pop();
+        const div=e.target.closest(".singleNoteHolder");
+        const noteId=div.dataset.id;
+        await fetch(`/dashboard/projects/${projectId}/personalNote/${noteId}`,{
+            method:"delete"
+        })
+        getPersonalNotes();
+    }
+})
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".singleNoteCopyButton")){
+        const div=e.target.closest(".singleNoteHolder");
+        const btn=e.target.closest(".singleNoteCopyButton");
+        const note=div.dataset.note;
+        navigator.clipboard.writeText(note);
+        btn.innerText="Done";
+        setTimeout(()=>{
+            btn.innerText="Copy";
+        },500);
+    }
+})
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".singleNoteEditButton")){
+        const div=e.target.closest(".singleNoteHolder");
+        currNoteId=div.dataset.id;
+        isNoteEdit=true;
+        personalNotesInput.value=div.dataset.note;
+        personalNotesInput.focus();
+    }
+})
+
+const personalPdfUploadButton=document.querySelector("#personalPdfUploadButton");
+const pdfUploadHolder=document.querySelector("#pdfUploadHolder");
+const pdfUploadPage=document.querySelector("#pdfUploadPage");
+const pdfCancelButton=document.querySelector("#pdfCancelButton");
+const pdfUploadForm=document.querySelector("#pdfUploadForm");
+const pdfFileInput=document.querySelector("#pdfFileInput");
+const pdfFileNameInput=document.querySelector("#pdfFileNameInput");
+
+personalPdfUploadButton.addEventListener("click",()=>{
+    pdfUploadHolder.style.display="flex";
+    pdfUploadPage.style.animation="invitePage 0.3s linear 0s forwards";
+    document.body.style.overflow="hidden";
+})
+
+pdfCancelButton.addEventListener("click",()=>{
+    pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        pdfUploadHolder.style.display="none";
+        document.body.style.overflow="auto";
+    },300);
+})
+
+pdfUploadForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const projectId=document.location.pathname.split("/").pop();
+    const file=pdfFileInput.files[0];
+    const fileName=pdfFileNameInput.value;
+    const formData=new FormData();
+
+    formData.append("pdf",file);
+    formData.append("fileName",fileName);
+    const response=await fetch(`/dashboard/projects/${projectId}/pdf`,{
+        method:"post",
+        body:formData
+    })
+})
