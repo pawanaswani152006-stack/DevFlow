@@ -1355,6 +1355,7 @@ const pdfCancelButton=document.querySelector("#pdfCancelButton");
 const pdfUploadForm=document.querySelector("#pdfUploadForm");
 const pdfFileInput=document.querySelector("#pdfFileInput");
 const pdfFileNameInput=document.querySelector("#pdfFileNameInput");
+const personalPDFsGrid=document.querySelector("#personalPDFsGrid");
 
 personalPdfUploadButton.addEventListener("click",()=>{
     pdfUploadHolder.style.display="flex";
@@ -1383,4 +1384,54 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
         method:"post",
         body:formData
     })
+    const result=await response.json();
+    pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        pdfUploadHolder.style.display="none";
+        document.body.style.overflow="auto";
+    },300);
+    const button=document.createElement("button");
+    button.classList.add("personalPDFButton");
+    button.dataset.url=result.createdPdf.fileUrl;
+    button.innerHTML=
+        `<div class="personalPDFIcon">
+            <i>PDF</i>
+        </div>
+        <div class="personalPDFName"><p class="personalPDFNamePara">${result.createdPdf.pdfName}</p></div>`;
+    personalPDFsGrid.prepend(button);
+});
+
+document.addEventListener("click",(e)=>{
+    if(e.target.closest(".personalPDFButton")){
+        const button=e.target.closest(".personalPDFButton");
+        const url=button.dataset.url;
+        window.open(url,"_blank");
+    }
 })
+
+async function personalPdfReload(){
+    const projectId=document.location.pathname.split("/").pop();
+    const result=await fetch(`/dashboard/projects/${projectId}/pdf`,{
+        method:"GET"
+    });
+    const response=await result.json();
+    console.log("hello result bhai");
+    if(response.msg==="success"){
+        console.log("yha per");
+        if(response.pdfs.length!==0){
+            console.log("nhi yha per");
+            response.pdfs.forEach((pdf)=>{
+                const button=document.createElement("button");
+                button.classList.add("personalPDFButton");
+                button.dataset.url=pdf.fileUrl;
+                button.innerHTML=
+                    `<div class="personalPDFIcon">
+                        <i>PDF</i>
+                    </div>
+                    <div class="personalPDFName"><p class="personalPDFNamePara">${pdf.pdfName}</p></div>`;
+                personalPDFsGrid.prepend(button);
+            })
+        }
+    }
+}
+personalPdfReload();

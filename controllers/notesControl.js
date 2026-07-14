@@ -1,5 +1,6 @@
 const express=require("express");
 const personalNoteModel=require("../models/personalNoteModel.js");
+const pdfModel=require("../models/pdfModel.js");
 const cloudinary = require("../config/cloudinary");
 
 async function createNote(req,res){
@@ -59,67 +60,61 @@ async function editNote(req,res){
 }
 
 function uploadPdf(buffer) {
-    console.log("1. uploadPdf entered");
-
     return new Promise((resolve, reject) => {
-
-        console.log("2. Promise started");
-
-        const uploadStream = cloudinary.uploader.upload_stream(
+        const uploadStream = cloudinary.uploader.upload_chunked_stream(
             {
                 resource_type: "image",
-                folder: "devflow/pdfs"
+                folder: "devflow/pdfs",
+                chunk_size:5*1024*1024,
+                timeout:120000
             },
             (error, result) => {
-
-                console.log("3. Cloudinary callback fired");
-
                 if (error) {
                     console.log("CLOUDINARY ERROR:", error);
-                    reject(error);
-                    return;
+                    return reject(error);
                 }
-
                 console.log("CLOUDINARY RESULT:", result);
-
-                resolve(result);
+                return resolve(result);
             }
         );
-
         uploadStream.on("error", (error) => {
             console.log("STREAM ERROR:", error);
             reject(error);
         });
-
-        console.log("4. Before stream end");
-
+        console.log(Buffer.isBuffer(buffer));
+        console.log(buffer.length);
         uploadStream.end(buffer);
-
-        console.log("5. After stream end");
     });
 }
 
 async function pdf(req, res) {
     try {
-        console.log({
-            cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-            apiKeyExists: !!process.env.CLOUDINARY_API_KEY,
-            secretExists: !!process.env.CLOUDINARY_API_SECRET
-        });
-        console.log("A. Controller entered");
+        cloudinary.api
+    .ping()
+    .then((result)=> console.log("PING SUCCESS:",result))
+    .catch((error)=> console.log("PING ERROR:",error));
 
+        console.log(req.file.size);
+        console.log(req.file.mimetype);
+
+        const body=req.body;
+        const projectId=req.params.projectId;
         const uploadedPdf = await uploadPdf(req.file.buffer);
-
-        console.log("B. Upload returned");
-        console.log(uploadedPdf);
-
+        const createdPdf=await pdfModel.create({
+            projectId:projectId,
+            sender:req.user.id,
+            pdfName:body.fileName,
+            fileUrl:uploadedPdf.secure_url,
+            storageId:uploadedPdf.public_id,
+            scope:"personal"
+        })
         return res.json({
-            success: true
+            success: true,
+            createdPdf:createdPdf
         });
 
     } catch (err) {
         console.log("UPLOAD ERROR:", err);
-
         return res.status(500).json({
             success: false,
             msg: "Upload failed"
@@ -127,4 +122,19 @@ async function pdf(req, res) {
     }
 }
 
-module.exports={createNote,getNotes,deleteNote,editNote,pdf};
+async function getPdf(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const userId=req.user.id;
+        const pdfs=await pdfModel.find({projectId:projectId,sender:userId,scope:"personal"}).select("pdfName fileUrl");
+        return res.json({msg:"success",pdfs:pdfs});
+    } catch (err) {
+        console.log("UPLOAD ERROR:", err);
+        return res.status(500).json({
+            success: false,
+            msg: "Upload failed"
+        });
+    }
+}
+
+module.exports={createNote,getNotes,deleteNote,editNote,pdf,getPdf};

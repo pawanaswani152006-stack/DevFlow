@@ -31,5 +31,5 @@ const pdfSchema=new mongoose.Schema({
     }
 },{timestamps:true});
 
-const pdfModel=mongoose.model("pdfModel","pdfSchema");
+const pdfModel=mongoose.model("pdfModel",pdfSchema);
 module.exports=pdfModel;

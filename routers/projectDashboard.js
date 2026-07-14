@@ -9,11 +9,14 @@ const restrictTo=require("../middlewares/authorization.js");
 const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
-const {createNote,getNotes,deleteNote,editNote,pdf}=require("../controllers/notesControl.js");
+const {createNote,getNotes,deleteNote,editNote,pdf,getPdf}=require("../controllers/notesControl.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
-    storage:storage
+    storage:storage,
+    limits:{
+        fileSize:50*1024*1024
+    }
 });
 
 router1.get("/",checkAuth,(req,res)=>{
@@ -229,6 +232,16 @@ router1.delete("/:projectId/personalNote/:noteId",checkAuth,(req,res)=>{
 router1.post("/:projectId/pdf",checkAuth,upload.single("pdf"),(req,res)=>{
     try{
         pdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/pdf",checkAuth,(req,res)=>{
+    try{
+        console.log("hello bro");
+        getPdf(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});
