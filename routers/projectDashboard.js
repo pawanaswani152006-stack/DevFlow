@@ -9,7 +9,7 @@ const restrictTo=require("../middlewares/authorization.js");
 const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
-const {createNote,getNotes,deleteNote,editNote,pdf,getPdf}=require("../controllers/notesControl.js");
+const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf}=require("../controllers/notesControl.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
@@ -238,9 +238,17 @@ router1.post("/:projectId/pdf",checkAuth,upload.single("pdf"),(req,res)=>{
     }
 })
 
+router1.post("/:projectId/teamPdf",checkAuth,upload.single("pdf"),restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        teamPdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
 router1.get("/:projectId/pdf",checkAuth,(req,res)=>{
     try{
-        console.log("hello bro");
         getPdf(req,res);
     }catch(err){
         console.log("Error:",err);

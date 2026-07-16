@@ -397,7 +397,7 @@ li{
     border-bottom:2px solid black;
     margin-bottom:20px;
 }
-.taskAreaHeading,#activityHeading,#notesHeading,#personalNotesHeading,#personalPdfsHeading{
+.taskAreaHeading,#activityHeading,#notesHeading,#personalNotesHeading,#personalPdfsHeading,#teamPdfHeading{
     font-size:2.5rem;
     margin-bottom:40px;
     color:rgb(113, 231, 247);
@@ -414,7 +414,7 @@ li{
 .singleTaskButtonHolder{
     margin-bottom:0px;
 }
-.taskFilterButtons,.singleTaskButton,#taskButton,.activityFilterButton,.notesButton,#personalNoteSubmitButton,.singleNoteButton,#personalPdfUploadButton{
+.taskFilterButtons,.singleTaskButton,#taskButton,.activityFilterButton,.notesButton,#personalNoteSubmitButton,.singleNoteButton,#personalPdfUploadButton,#teamPdfUploadButton{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -428,6 +428,9 @@ li{
     font-size:1.5rem;
     background-color:rgb(152, 240, 247);
     color:rgb(2, 35, 35);
+}
+#teamPdfUploadButton{
+    margin-bottom:45px;
 }
 .singleTaskButton{
     background-color:rgb(0, 106, 117);
@@ -769,14 +772,17 @@ p{
     font-size:1.3rem;
     color:rgb(154, 225, 225);
 }
-#notesNavigationHolder,#personalNotesHeader{
+#notesNavigationHolder,#personalNotesHeader,#teamPDFHeader{
     padding-bottom:45px;
     border-bottom:3px solid rgb(8, 45, 52);
+}
+#teamPDFHeader{
+    padding-bottom:0px;
 }
 #personalPdfsHeading{
     line-height:60px;
 }
-#personalPDFsGrid{
+#personalPDFsGrid,#teamPDFsGrid{
     display:flex;
     flex-wrap:wrap;
     margin-top:40px;
@@ -830,4 +836,10 @@ p{
      font-size:1.5rem;
      border:none;
      outline:none;
+}
+.senderNameHolder{
+    text-align:left;
+}
+.senderName{
+    font-size:1.2rem;
 }

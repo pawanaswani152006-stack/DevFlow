@@ -273,6 +273,7 @@ hr{
     line-height:40px;
     color:rgb(2, 52, 50);
     margin-bottom:15px;
+    text-align:left;
 }
 .status{
     display:flex;

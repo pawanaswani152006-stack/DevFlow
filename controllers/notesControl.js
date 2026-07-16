@@ -1,6 +1,8 @@
 const express=require("express");
 const personalNoteModel=require("../models/personalNoteModel.js");
 const pdfModel=require("../models/pdfModel.js");
+const teamModel=require("../models/teamModel.js");
+const project=require("../models/dashboard.js");
 const cloudinary = require("../config/cloudinary");
 
 async function createNote(req,res){
@@ -122,12 +124,24 @@ async function pdf(req, res) {
     }
 }
 
-async function getPdf(req,res){
-    try{
+async function teamPdf(req, res) {
+    try {
+        const body=req.body;
         const projectId=req.params.projectId;
-        const userId=req.user.id;
-        const pdfs=await pdfModel.find({projectId:projectId,sender:userId,scope:"personal"}).select("pdfName fileUrl");
-        return res.json({msg:"success",pdfs:pdfs});
+        const uploadedPdf = await uploadPdf(req.file.buffer);
+        const createdPdf=await pdfModel.create({
+            projectId:projectId,
+            sender:req.user.id,
+            pdfName:body.fileName,
+            fileUrl:uploadedPdf.secure_url,
+            storageId:uploadedPdf.public_id,
+            scope:"team"
+        })
+        return res.json({
+            success: true,
+            createdPdf:createdPdf
+        });
+
     } catch (err) {
         console.log("UPLOAD ERROR:", err);
         return res.status(500).json({
@@ -137,4 +151,25 @@ async function getPdf(req,res){
     }
 }
 
-module.exports={createNote,getNotes,deleteNote,editNote,pdf,getPdf};
+async function getPdf(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const userId=req.user.id;
+        const pdfs=await pdfModel.find({projectId:projectId,sender:userId,scope:"personal"}).select("pdfName fileUrl");
+        const team=await pdfModel.find({projectId:projectId,scope:"team"}).populate("sender","fullName").select("pdfName fileUrl sender");
+        const ownerId=await project.findById(projectId).select("owner");
+        if(ownerId.owner.toString()===userId){
+            return res.json({msg:"success",pdfs:pdfs,teamPdfs:team,position:"owner"});
+        }
+        const position=await teamModel.findOne({projectId:projectId,member:userId}).select("position");
+        return res.json({msg:"success",pdfs:pdfs,teamPdfs:team,position:position.position});
+    } catch (err) {
+        console.log("UPLOAD ERROR:", err);
+        return res.status(500).json({
+            success: false,
+            msg: "Upload failed"
+        });
+    }
+}
+
+module.exports={createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf};

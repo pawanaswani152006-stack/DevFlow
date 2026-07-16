@@ -1356,11 +1356,23 @@ const pdfUploadForm=document.querySelector("#pdfUploadForm");
 const pdfFileInput=document.querySelector("#pdfFileInput");
 const pdfFileNameInput=document.querySelector("#pdfFileNameInput");
 const personalPDFsGrid=document.querySelector("#personalPDFsGrid");
+const pdfSubmitButton=document.querySelector("#pdfSubmitButton");
+const pdfFormButtonHolder=document.querySelector("#pdfFormButtonHolder");
+const teamPdfUploadButton=document.querySelector("#teamPdfUploadButton");
+const teamPDFsGrid=document.querySelector("#teamPDFsGrid");
+let isTeamPdf=false;
 
 personalPdfUploadButton.addEventListener("click",()=>{
     pdfUploadHolder.style.display="flex";
     pdfUploadPage.style.animation="invitePage 0.3s linear 0s forwards";
     document.body.style.overflow="hidden";
+})
+
+teamPdfUploadButton.addEventListener("click",()=>{
+    pdfUploadHolder.style.display="flex";
+    pdfUploadPage.style.animation="invitePage 0.3s linear 0s forwards";
+    document.body.style.overflow="hidden";
+    isTeamPdf=true;
 })
 
 pdfCancelButton.addEventListener("click",()=>{
@@ -1378,13 +1390,30 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
     const fileName=pdfFileNameInput.value;
     const formData=new FormData();
 
+    pdfSubmitButton.style.display="none";
+    pdfCancelButton.innerText="Uploading...";
+    pdfFormButtonHolder.style.justifyContent="center";
+
     formData.append("pdf",file);
     formData.append("fileName",fileName);
-    const response=await fetch(`/dashboard/projects/${projectId}/pdf`,{
-        method:"post",
-        body:formData
-    })
+    let response;
+    if(isTeamPdf){
+        response=await fetch(`/dashboard/projects/${projectId}/teamPdf`,{
+            method:"post",
+            body:formData
+        })
+    }else{
+        response=await fetch(`/dashboard/projects/${projectId}/pdf`,{
+            method:"post",
+            body:formData
+        })
+    }
     const result=await response.json();
+
+    pdfSubmitButton.style.display="flex";
+    pdfCancelButton.innerText="Cancel";
+    pdfFormButtonHolder.style.justifyContent="space-around";
+
     pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
     setTimeout(()=>{
         pdfUploadHolder.style.display="none";
@@ -1398,7 +1427,12 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
             <i>PDF</i>
         </div>
         <div class="personalPDFName"><p class="personalPDFNamePara">${result.createdPdf.pdfName}</p></div>`;
-    personalPDFsGrid.prepend(button);
+    if(isTeamPdf){
+        teamPDFsGrid.prepend(button);
+        isTeamPdf=false;
+    }else{
+        personalPDFsGrid.prepend(button);
+    }
 });
 
 document.addEventListener("click",(e)=>{
@@ -1409,15 +1443,13 @@ document.addEventListener("click",(e)=>{
     }
 })
 
-async function personalPdfReload(){
+async function PdfReload(){
     const projectId=document.location.pathname.split("/").pop();
     const result=await fetch(`/dashboard/projects/${projectId}/pdf`,{
         method:"GET"
     });
     const response=await result.json();
-    console.log("hello result bhai");
     if(response.msg==="success"){
-        console.log("yha per");
         if(response.pdfs.length!==0){
             console.log("nhi yha per");
             response.pdfs.forEach((pdf)=>{
@@ -1432,6 +1464,29 @@ async function personalPdfReload(){
                 personalPDFsGrid.prepend(button);
             })
         }
+        if(response.teamPdfs.length!==0){
+            response.teamPdfs.forEach((pdf)=>{
+                const button=document.createElement("button");
+                button.classList.add("personalPDFButton");
+                button.dataset.url=pdf.fileUrl;
+                button.innerHTML=
+                    `<div class="personalPDFIcon">
+                        <i>PDF</i>
+                    </div>
+                    <div class="personalPDFName">
+                         <div class="senderNameHolder">
+                            <p class="senderName">${pdf.sender.fullName}</p>
+                        </div>
+                    <div class="personalPDFName">
+                        <p class="personalPDFNamePara">${pdf.pdfName}</p>
+                    </div>`;
+                teamPDFsGrid.prepend(button);
+            })
+            console.log(response);
+            if(response.position==="Member"){
+                teamPdfUploadButton.style.display="none";
+            }
+        }
     }
 }
-personalPdfReload();
+PdfReload();
