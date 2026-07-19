@@ -3,8 +3,11 @@ const newUser=require("../models/logIn.js");
 const jwt=require("jsonwebtoken");
 const crypto=require("crypto");
 const validator=require("validator");
+const sessionModel=require("../models/refreshSession.js");
+const sendVarificationEmail=require("../utils/sendMail.js");
+const emailVarificationModel=require("../models/emailVarificationModel.js")
 
-const secretKey="$$p@w@n$$#";
+const secretKey=process.env.secretKey;
 let isSuccess=false;
 
 async function createUser(req,res){
@@ -32,19 +35,29 @@ async function createUser(req,res){
             email:email,
             password:password
         });
-        const token=await jwt.sign({
-            id:user._id,
-            email:user.email
-        },secretKey);
-        res.cookie("Token",token,{
+        const rawToken=crypto.randomBytes(32).toString("hex");
+        const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
+        sendVarificationEmail(user.email,varificationLink);
+        await emailVarificationModel.create({
+            userId:user._id,
+            token:rawToken,
+            expiresAt:new Date(Date.now()+(15*60*1000))
+        });
+        const verifyUserToken=await jwt.sign({
+            userId:user._id
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("verifyUserToken",verifyUserToken,{
             httpOnly:true,
-            maxAge:60 * 60 * 1000
+            maxAge:(15 * 60 * 1000)
         });
         return res.json({
-                isSuccess:true,
-                msg:"success",
-                redirectTo:"/dashboard"
-            });
+            isSuccess:true,
+            msg:"success"
+        });
     }catch(err){
         console.log("Error:",err);
         return res.status(500).json({msg:"Something went wrong."});
@@ -72,10 +85,28 @@ async function varifyUser(req,res){
             const token=await jwt.sign({
                 id:user._id,
                 email:user.email
-            },secretKey);
+            },secretKey,{expiresIn:"1h"});
+            const jti=crypto.randomUUID();
+            const refreshToken=await jwt.sign({
+                id:user._id,
+                jti:jti
+            },
+            secretKey,
+            {
+                expiresIn:"90d"
+            })
             res.cookie("Token",token,{
                 httpOnly:true,
                 maxAge:60 * 60 * 1000
+            });
+            res.cookie("refreshToken",refreshToken,{
+                httpOnly:true,
+                maxAge:(90*24*60*60*1000)
+            });
+            await sessionModel.create({
+                userId:user._id.toString(),
+                jti:jti,
+                expiresAt:new Date(Date.now()+(90*24*60*60*1000))
             });
             return res.json({
                 isSuccess:true,
@@ -89,8 +120,89 @@ async function varifyUser(req,res){
         return res.json({msg3:"Something went wrong."});
     }
 };
+
+async function emailVarification(req,res){
+    try{
+        const emailVarificationToken=req.query.token;
+        const hashedToken=crypto.createHash("sha256")
+            .update(emailVarificationToken)
+            .digest("hex");
+        const emailVarificationEntity=await emailVarificationModel.findOne({token:hashedToken});
+        if(!emailVarificationEntity){
+            return res.json({msg:"link expired"});
+        }
+        const user=await newUser.findByIdAndUpdate(emailVarificationEntity.userId,{
+            isVarified:true
+        });
+        await emailVarificationModel.findByIdAndDelete(emailVarificationEntity._id);
+        return res.json({msg:"done"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg3:"Something went wrong."});
+    }
+}
+
+async function getUser(req,res){
+    try{
+        const verifyUserToken=req.cookies.verifyUserToken;
+        if(!verifyUserToken){
+            return res.json({expire:true});
+        }
+        const userId=await jwt.verify(verifyUserToken,secretKey);
+        const user=await newUser.findById(userId.userId).select("isVarified");
+        return res.json({isVarified:user});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg3:"Something went wrong."});
+    }
+}
+
+async function goDashboard(req,res){
+    try{
+        const userId=req.params.userId;
+        const user=await newUser.findById(userId);
+        const token=await jwt.sign({
+            id:user._id,
+            email:user.email
+        },
+        secretKey,
+        {
+            expiresIn:"1h"
+        });
+        const jti=crypto.randomUUID();
+        const refreshToken=await jwt.sign({
+            id:user._id,
+            jti:jti
+        },
+        secretKey,
+        {
+            expiresIn:"90d"
+        })
+        res.cookie("Token",token,{
+            httpOnly:true,
+            maxAge:60 * 60 * 1000
+        });
+        res.cookie("refreshToken",refreshToken,{
+            httpOnly:true,
+            maxAge:(90*24*60*60*1000)
+        });
+        await sessionModel.create({
+            userId:user._id.toString(),
+            jti:jti,
+            expiresAt:new Date(Date.now()+(90*24*60*60*1000))
+        });
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg3:"Something went wrong."});
+    }
+}
+
 module.exports={
     createUser,
     varifyUser,
+    emailVarification,
+    getUser,
+    goDashboard,
     isSuccess
 };

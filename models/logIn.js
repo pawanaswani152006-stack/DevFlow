@@ -21,10 +21,14 @@ let userSignUpSchema=new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    isVarified:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
 
-userSignUpSchema.pre("save",function (next){
+userSignUpSchema.pre("save",function (){
     const user=this;
     if(!user.isModified("password")) return;
     const salt=crypto.randomBytes(16).toString();
@@ -33,7 +37,7 @@ userSignUpSchema.pre("save",function (next){
         .digest("hex");
     this.salt=salt;
     this.password=hashedPassword;
-})
+});
 
 const newUser=mongoose.model("newUser",userSignUpSchema);
 

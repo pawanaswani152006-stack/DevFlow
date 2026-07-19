@@ -140,7 +140,7 @@ form2.addEventListener("submit",async (e)=>{
     let msg=null;
     let result=await res.json();
     if(result.isSuccess){
-        location.href="/dashboard";
+        location.href="waiting.html"
     }
     if(result.alreadyMsg){
         msg=result.alreadyMsg;
