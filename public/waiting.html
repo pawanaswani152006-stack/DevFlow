@@ -3,11 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style5.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <title>Sign Up Waiting</title>
 </head>
 <body>
-    <h1 id="waitingHeading">Wait for the verification of your email</h1>
-    <button id="waitingButton">Resend Link</button>
+    <div id="waitingPageHolder">
+        <div id="waitingPageDataHolder">
+            <h1 class="logo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
+            <p class="waitingPagePara">We have sent a link to your email for verification.</p>
+            <pre id="waitingPageSteps"><i class="fa-solid fa-right-long"></i> Open your email inbox
+<i class="fa-solid fa-right-long"></i> Click the verification link
+<i class="fa-solid fa-right-long"></i> You'll be redirected automatically</pre>
+            <div class="waitingPageElementsHolder">
+                <p class="waitingPagePara">Didn't receive the email?</p>
+                <button id="resendButton" class="waitingPageButton">Resend Email</button>
+            </div>
+            <div class="waitingPageElementsHolder">
+                <p class="waitingPagePara">Wrong email?</p>
+                <button id="changeButton" class="waitingPageButton">Change Email</button>
+            </div>
+            <p id="waitingPageComments">Sent Successfully</p>
+        </div>
+
+        <form id="emailChangeForm">
+            <div id="changeEmailDataHolder">
+                <h1 class="logo" id="changeEmailLogo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
+                <p class="waitingPagePara">Email</p>
+                <input id="emailInput" required placeholder="name@example.com" type="email">
+                <div id="emailChangeButtonHolder">
+                    <button id="emailChangeButton" class="waitingPageButton emailChangeButtons" type="submit">Change</button>
+                    <button id="emailChangeCancelButton" class="waitingPageButton emailChangeButtons" type="button">Cancel</button>
+                </div>
+                <p id="emailChangeComments">Verification link send to your updated email</p>
+            </div>
+        </form>
+    </div>
     <script src="script5.js"></script>
 </body>
 </html>

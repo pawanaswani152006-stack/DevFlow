@@ -150,7 +150,7 @@ async function getUser(req,res){
         }
         const userId=await jwt.verify(verifyUserToken,secretKey);
         const user=await newUser.findById(userId.userId).select("isVarified");
-        return res.json({isVarified:user});
+        return res.json({isVarified:user,userId:userId.userId});
     }catch(error){
         console.log("Error:",error);
         return res.json({msg3:"Something went wrong."});
@@ -194,7 +194,93 @@ async function goDashboard(req,res){
         return res.json({msg:"success"});
     }catch(error){
         console.log("Error:",error);
-        return res.json({msg3:"Something went wrong."});
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function resendEmail(req,res){
+    try{
+        const userId=req.params.userId;
+        const user=await newUser.findById(userId).select("email");
+        const rawToken=crypto.randomBytes(32).toString("hex");
+        const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
+        sendVarificationEmail(user.email,varificationLink);
+        await emailVarificationModel.create({
+            userId:user._id,
+            token:rawToken,
+            expiresAt:new Date(Date.now()+(15*60*1000))
+        });
+        const verifyUserToken=await jwt.sign({
+            userId:user._id
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("verifyUserToken",verifyUserToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function getEmail(req,res){
+    try{
+        const userId=req.params.userId;
+        const user=await newUser.findById(userId).select("email");
+        return res.json({msg:"success",email:user.email});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function changeEmail(req,res){
+    try{
+        const userId=req.params.userId;
+        const body=req.body;
+        if(!body.email){
+            return res.json({msg:"email must be provide."})
+        }
+        if(!validator.isEmail(body.email)){
+            return res.json({msg:"email should be valid."});
+        }
+        const existingUser=await newUser.findOne({email:body.email});
+        if(existingUser){
+            return res.json({msg:"account already exist."});
+        }
+        const user=await newUser.findByIdAndUpdate(userId,{
+            email:body.email
+        },{
+            new:true
+        });
+        const rawToken=crypto.randomBytes(32).toString("hex");
+        const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
+        sendVarificationEmail(user.email,varificationLink);
+        await emailVarificationModel.create({
+            userId:user._id,
+            token:rawToken,
+            expiresAt:new Date(Date.now()+(15*60*1000))
+        });
+        const verifyUserToken=await jwt.sign({
+            userId:user._id
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("verifyUserToken",verifyUserToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
     }
 }
 
@@ -204,5 +290,8 @@ module.exports={
     emailVarification,
     getUser,
     goDashboard,
+    resendEmail,
+    getEmail,
+    changeEmail,
     isSuccess
 };

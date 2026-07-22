@@ -1,0 +1,150 @@
+*{
+    border:border-box;
+    margin:0px;
+    font-family:arial;
+}
+body{
+    background-color:rgb(15, 60, 80);
+}
+#waitingPageHolder{
+    height:100vh;
+    width:100vw;
+    background-color:transparent;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#waitingPageDataHolder,#changeEmailDataHolder{
+    border-radius:40px;
+    background-color:rgb(196, 225, 227);
+    box-shadow:0 0 20px cyan;
+    border:2px solid rgba(255,255,255,1);
+    padding:10px;
+    padding-left:25px;
+    padding-bottom:25px;
+    padding-right:15px;
+    display:block;
+}
+#changeEmailDataHolder{
+    display:none;
+    padding:20px;
+    transform:rotateY(90deg);
+}
+.logo{
+    color:rgb(12, 42, 56);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:5rem;
+}
+.waitingPagePara{
+    margin-top:20px;
+    font-size:2rem;
+    color:rgb(7, 32, 44);
+}
+#waitingPageSteps{
+    font-size:1.5rem;
+    color:rgb(7, 32, 44);
+    line-height:40px;
+    margin-top:20px;
+}
+.waitingPageButton{
+    border:none;
+    outline:none;
+    background-color:rgb(7, 32, 44);
+    color:rgb(194, 227, 243);
+    padding:10px;
+    padding-left:15px;
+    padding-right:15px;
+    border-radius:20px;
+    font-size:1.3rem;
+    margin-top:15px;
+}
+button{
+    transition:all 0.3s linear 0s;
+    cursor:pointer;
+}
+button:active{
+    transform:scale(0.8);
+}
+button:hover{
+    color:white;
+}
+
+#emailInput{
+    outline:none;
+    border:none;
+    border-radius:10px;
+    width:100%;
+    font-size:1.5rem;
+    margin-top:15px;
+    padding:5px;
+    padding-left:10px;
+}
+#changeEmailLogo{
+    padding-left:20px;
+    padding-right:20px;
+}
+#emailChangeButtonHolder{
+    margin-top:15px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+.emailChangeButtons{
+    font-size:2rem;
+}
+
+@keyframes pageflip{
+    from{
+        transform:rotateY(90deg);
+    }
+    to{
+        transform:rotateY(0deg);
+    }
+}
+
+@keyframes cancelAnimation{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(90deg);
+    }
+}
+
+#waitingPageComments,#emailChangeComments{
+    color:blue;
+    font-size:1.5rem;
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    display:none;
+    transform:translateY(10px);
+    opacity:0;
+}
+#emailChangeComments{
+    padding:10px;
+    padding-bottom:0px;
+}
+@keyframes commentShow{
+    from{
+        transform:translateY(10px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0px);
+        opacity:1;
+    }
+}
+@keyframes commentHide{
+    from{
+        transform:translateY(0px);
+        opacity:1;
+    }
+    to{
+        transform:translateY(10px);
+        opacity:0;
+    }
+}
