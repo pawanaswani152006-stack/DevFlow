@@ -5,7 +5,8 @@ const crypto=require("crypto");
 const validator=require("validator");
 const sessionModel=require("../models/refreshSession.js");
 const sendVarificationEmail=require("../utils/sendMail.js");
-const emailVarificationModel=require("../models/emailVarificationModel.js")
+const emailVarificationModel=require("../models/emailVarificationModel.js");
+const resetPassModel=require("../models/resetPasswordModel.js");
 
 const secretKey=process.env.secretKey;
 let isSuccess=false;
@@ -41,7 +42,8 @@ async function createUser(req,res){
         await emailVarificationModel.create({
             userId:user._id,
             token:rawToken,
-            expiresAt:new Date(Date.now()+(15*60*1000))
+            expiresAt:new Date(Date.now()+(15*60*1000)),
+            resendAvailableAt:new Date(Date.now()+(60*1000))
         });
         const verifyUserToken=await jwt.sign({
             userId:user._id
@@ -82,6 +84,9 @@ async function varifyUser(req,res){
                 .update(password)
                 .digest("hex");
         if(hashedPassword===user.password){
+            if(!user.isVarified){
+                return res.json({msg:"Verify your email first."});
+            }
             const token=await jwt.sign({
                 id:user._id,
                 email:user.email
@@ -150,6 +155,9 @@ async function getUser(req,res){
         }
         const userId=await jwt.verify(verifyUserToken,secretKey);
         const user=await newUser.findById(userId.userId).select("isVarified");
+        if(!user){
+            return res.json({msg:"user can't be find."});
+        }
         return res.json({isVarified:user,userId:userId.userId});
     }catch(error){
         console.log("Error:",error);
@@ -202,14 +210,36 @@ async function resendEmail(req,res){
     try{
         const userId=req.params.userId;
         const user=await newUser.findById(userId).select("email");
+        if(!user){
+            return res.json({msg:"user can't be find."});
+        }
+        const entity=await emailVarificationModel.findOne({userId:userId}).select("resendAvailableAt");
+        if(entity){
+            const currentTime=Date.now();
+            const allowedTime=entity.resendAvailableAt.getTime();
+            if(currentTime<allowedTime){
+                return res.json({msg:"link can't be resend before time."});
+            }
+        }
         const rawToken=crypto.randomBytes(32).toString("hex");
+        const hashed=crypto.createHash("sha256")
+                .update(rawToken)
+                .digest("hex");
         const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
         sendVarificationEmail(user.email,varificationLink);
-        await emailVarificationModel.create({
-            userId:user._id,
-            token:rawToken,
-            expiresAt:new Date(Date.now()+(15*60*1000))
-        });
+        const emailVerificationEntity=await emailVarificationModel.findOneAndUpdate({userId:userId},{
+            token:hashed,
+            expiresAt:new Date(Date.now()+(15*60*1000)),
+            resendAvailableAt:new Date(Date.now()+(60*1000))
+        })
+        if(!emailVerificationEntity){
+            await emailVarificationModel.create({
+                userId:user._id,
+                token:rawToken,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }
         const verifyUserToken=await jwt.sign({
             userId:user._id
         },
@@ -258,14 +288,33 @@ async function changeEmail(req,res){
         },{
             new:true
         });
+        if(!user){
+            return res.json({msg:"user can't be find."});
+        }
+        const entity=await emailVarificationModel.findOne({userId:userId}).select("resendAvailableAt");
+        if(entity){
+            const currentTime=Date.now();
+            const allowedTime=entity.resendAvailableAt.getTime();
+            if(currentTime<allowedTime){
+                return res.json({msg:"link can't be resend before time."});
+            }
+        }
         const rawToken=crypto.randomBytes(32).toString("hex");
         const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
         sendVarificationEmail(user.email,varificationLink);
-        await emailVarificationModel.create({
-            userId:user._id,
+        const emailVerificationEntity=await emailVarificationModel.findOneAndUpdate({userId:userId},{
             token:rawToken,
-            expiresAt:new Date(Date.now()+(15*60*1000))
-        });
+            expiresAt:new Date(Date.now()+(15*60*1000)),
+            resendAvailableAt:new Date(Date.now()+(60*1000))
+        })
+        if(!emailVerificationEntity){
+            await emailVarificationModel.create({
+                userId:user._id,
+                token:rawToken,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }
         const verifyUserToken=await jwt.sign({
             userId:user._id
         },
@@ -284,6 +333,45 @@ async function changeEmail(req,res){
     }
 }
 
+async function resendTime(req,res){
+    try{
+        const userId=req.params.userId;
+        if(!userId){
+            return res.json({msg:"userId must be given"});
+        }
+        const entity=await emailVarificationModel.findOne({userId:userId}).select("resendAvailableAt");
+        if(!entity){
+            return res.json({msg:"not exist."});
+        }
+        const currentTime=Date.now();
+        const allowedTime=entity.resendAvailableAt.getTime();
+        if(currentTime<allowedTime){
+            const remainingSeconds=Math.ceil((allowedTime-currentTime)/1000);
+            return res.json({remainingSeconds:remainingSeconds,msg:"success"});
+        }
+        return res.json({msg:"timeout"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function sendLink(req,res){
+    try{
+        const body=req.body;
+        if(!body.email){
+            return res.json({msg:"email must be provided."});
+        }
+        const user=await newUser.findOne({email:body.email});
+        if(!user){
+            return res.json({msg:"email doesn't exist."});
+        }
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
 module.exports={
     createUser,
     varifyUser,
@@ -293,5 +381,7 @@ module.exports={
     resendEmail,
     getEmail,
     changeEmail,
+    resendTime,
+    sendLink,
     isSuccess
 };

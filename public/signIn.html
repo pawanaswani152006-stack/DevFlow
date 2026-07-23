@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="style2.css">
     <title>Sign In</title>
 </head>
@@ -37,7 +38,7 @@
 
                         <div id="forgotBtnContainer">
 
-                            <button id="forgotBtn">Forgot Password</button>
+                            <button id="forgotBtn" type="button">Forgot Password</button>
                         </div>
 
                     </div>
@@ -123,6 +124,29 @@
         </div>
 
     </form>
+
+    <div class="form" id="form3">
+        <div id="forgotPassDataHolder">
+            <div id="forgotPage1">
+                <form id="forgotPassForm">
+                    <h1 class="formHeading" id="formHeading3">Change Password</h1>
+                    <div id="frogotPageEmailHolder">
+                        <p class="para forgotPagePara">Email</p>
+                        <input type="email" required id="forgotEmailInput" placeholder="name@example.com">
+                    </div>
+                    <p class="para forgotPagePara" style="margin-top:25px;line-height:40px;font-size:2rem;">Follow these simple steps to reset your password.</p>
+                    <pre id="forgotPageSteps"><i class="fa-solid fa-right-long"></i> Enter your registered email
+<i class="fa-solid fa-right-long"></i> Click the reset link from your inbox
+<i class="fa-solid fa-right-long"></i> Create a new secure password</pre>
+                    <div id="forgotPageButtonHolder">
+                        <button class="forgotPageButton" type="submit">Send</button>
+                        <button class="forgotPageButton" id="forgotPageCancelButton" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </div>
 
     <script src="script2.js"></script>
 

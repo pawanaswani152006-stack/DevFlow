@@ -166,3 +166,45 @@ form2.addEventListener("submit",async (e)=>{
     }
     
 });
+
+const forgotBtn=document.querySelector("#forgotBtn");
+const forgotPassPage=document.querySelector("#forgotPassDataHolder");
+const forgotPassForm=document.querySelector("#forgotPassForm");
+const forgotEmailInput=document.querySelector("#forgotEmailInput");
+const form3=document.querySelector("#form3");
+
+forgotBtn.addEventListener("click",()=>{
+    signInPage.style.animation="pageFlip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        form1.style.display="none";
+        form3.style.display="flex";
+        forgotPassPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300)
+})
+
+const forgotPageCancelButton=document.querySelector("#forgotPageCancelButton");
+
+forgotPageCancelButton.addEventListener("click",()=>{
+    forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        form3.style.display="none";
+        form1.style.display="flex";
+        signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300)
+})
+
+forgotPassForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const email=forgotEmailInput.value;
+    const body={
+        email:email
+    };
+    const response=await fetch(`/resetPass`,{
+        method:"post",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+})

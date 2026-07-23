@@ -68,7 +68,7 @@ body{
     height:100vh;
     width:100vw;
 }
-#form2{
+#form2,#form3{
     display:none;
 }
 
@@ -80,13 +80,12 @@ body{
     padding:20px;
 }
 
-#formElementContainer2{
+#formElementContainer2,#forgotPassDataHolder{
     border-radius:50px;
     background-color:rgb(196, 225, 227);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
     padding:20px;
-    display:none;
 }
 
 @keyframes pageFlip{
@@ -131,6 +130,9 @@ body{
     color:rgb(49, 102, 102);
     margin-top:50px;
     margin-left:5px;
+}
+.forgotPagePara{
+    margin-top:20px;
 }
 
 .para22{
@@ -231,4 +233,43 @@ input{
 }
 .createBtn:hover{
     text-decoration:underline;
+}
+#forgotPageSteps{
+    font-size:1.5rem;
+    color:rgb(31, 77, 77);
+    line-height:40px;
+    /* margin-top:20px; */
+}
+#forgotPassDataHolder{
+    min-width:500px;
+    max-width:500px;
+}
+#forgotPageButtonHolder{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    margin-top:20px;
+}
+.forgotPageButton{
+    background-color:rgb(35, 79, 87);
+    border-radius:30px;
+    font-size:2rem;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:40px;
+    padding-right:40px;
+    color:rgb(210, 237, 237);
+    border:none;
+    box-shadow:
+        0 10px 10px rgba(0,0,0,0.3),
+        0px 20px 30px rgba(0,0,0,0.3);
+    transition:all 0.3s ease 0s;
+    transition:all 0.3s linear 0s;
+    cursor:pointer;
+}
+.forgotPageButton:active{
+    transform:scale(0.7);
+}
+.forgotPageButton:hover{
+    color:white;
 }

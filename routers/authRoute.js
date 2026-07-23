@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-let {createUser,varifyUser,emailVarification,getUser,goDashboard,resendEmail,getEmail,changeEmail,isSuccess}=require("../controllers/authControl.js");
+let {createUser,varifyUser,emailVarification,getUser,goDashboard,resendEmail,getEmail,changeEmail,resendTime,sendLink,isSuccess}=require("../controllers/authControl.js");
 const checkAuth=require("../middlewares/dash.js");
 const path=require("path");
 
@@ -62,8 +62,31 @@ router.get("/resendEmail/:userId",(req,res)=>{
     }
 })
 
+router.get("/resendTime/:userId",(req,res)=>{
+    try{
+        resendTime(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+})
+
 router.post("/signUp",(req,res)=>{
-    createUser(req,res);
+    try{
+        createUser(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+});
+
+router.post("/resetPass",(req,res)=>{
+    try{
+        sendLink(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
 });
 
 router.post("/signIn",(req,res)=>{

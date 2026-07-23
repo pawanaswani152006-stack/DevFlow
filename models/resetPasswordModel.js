@@ -1,11 +1,11 @@
 const mongoose=require("mongoose");
 const crypto=require("crypto");
 
-const emailVarificationSchema=new mongoose.Schema({
+const resetPassSchema=new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"newUser",
-        require:true
+        require:true,
+        ref:"newUser"
     },
     token:{
         type:String,
@@ -23,7 +23,7 @@ const emailVarificationSchema=new mongoose.Schema({
     }
 },{timestamps:true});
 
-emailVarificationSchema.pre("save",function (){
+resetPassSchema.pre("save",function (){
     const user=this;
     const hashedToken=crypto.createHash("sha256")
         .update(user.token)
@@ -31,5 +31,5 @@ emailVarificationSchema.pre("save",function (){
     this.token=hashedToken;
 });
 
-const emailVarificationModel=mongoose.model("emailVarificationModel",emailVarificationSchema);
-module.exports=emailVarificationModel;
+const resetPassModel=mongoose.model("resetPassModel",resetPassSchema);
+module.exports=resetPassModel;

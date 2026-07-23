@@ -148,3 +148,14 @@ button:hover{
         opacity:0;
     }
 }
+#countHolder{
+    display:flex;
+    align-items:center;
+}
+#countdown{
+    margin-left:20px;
+    font-size:1.5rem;
+    color:blue;
+    margin-top:15px;
+    display:none;
+}
