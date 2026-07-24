@@ -86,6 +86,7 @@ body{
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
     padding:20px;
+    transition:all 0.3s linear 0s;
 }
 
 @keyframes pageFlip{
@@ -128,7 +129,7 @@ body{
     margin-bottom:10px;
     font-size:2.5rem;
     color:rgb(49, 102, 102);
-    margin-top:50px;
+    margin-top:40px;
     margin-left:5px;
 }
 .forgotPagePara{
@@ -168,7 +169,7 @@ input{
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
     transition:all 0.3s ease 0s;
-    margin-top:40px;
+    margin-top:25px;
 }
 
 .sign:active{
@@ -217,7 +218,7 @@ input{
 
 #forgotBtnContainer{
     width:100%;
-    margin-top:20px;
+    margin-top:25px;
     text-align:right;
 }
 
@@ -272,4 +273,74 @@ input{
 }
 .forgotPageButton:hover{
     color:white;
+}
+#forgotPage3,#forgotPage2{
+    display:none;
+    opacity:0;
+    transform:translateY(40px);
+}
+#forgotWaitingMainText{
+    margin-bottom:10px;
+    font-size:1.8rem;
+    color:rgb(16, 66, 66);
+    /* margin-top:10px; */
+    margin-left:5px;
+    line-height:40px;
+}
+.forgotWaitingPara{
+    color:rgb(16, 66, 66);
+    font-size:1.5rem;
+    margin-top:15px;
+    margin-left:5px;
+}
+#forgotWaitingPageButtonHolder{
+    display:flex;
+    align-items:flex-start;
+    flex-direction:column;
+}
+.forgotWaitingPageButton{
+    font-size:1.5rem;
+    padding-left:15px;
+    padding-right:15px;
+    margin-top:25px;
+}
+#forgotPageWaitingButtonHolder2,#forgotWaitingPageCountDownHolder{
+    display:flex;
+    align-items:center;
+}
+#countdown{
+    margin-left:20px;
+    font-size:1.5rem;
+    color:blue;
+    margin-top:25px;
+    /* display:none; */
+}
+#forgotPageNewPassButtonHolder{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    margin-top:50px;
+    margin-bottom:15px;
+}
+
+@keyframes fadeOut{
+    from{
+        opacity:1;
+        transform:translateY(0px);
+    }
+    to{
+        opacity:0;
+        transform:translateY(40px);
+    }
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
 }

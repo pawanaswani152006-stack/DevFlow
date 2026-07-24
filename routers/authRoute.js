@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-let {createUser,varifyUser,emailVarification,getUser,goDashboard,resendEmail,getEmail,changeEmail,resendTime,sendLink,isSuccess}=require("../controllers/authControl.js");
+let {createUser,varifyUser,emailVarification,getUser,goDashboard,resendEmail,getEmail,changeEmail,resendTime,sendLink,emailVarificationForResetPassword,checkForResetPass,cancelResetPassProcess,setNewPassword,resendResetPassLink,isSuccess}=require("../controllers/authControl.js");
 const checkAuth=require("../middlewares/dash.js");
 const path=require("path");
 
@@ -11,6 +11,33 @@ router.get("/",(req,res)=>{
 router.get("/verifyEmail",(req,res)=>{
     try{
         emailVarification(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+})
+
+router.get("/verifyEmailForPass",(req,res)=>{
+    try{
+        emailVarificationForResetPassword(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+})
+
+router.get("/checkForResetPass",(req,res)=>{
+    try{
+        checkForResetPass(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+})
+
+router.get("/cancelResetPassProcess",(req,res)=>{
+    try{
+        cancelResetPassProcess(req,res);
     }catch(err){
         console.log("Error:",err);
         return res.json({msg:"something went wrong."});
@@ -62,6 +89,15 @@ router.get("/resendEmail/:userId",(req,res)=>{
     }
 })
 
+router.get("/resendResetPassLink/:userId",(req,res)=>{
+    try{
+        resendResetPassLink(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+})
+
 router.get("/resendTime/:userId",(req,res)=>{
     try{
         resendTime(req,res);
@@ -83,6 +119,15 @@ router.post("/signUp",(req,res)=>{
 router.post("/resetPass",(req,res)=>{
     try{
         sendLink(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+});
+
+router.patch("/setNewPassword",(req,res)=>{
+    try{
+        setNewPassword(req,res);
     }catch(err){
         console.log("Error:",err);
         return res.json({msg:"something went wrong."});

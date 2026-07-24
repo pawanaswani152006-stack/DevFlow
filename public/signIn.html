@@ -24,7 +24,7 @@
 
                     <div>
 
-                        <p class="para">Email</p>
+                        <p class="para" style="margin-top:25px;">Email</p>
 
                         <input id="email" type="email" required placeholder="example@gmail.com" name="email">
 
@@ -127,9 +127,9 @@
 
     <div class="form" id="form3">
         <div id="forgotPassDataHolder">
+            <h1 class="formHeading" id="formHeading3">Change Password</h1>
             <div id="forgotPage1">
                 <form id="forgotPassForm">
-                    <h1 class="formHeading" id="formHeading3">Change Password</h1>
                     <div id="frogotPageEmailHolder">
                         <p class="para forgotPagePara">Email</p>
                         <input type="email" required id="forgotEmailInput" placeholder="name@example.com">
@@ -141,6 +141,38 @@
                     <div id="forgotPageButtonHolder">
                         <button class="forgotPageButton" type="submit">Send</button>
                         <button class="forgotPageButton" id="forgotPageCancelButton" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div id="forgotPage2">
+                <p class="para forgotPagePara">Check Your Inbox</p>
+                <p id="forgotWaitingMainText">We've sent a password reset link to your registered email address.</p>
+                <p class="forgotWaitingPara">Waiting for link verification<span id="waitingDot1">.</span><span id="waitingDot1">.</span><span id="waitingDot1">.</span></p>
+                <div id="forgotWaitingPageButtonHolder">
+                    <div id="forgotWaitingPageCountDownHolder">
+                        <button class="forgotPageButton forgotWaitingPageButton" id="forgotPageResendButton">Resend Email</button>
+                        <p id="countdown">Resend in <span id="timer"></span>sec</p>
+                    </div>
+                    <div id="forgotPageWaitingButtonHolder2">
+                        <button class="forgotPageButton forgotWaitingPageButton" id="forgotPageUseAnotherEmailButton">Use another email</button>
+                        <button class="forgotPageButton forgotWaitingPageButton" style="margin-left:20px;" id="forgotPageBackToSignInButton">Back to Sign In</button>
+                    </div>
+                </div>
+                <p class="forgotWaitingPara" style="margin-top:35px;font-size:1.3rem;display:flex;justify-content:center;">The reset link will expire in 15 minutes.</p>
+            </div>
+            <div id="forgotPage3">
+                <form id="passwordResetForm">
+                    <div class="forgotResetPassHolder">
+                        <p class="para" style="margin-top:25px;">New Password</p>
+                        <input id="newPasswordInput" type="password" required placeholder="Enter your new password">
+                    </div>
+                    <div class="forgotResetPassHolder">
+                        <p class="para">confirm Password</p>
+                        <input id="newPasswordConfirmInput" type="password" required placeholder="Confirm your new password">
+                    </div>
+                    <div id="forgotPageNewPassButtonHolder">
+                        <button class="forgotPageButton" id="forgotPageResetPassChangeButton" type="submit">Change</button>
+                        <button class="forgotPageButton" id="forgotPageNewPassCancelButton" type="button">Cancel</button>
                     </div>
                 </form>
             </div>

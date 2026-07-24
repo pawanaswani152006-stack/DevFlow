@@ -4,7 +4,7 @@ const jwt=require("jsonwebtoken");
 const crypto=require("crypto");
 const validator=require("validator");
 const sessionModel=require("../models/refreshSession.js");
-const sendVarificationEmail=require("../utils/sendMail.js");
+const {sendVarificationEmail,sendPassResetEmail}=require("../utils/sendMail.js");
 const emailVarificationModel=require("../models/emailVarificationModel.js");
 const resetPassModel=require("../models/resetPasswordModel.js");
 
@@ -140,6 +140,33 @@ async function emailVarification(req,res){
             isVarified:true
         });
         await emailVarificationModel.findByIdAndDelete(emailVarificationEntity._id);
+        return res.json({msg:"done"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg3:"Something went wrong."});
+    }
+}
+
+async function emailVarificationForResetPassword(req,res){
+    try{
+        const resetPassToken=req.query.passToken;
+        if(!resetPassToken){
+            return res.json({msg:"link expired"});
+        }
+        const hashedToken=crypto.createHash("sha256")
+            .update(resetPassToken)
+            .digest("hex");
+        const resetPassEntity=await resetPassModel.findOne({token:hashedToken});
+        if(!resetPassEntity){
+            return res.json({msg:"link expired"});
+        }
+        if(resetPassEntity.isUsed){
+            return res.json({msg:"link already used."});
+        }
+        await resetPassModel.findByIdAndUpdate(resetPassEntity._id,{
+            isVerified:true,
+            isUsed:true
+        });
         return res.json({msg:"done"});
     }catch(error){
         console.log("Error:",error);
@@ -366,6 +393,114 @@ async function sendLink(req,res){
         if(!user){
             return res.json({msg:"email doesn't exist."});
         }
+        const token=crypto.randomBytes(32).toString("hex");
+        await resetPassModel.create({
+            userId:user._id,
+            token:token,
+            expiresAt:new Date(Date.now()+(15*60*1000)),
+            resendAvailableAt:new Date(Date.now()+(60*1000))
+        });
+        const varificationLink=`http://localhost:8000/verifyEmailForPass?passToken=${encodeURIComponent(token)}`;
+        sendPassResetEmail(user.email,varificationLink);
+        const resetPassToken=await jwt.sign({
+            token:token
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("resetPassToken",resetPassToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        return res.json({msg:"success",id:user._id});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function checkForResetPass(req,res){
+    try{
+        const resetPassToken=req.cookies.resetPassToken;
+        if(!resetPassToken){
+            return res.json({msg:"link expired"});
+        }
+        const decodedToken=await jwt.verify(resetPassToken,secretKey);
+        const hashedToken=crypto.createHash("sha256")
+            .update(decodedToken.token)
+            .digest("hex");
+        const resetPassEntity=await resetPassModel.findOne({token:hashedToken});
+        if(!resetPassEntity){
+            return res.json({msg:"link expired"});
+        }
+        if(resetPassEntity.isVerified){
+            await resetPassModel.findByIdAndDelete(resetPassEntity._id);
+            res.clearCookie("resetPassToken")
+            return res.json({msg:"success"});
+        }
+        return res.json({msg:"failed"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function cancelResetPassProcess(req,res){
+    try{
+        const resetPassToken=req.cookies.resetPassToken;
+        if(resetPassToken){
+            const decodedToken=await jwt.verify(resetPassToken,secretKey);
+            const hashedToken=crypto.createHash("sha256")
+                .update(decodedToken.token)
+                .digest("hex");
+            const resetPassEntity=await resetPassModel.findOne({token:hashedToken});
+            if(resetPassEntity){
+                await resetPassModel.findByIdAndDelete(resetPassEntity._id);
+            }
+            res.clearCookie("resetPassToken");
+        }
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function setNewPassword(req,res){
+    try{
+        const body=req.body;
+        if(!body || (!body.id || !body.confirmPass || !body.newPass) || (body.newPass.length<8) || (body.newPass!==body.confirmPass)){
+            return res.json({msg:"there is some mistake in your provided data."});
+        }
+        const user=await newUser.findById(body.id).select("salt");
+        if(!user){
+            return res.json({msg:"account does not exist."});
+        }
+        const hashedPassword=crypto.createHmac("sha256",user.salt)
+            .update(body.newPass)
+            .digest("hex");
+        await newUser.findByIdAndUpdate(body.id,{
+            password:hashedPassword
+        });
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function resendResetPassLink(req,res){
+    try{
+        const userId=req.params.userId;
+        const resetPassEntity=await resetPassModel.findOne({userId:userId}).select("resendAvailableAt");
+        if(resetPassEntity){
+            const currTime=new Date();
+            const allowedTime=resetPassEntity.resendAvailableAt.getTime();
+            if(currTime<allowedTime){
+                return res.json({msg:"please wait for time."});
+            }
+        }
     }catch(error){
         console.log("Error:",error);
         return res.json({msg:"Something went wrong."});
@@ -383,5 +518,10 @@ module.exports={
     changeEmail,
     resendTime,
     sendLink,
+    emailVarificationForResetPassword,
+    checkForResetPass,
+    cancelResetPassProcess,
+    setNewPassword,
+    resendResetPassLink,
     isSuccess
 };

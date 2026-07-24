@@ -18,6 +18,14 @@ const resetPassSchema=new mongoose.Schema({
             expires:0
         }
     },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    isUsed:{
+        type:Boolean,
+        default:false
+    },
     resendAvailableAt:{
         type:Date
     }

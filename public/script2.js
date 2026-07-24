@@ -173,6 +173,10 @@ const forgotPassForm=document.querySelector("#forgotPassForm");
 const forgotEmailInput=document.querySelector("#forgotEmailInput");
 const form3=document.querySelector("#form3");
 
+const forgotPage1=document.querySelector("#forgotPage1");
+const forgotPage2=document.querySelector("#forgotPage2");
+const forgotPage3=document.querySelector("#forgotPage3");
+
 forgotBtn.addEventListener("click",()=>{
     signInPage.style.animation="pageFlip 0.3s linear 0s forwards";
     setTimeout(()=>{
@@ -192,7 +196,7 @@ forgotPageCancelButton.addEventListener("click",()=>{
         signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
     },300)
 })
-
+let currentUserId=null;
 forgotPassForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const email=forgotEmailInput.value;
@@ -205,6 +209,178 @@ forgotPassForm.addEventListener("submit",async (e)=>{
             "Content-Type":"application/json"
         },
         body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        currentUserId=result.id;
+        forgotPage1.style.animation="fadeOut 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            forgotPage1.style.display="none";
+            forgotPage2.style.display="block";
+            forgotPage3.style.display="none";
+            forgotPage2.style.animation="fadeIn 0.3s linear 0s forwards";
+        },400);
+        checkForPass=setInterval(checkingForResetPassVerification,1000);
+    }
+})
+
+let checkForPass;
+async function checkingForResetPassVerification(){
+    const response=await fetch(`/checkForResetPass`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        forgotPage2.style.animation="fadeOut 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            forgotPage2.style.display="none";
+            forgotPage3.style.display="block";
+            forgotPage1.style.display="none";
+            forgotPage3.style.animation="fadeIn 0.3s linear 0s forwards";
+        })
+        clearInterval(checkForPass);
+        return;
+    }
+    if(result.msg==="link expired"){
+        clearInterval(checkForPass);
+    }
+}
+
+const forgotPageBackToSignInButton=document.querySelector("#forgotPageBackToSignInButton");
+const forgotPageUseAnotherEmailButton=document.querySelector("#forgotPageUseAnotherEmailButton");
+const forgotPageNewPassCancelButton=document.querySelector("#forgotPageNewPassCancelButton");
+
+forgotPageBackToSignInButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/cancelResetPassProcess`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            form3.style.display="none";
+            form1.style.display="flex";
+            signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+            forgotPage2.style.display="none";
+            forgotPage1.style.display="block";
+            forgotPage1.style.animation="";
+            forgotPage2.style.animation="";
+            forgotPage3.style.animation="";
+            forgotPage1.style.opacity=1;
+            forgotPage2.style.opacity=0;
+            forgotPage1.style.transform="translateY(0px)";
+            forgotPage2.style.transform="translateY(40px)";
+            forgotEmailInput.value="";
+        },300);
+    }
+})
+
+forgotPageNewPassCancelButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/cancelResetPassProcess`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            form3.style.display="none";
+            form1.style.display="flex";
+            signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+            forgotPage3.style.display="none";
+            forgotPage1.style.display="block";
+            forgotPage1.style.animation="";
+            forgotPage3.style.animation="";
+            forgotPage2.style.animation="";
+            forgotPage1.style.opacity=1;
+            forgotPage3.style.opacity=0;
+            forgotPage1.style.transform="translateY(0px)";
+            forgotPage3.style.transform="translateY(40px)";
+            forgotEmailInput.value="";
+        },300);
+    }
+})
+
+forgotPageUseAnotherEmailButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/cancelResetPassProcess`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        forgotEmailInput.value="";
+        forgotPage2.style.animation="fadeOut 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            forgotPage2.style.display="none";
+            forgotPage1.style.display="block";
+            forgotPage1.style.animation="fadeIn 0.3s linear 0s forwards";
+        },300);
+    }
+})
+
+const forgotPageResetPassChangeButton=document.querySelector("#forgotPageResetPassChangeButton");
+const passwordResetForm=document.querySelector("#passwordResetForm");
+const newPasswordInput=document.querySelector("#newPasswordInput");
+const newPasswordConfirmInput=document.querySelector("#newPasswordConfirmInput");
+
+passwordResetForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    if(currentUserId!==null){
+        console.log("hello bro");
+        const newPass=newPasswordInput.value;
+        const confirmPass=newPasswordConfirmInput.value;
+        console.log(newPass);
+        console.log(confirmPass);
+        if(!newPass || !confirmPass){
+            console.log("yha");
+            return;
+        }
+        if(newPass.length<8){
+            console.log("nhi yha");
+            return;
+        }
+        if(newPass!==confirmPass){
+            console.log("nhi nhi yha per");
+            return;
+        }
+        const body={
+            newPass:newPass,
+            confirmPass:confirmPass,
+            id:currentUserId
+        }
+        console.log("yo");
+        const response=await fetch(`/setNewPassword`,{
+            method:"PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body:JSON.stringify(body)
+        });
+        const result=await response.json();
+        console.log(result);
+        if(result.msg==="success"){
+            forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                form3.style.display="none";
+                form1.style.display="flex";
+                signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+                forgotPage3.style.display="none";
+                forgotPage1.style.display="block";
+                forgotPage1.style.animation="";
+                forgotPage3.style.animation="";
+                forgotPage2.style.animation="";
+                forgotPage1.style.opacity=1;
+                forgotPage3.style.opacity=0;
+                forgotPage1.style.transform="translateY(0px)";
+                forgotPage3.style.transform="translateY(40px)";
+                forgotEmailInput.value="";
+            },300);
+        }
+    }
+})
+
+const forgotPageResendButton=document.querySelector("#forgotPageResendButton");
+forgotPageResendButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/resendResetPassLink/${currentUserId}`,{
+        method:"get"
     });
     const result=await response.json();
 })
