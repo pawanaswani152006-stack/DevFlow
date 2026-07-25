@@ -344,3 +344,34 @@ input{
         transform:translateY(0px);
     }
 }
+#forgotPageComment{
+    color:blue;
+    font-size:1.5rem;
+    margin-top:20px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    display:none;
+    transform:translateY(10px);
+    opacity:0;
+}
+@keyframes commentShow{
+    from{
+        transform:translateY(10px);
+        opacity:0;
+    }
+    to{
+        transform:translateY(0px);
+        opacity:1;
+    }
+}
+@keyframes commentHide{
+    from{
+        transform:translateY(0px);
+        opacity:1;
+    }
+    to{
+        transform:translateY(10px);
+        opacity:0;
+    }
+}

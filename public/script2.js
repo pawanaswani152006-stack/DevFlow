@@ -357,30 +357,81 @@ passwordResetForm.addEventListener("submit",async (e)=>{
         const result=await response.json();
         console.log(result);
         if(result.msg==="success"){
-            forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+            forgotPageComment.innerText="Password Changed Successfully";
+            forgotPageComment.style.display="flex";
+            forgotPageComment.style.animation="commentShow 0.5s linear 0s forwards";
             setTimeout(()=>{
-                form3.style.display="none";
-                form1.style.display="flex";
-                signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
-                forgotPage3.style.display="none";
-                forgotPage1.style.display="block";
-                forgotPage1.style.animation="";
-                forgotPage3.style.animation="";
-                forgotPage2.style.animation="";
-                forgotPage1.style.opacity=1;
-                forgotPage3.style.opacity=0;
-                forgotPage1.style.transform="translateY(0px)";
-                forgotPage3.style.transform="translateY(40px)";
-                forgotEmailInput.value="";
-            },300);
+                forgotPageComment.style.animation="commentHide 0.5s linear 0s forwards";
+                setTimeout(()=>{
+                    forgotPageComment.style.display="none";
+                },500);
+            },1000);
+            setTimeout(()=>{
+                forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
+                setTimeout(()=>{
+                    form3.style.display="none";
+                    form1.style.display="flex";
+                    signInPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+                    forgotPage3.style.display="none";
+                    forgotPage1.style.display="block";
+                    forgotPage1.style.animation="";
+                    forgotPage3.style.animation="";
+                    forgotPage2.style.animation="";
+                    forgotPage1.style.opacity=1;
+                    forgotPage3.style.opacity=0;
+                    forgotPage1.style.transform="translateY(0px)";
+                    forgotPage3.style.transform="translateY(40px)";
+                    forgotEmailInput.value="";
+                },300);
+            },1500);
         }
     }
 })
 
 const forgotPageResendButton=document.querySelector("#forgotPageResendButton");
+const forgotPageComment=document.querySelector("#forgotPageComment");
 forgotPageResendButton.addEventListener("click",async ()=>{
     const response=await fetch(`/resendResetPassLink/${currentUserId}`,{
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="success"){
+        checkForPass=setInterval(checkingForResetPassVerification,1000);
+        clock=setInterval(countdownFunction,1000);
+        forgotPageComment.innerText="Sent Successfully";
+        forgotPageComment.style.display="flex";
+        forgotPageComment.style.animation="commentShow 0.5s linear 0s forwards";
+        setTimeout(()=>{
+            forgotPageComment.style.animation="commentHide 0.5s linear 0s forwards";
+            setTimeout(()=>{
+                forgotPageComment.style.display="none";
+            },500);
+        },1000);
+    }
 })
+
+const countdown=document.querySelector("#countdown");
+const timer=document.querySelector("#timer");
+let clock;
+async function countdownFunction(){
+    if(currentUserId===null){
+        return;
+    }
+    let response=await fetch(`/passResendTime/${currentUserId}`,{
+        method:"get"
+    });
+    let result=await response.json();
+    if(result.msg==="success"){
+        forgotPageResendButton.style.backgroundColor="rgb(79, 88, 91)";
+        forgotPageResendButton.disabled=true;
+        countdown.style.display="block";
+        timer.innerText=result.remainingSeconds;
+    }
+    if(result.msg==="timeout"){
+        forgotPageResendButton.style.backgroundColor="rgb(35, 79, 87)";
+        forgotPageResendButton.disabled=false;
+        clearInterval(clock);
+        countdown.style.display="none";
+    }
+}
+clock=setInterval(countdownFunction,1000);

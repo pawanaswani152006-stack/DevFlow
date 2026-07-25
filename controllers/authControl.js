@@ -383,6 +383,29 @@ async function resendTime(req,res){
     }
 }
 
+async function passResendTime(req,res){
+    try{
+        const userId=req.params.userId;
+        if(!userId){
+            return res.json({msg:"userId must be given"});
+        }
+        const entity=await resetPassModel.findOne({userId:userId}).select("resendAvailableAt");
+        if(!entity){
+            return res.json({msg:"not exist."});
+        }
+        const currentTime=Date.now();
+        const allowedTime=entity.resendAvailableAt.getTime();
+        if(currentTime<allowedTime){
+            const remainingSeconds=Math.ceil((allowedTime-currentTime)/1000);
+            return res.json({remainingSeconds:remainingSeconds,msg:"success"});
+        }
+        return res.json({msg:"timeout"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
 async function sendLink(req,res){
     try{
         const body=req.body;
@@ -394,12 +417,22 @@ async function sendLink(req,res){
             return res.json({msg:"email doesn't exist."});
         }
         const token=crypto.randomBytes(32).toString("hex");
-        await resetPassModel.create({
-            userId:user._id,
-            token:token,
+        const hashedToken=crypto.createHash("sha256")
+            .update(token)
+            .digest("hex");
+        const entity=await resetPassModel.findOneAndUpdate({userId:user._id},{
+            token:hashedToken,
             expiresAt:new Date(Date.now()+(15*60*1000)),
             resendAvailableAt:new Date(Date.now()+(60*1000))
-        });
+        })
+        if(!entity){
+            await resetPassModel.create({
+                userId:user._id,
+                token:token,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }
         const varificationLink=`http://localhost:8000/verifyEmailForPass?passToken=${encodeURIComponent(token)}`;
         sendPassResetEmail(user.email,varificationLink);
         const resetPassToken=await jwt.sign({
@@ -493,6 +526,7 @@ async function setNewPassword(req,res){
 async function resendResetPassLink(req,res){
     try{
         const userId=req.params.userId;
+        const user=await newUser.findById(userId).select("email");
         const resetPassEntity=await resetPassModel.findOne({userId:userId}).select("resendAvailableAt");
         if(resetPassEntity){
             const currTime=new Date();
@@ -501,6 +535,38 @@ async function resendResetPassLink(req,res){
                 return res.json({msg:"please wait for time."});
             }
         }
+        const resendToken=crypto.randomBytes(32).toString("hex");
+        if(resetPassEntity){
+            const hashedToken=crypto.createHash("sha256")
+                .update(resendToken)
+                .digest("hex");
+            await resetPassModel.findByIdAndUpdate(resetPassEntity._id,{
+                token:hashedToken,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }else{
+            await resetPassModel.create({
+                userId:userId,
+                token:resendToken,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }
+        const resetPassToken=await jwt.sign({
+            token:resendToken
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("resetPassToken",resetPassToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        const varificationLink=`http://localhost:8000/verifyEmailForPass?passToken=${encodeURIComponent(resendToken)}`;
+        sendPassResetEmail(user.email,varificationLink);
+        return res.json({msg:"success"});
     }catch(error){
         console.log("Error:",error);
         return res.json({msg:"Something went wrong."});
@@ -523,5 +589,6 @@ module.exports={
     cancelResetPassProcess,
     setNewPassword,
     resendResetPassLink,
+    passResendTime,
     isSuccess
 };
