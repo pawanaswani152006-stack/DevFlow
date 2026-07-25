@@ -324,21 +324,15 @@ const newPasswordConfirmInput=document.querySelector("#newPasswordConfirmInput")
 passwordResetForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     if(currentUserId!==null){
-        console.log("hello bro");
         const newPass=newPasswordInput.value;
         const confirmPass=newPasswordConfirmInput.value;
-        console.log(newPass);
-        console.log(confirmPass);
         if(!newPass || !confirmPass){
-            console.log("yha");
             return;
         }
         if(newPass.length<8){
-            console.log("nhi yha");
             return;
         }
         if(newPass!==confirmPass){
-            console.log("nhi nhi yha per");
             return;
         }
         const body={
@@ -346,7 +340,6 @@ passwordResetForm.addEventListener("submit",async (e)=>{
             confirmPass:confirmPass,
             id:currentUserId
         }
-        console.log("yo");
         const response=await fetch(`/setNewPassword`,{
             method:"PATCH",
             headers: {
@@ -355,7 +348,6 @@ passwordResetForm.addEventListener("submit",async (e)=>{
             body:JSON.stringify(body)
         });
         const result=await response.json();
-        console.log(result);
         if(result.msg==="success"){
             forgotPageComment.innerText="Password Changed Successfully";
             forgotPageComment.style.display="flex";

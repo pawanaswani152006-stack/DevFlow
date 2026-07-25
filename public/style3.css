@@ -9,12 +9,11 @@ body{
 
 #navBar{
     width:100%;
-    height:10vh;
     background-color:rgb(2, 34, 47);
     position:sticky;
     top:0px;
+    left:0px;
     display:flex;
-    justify-content:space-evenly;
     align-items:center;
     border-radius:10px;
     box-shadow:
@@ -22,27 +21,17 @@ body{
         0px 30px 40px rgba(0,0,0,0.6);
     z-index:2;
 }
-#navLogoContainer{
+#logo{
+    color:rgb(184, 214, 228);
     display:flex;
     justify-content:center;
     align-items:center;
-}
-#logo{
-    height:70px;
-    width:70px;
-    border-radius:50%;
-    background-image:url("/images/logo.png");
-    background-size:cover;
-    background-color:white;
-    margin-right:10px;
-}
-#navLogoPara{
     font-size:3rem;
-    color:rgb(49, 194, 213);
+    margin-left:60px;
+    margin-right:60px;
 }
 #navInput{
-    height:40px;
-    width:40vw;
+    width:inherit;
     border-radius:50px;
     border:none;
     outline:none;
@@ -54,13 +43,13 @@ body{
 }
 #createButton{
     background-color:transparent;
-    width:15vw;
     color:rgb(118, 184, 169);
     border:none;
     font-size:2rem;
     display:flex;
     justify-content:center;
     align-items:center;
+    margin-left:60px;
 }
 #createButton:hover{
     color:white;
@@ -70,20 +59,21 @@ body{
     margin-right:5px;
 }
 #option{
-    height:50px;
-    width:50px;
     border-radius:50%;
     border:none;
     outline:none;
     font-size:1.5rem;
     background-color:rgb(149, 176, 176);
+    margin-left:60px;
+    margin-right:60px;
+    padding:5px;
 }
 #searchContainer{
     display:flex;
+    width:inherit;
+    min-width:fit-content;
 }
 #searchIconContainer{
-    height:42px;
-    width:50px;
     border-radius:50px;
     border-top-right-radius:0px;
     border-bottom-right-radius:0px;
@@ -92,6 +82,7 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
+    padding:8px;
 }
 #searchIcon{
     font-size:1.5rem;
@@ -99,60 +90,56 @@ body{
 }
 
 #welcomeSection{
-    margin-top:12vh;
+    margin-top:60px;
     margin-left:60px;
-    /* margin-bottom:20vh; */
 }
 #welcomePara1{
-    display:block;
     font-size:3rem;
-    font-weight:500;
     color:rgb(138, 228, 207);
 }
 #welcomePara2,#welcomePara3{
     font-size:2.5rem;
-    margin-top:4vh;
+    margin-top:25px;
     color:rgb(144, 201, 188);
 }
 #welcomePara3{
     margin-top:0px;
     font-size:2.5rem;
-    margin-bottom:7vh
+    margin-bottom:30px;
 }
 #filterContainer{
-    margin-top:6vh;
-    margin-bottom:8vh;
+    margin-top:40px;
+    margin-bottom:60px;
 }
 #filterButtonContainer{
     display:flex;
-    justify-content:space-between;
     align-items:center;
     background-color:transparent;
     border:none;
-    width:45vw;
 }
 .filterButton{
     background-color:rgb(2, 17, 23);
     border-radius:30px;
-    height:8vh;
-    width:10vw;
-    font-size:1.5rem;
+    font-size:1.8rem;
     color:rgb(118, 184, 169);
     margin-right:50px;
     box-shadow:
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
     border:none;
+    padding:10px;
+    padding-left:20px;
+    padding-right:20px;
 }
 hr{
     border:2px solid rgb(5, 32, 33);
 }
 #grid{
-    margin-top:10vh;
+    margin-top:50px;
     display:flex;
     justify-content:flex-start;
     flex-wrap:wrap;
-    margin-bottom:10vh;
+    margin-bottom:50px;;
 }
 .gridEmptyState,.noSearchState{
     margin-left:60px;
@@ -166,7 +153,7 @@ hr{
 #gridPara1,#gridPara2,#noSearchPara2{
     font-size:2rem;
     color:rgb(144, 201, 188);
-    line-height:70px;
+    line-height:50px;
 }
 @keyframes emptyFade{
     form{
@@ -214,6 +201,7 @@ hr{
 }
 .projectAnimationHolder:hover{
     transform:translateY(-20px);
+    color:black;
 }
 .project:hover{
     color:black;
@@ -257,6 +245,7 @@ hr{
     line-height:30px;
     font-weight:525;
     margin-left:20px;
+    margin-right:5px;
     text-align: left;
     margin-bottom:15px;
 }
@@ -293,7 +282,7 @@ hr{
     color:rgb(2, 56, 49);
 }
 
-#newProjectHolder{
+#newProjectHolder,#profileHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -306,13 +295,20 @@ hr{
     backdrop-filter:blur(2px);
     display:none;
 }
-#newProject{
+#newProject,#profilePage,#profileEditPage,#profileEditPassPage,#profileEditEmailPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
-    animation:newProject 0.5s ease 0s forwards;
+    /* animation:newProject 0.5s ease 0s forwards; */
     padding-right:10px;
+}
+#profilePage{
+    display:none;
+}
+#profileEditPage,#profileEditPassPage,#profileEditEmailPage{
+    display:none;
+    transform:rotateY(90deg);
 }
 @keyframes newProject{
     from{
@@ -331,7 +327,24 @@ hr{
     }
 }
 
-#newProjectHeading{
+@keyframes pageFlip1{
+    from{
+        transform:rotateY(0deg);
+    }
+    to{
+        transform:rotateY(90deg);
+    }
+}
+@keyframes pageFlip2{
+    from{
+        transform:rotateY(90deg);
+    }
+    to{
+        transform:rotateY(0deg);
+    }
+}
+
+#newProjectHeading,.profileHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -339,9 +352,12 @@ hr{
     margin-top:20px;
     color:rgb(3, 43, 39);
     font-size:3rem;
-    font-weight:bold;
     padding-left:50px;
     padding-right:50px;
+}
+#profileHeading{
+    margin-top:10px;
+    font-size:4rem;
 }
 #newProjectDataContainer{
     padding-left:20px;
@@ -352,7 +368,7 @@ hr{
     margin-bottom:15px;
 }
 .newInput{
-    width:95%;
+    width:100%;
     height:5vh;
     border-radius:15px;
     border:none;
@@ -362,7 +378,7 @@ hr{
 }
 #textArea{
     width:92%;
-    min-height:10vh;
+    min-height:80px;
     padding:10px;
 }
 #dateBox{
@@ -378,20 +394,8 @@ hr{
     border:none;
     outline:none;
 }
-#selection{
-    font-size:1.3rem;
-    color:rgb(2, 39, 40);
-}
-input[type="radio"]{
-    transform:scale(1.5);
-    margin-right:10px;
-    margin-left:30px;
-}
-#taskBased{
-    margin-left:5px;
-}
 
-#newButtonHolder{
+#newButtonHolder,#profilePageButtonHolder,#profileEditPageButtonHolder,#profileEditPassPageButtonHolder,#profileEditEmailPageButtonHolder,#profileEditEmailWaitingPageButtonHolder{
     width:100%;
     display:flex;
     justify-content:space-around;
@@ -399,7 +403,25 @@ input[type="radio"]{
     margin-top:25px;
     margin-bottom:20px;
 }
-.newButton{
+#profileEditEmailWaitingPageButtonHolder{
+    justify-content:flex-start;
+    margin-top:30px;
+}
+#profilePageButtonHolder{
+    margin-top:30px;
+    margin-bottom:30px;
+}
+#profileEditPageButtonHolder{
+    margin-bottom:30px;
+}
+#profileEditPassPageButtonHolder{
+    margin-top:40px;
+    margin-bottom:30px;
+}
+#profileEditEmailPageButtonHolder{
+    margin-bottom:30px;
+}
+.newButton,.profilePageButton,.profileEditPageButton,.profileEditPassPageButton,.profileEditEmailPageButton,.profileEditEmailWaitingPageButton{
     background-color:rgb(3, 45, 62);
     border-radius:30px;
     font-size:2rem;
@@ -413,13 +435,115 @@ input[type="radio"]{
     padding-right:20px;
     padding-left:20px;
 }
-
+.profileEditEmailWaitingPageButton{
+    font-size:1.5rem;
+}
 button{
     transition:all 0.3s ease 0s;
+    cursor:pointer;
 }
 button:active{
     transform:scale(0.8);
 }
 button:hover{
     color:white;
+}
+.profileEditPageOptionButton:hover{
+    color:blue;
+    text-decoration:underline;
+}
+#profileFullName{
+    font-size:2.5rem;
+    color:rgb(2, 39, 40);
+    margin-left:20px;
+    margin-right:10px;
+}
+.profileDataHolder{
+    display:flex;
+    align-items:center;
+    font-size:2rem;
+    color:rgb(3, 29, 30);
+    margin-top:20px;
+    margin-left:20px;
+    margin-right:10px;
+}
+.profilePagePara{
+    font-size:2rem;
+    color:rgb(3, 29, 30);
+}
+.profilePageAnsPara{
+    margin-left:10px;
+    color:rgb(21, 80, 82);
+}
+.profileEditNameHolder{
+    margin-left:20px;
+    margin-bottom:30px;
+    margin-right:15px;
+}
+.profileEditPageOption{
+    font-size:1.5rem;
+    color:rgb(2, 23, 23);
+    display:flex;
+    align-items:center;
+    margin-top:10px;
+}
+.profileEditPageOptionButton{
+    color:blue;
+    background-color:transparent;
+    border:none;
+    outline:none;
+    margin-left:5px;
+    font-size:1.5rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.profileEditPassPageDataHolder{
+    margin-left:20px;
+    margin-bottom:30px;
+    margin-right:15px;
+}
+#profileEditEmailPagePara{
+    margin-top:20px;
+}
+#profileEditEmailPagePara,#profileEditEmailPageSteps{
+    margin-left:20px;
+    /* margin-top:20px; */
+    font-size:1.5rem;
+    color:rgb(1, 38, 39);
+    line-height:40px;
+}
+#profileEditEmailPageDataHolder{
+    margin-left:20px;
+    margin-right:20px;
+}
+#profileEditEmailPageElement2{
+    display:none;
+}
+#profileEditEmailPageCountdownHolder{
+    display:flex;
+    align-items:center;
+    margin-top:30px;
+}
+#countdown{
+    color:blue;
+    font-size:1.8rem;
+    margin-left:20px;
+}
+.profileEditEmailWaitingPagePara{
+    font-size:1.6rem;
+    color:rgb(1, 38, 39);
+    margin-top:15px;
+}
+#profileEditEmailPageElement2{
+    margin-left:20px;
+}
+#profileEditEmailWaitingPageExpireComment{
+    font-size:1.5rem;
+    color:rgb(1, 38, 39);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:20px;
+    margin-top:30px;
 }

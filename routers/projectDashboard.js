@@ -2,7 +2,7 @@ const express=require("express");
 const multer=require("multer");
 const router1=express.Router();
 const checkAuth=require("../middlewares/dash.js");
-const {createProj,getProjects}=require("../controllers/dashControl.js");
+const {createProj,getProjects,getProfile,editName,setNewPass}=require("../controllers/dashControl.js");
 const path=require("path");
 const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
@@ -10,6 +10,7 @@ const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=requi
 const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
 const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf}=require("../controllers/notesControl.js");
+const project=require("../models/dashboard.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
@@ -20,21 +21,63 @@ const upload=multer({
 });
 
 router1.get("/",checkAuth,(req,res)=>{
-    getProjects(req,res);
-})
-router1.post("/",checkAuth,(req,res)=>{
-    createProj(req,res);
+    try{
+        getProjects(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
 })
 
-router1.get("/:projectId",checkAuth,(req,res)=>{
+router1.post("/",checkAuth,(req,res)=>{
     try{
+        createProj(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.patch("/editName",checkAuth,(req,res)=>{
+    try{
+        editName(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.patch("/setNewPassword",checkAuth,(req,res)=>{
+    try{
+        setNewPass(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/getProfile",checkAuth,(req,res)=>{
+    try{
+        getProfile(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/:projectId",checkAuth,async (req,res)=>{
+    try{
+        const existProject=await project.findById(req.params.projectId);
+        if(!existProject){
+            return res.json({msg:"wrongId"});
+        }
         res.sendFile(path.join(__dirname
             ,"..",
             "private",
             "dashProject.html"
         ));
     }catch(err){
-            console.log("error",err);
+        console.log("error",err);
         return res.json({msg:"something went wrong"});
     }
 })

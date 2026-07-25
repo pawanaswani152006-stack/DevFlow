@@ -13,16 +13,13 @@ const projectSchema=new mongoose.Schema({
     description:{
         type:String,
     },
-    trackingMode:{
-        type:String,
-        required:true
-    },
     deadline:{
         type:String,
         required:true
     },
     status:{
         type:String,
+        enum:["Active","onHold","Completed"],
         default:"Active"
     },
     isArchived:{

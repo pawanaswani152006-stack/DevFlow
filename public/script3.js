@@ -8,6 +8,7 @@ const grid=document.querySelector("#grid");
 let searchInput=document.querySelector("#navInput");
 let activeBtn=document.querySelector("#activeButton");
 let completedButton=document.querySelector("#completedButton");
+let onHoldButton=document.querySelector("#onHoldButton");
 let allButton=document.querySelector("#allButton");
 allButton.style.backgroundColor="rgb(15, 56, 56)";
 let allProjects=[];
@@ -20,6 +21,12 @@ const welcomePara1=document.querySelector("#welcomePara1");
 newBtn.addEventListener("click",()=>{
     newProjPageHolder.style.display="flex";
     document.body.style.overflow = "hidden";
+    newProjPage.style.animation="newProject 0.5s ease 0s forwards";
+    allButton.style.backgroundColor="rgb(15, 56, 56)";
+    activeBtn.style.backgroundColor="rgb(2, 17, 23)";
+    completedButton.style.backgroundColor="rgb(2, 17, 23)";
+    currentFilter="All";
+    renderProjects();
 })
 function cancelAnimation(){
     newProjPage.style.animation="cancelProject 0.5s ease 0s forwards";
@@ -37,13 +44,10 @@ const date=document.querySelector("#date");
 const textArea=document.querySelector("#textArea");
 form.addEventListener("submit",async (e)=>{
     e.preventDefault();
-    const trackingMode=document.querySelector('input[name="Mode"]:checked');
     const body={
         projectName:projectName.value,
         deadline:date.value,
-        trackingMode:trackingMode.value,
-        textArea:textArea.value,
-        status:"Active"
+        textArea:textArea.value
     };
     let res=await fetch("/dashboard/projects",{
         method:"post",
@@ -54,9 +58,9 @@ form.addEventListener("submit",async (e)=>{
     });
     const result=await res.json();
     allProjects.push(result.project);
-    if(result.success==true){
+    if(result.success===true){
         cancelAnimation();
-        let div=await projectCard(result.ownerName,projectName.value,textArea.value,trackingMode.value,date.value,result.project._id);
+        let div=await projectCard(result.project.owner.fullName,projectName.value,textArea.value,dateCreater(date.value),result.project._id);
         setTimeout(()=>{
             emptyState.forEach((state)=>{
                 state.style.animation="emptyFade 0.1s linear 0s forwards"; 
@@ -68,7 +72,7 @@ form.addEventListener("submit",async (e)=>{
                     allButton.disabled=false;
                     activeButton.disabled=false;
                     completedButton.disabled=false;
-                    allButton.style.backgroundColor="rgb(2, 17, 23)";
+                    allButton.style.backgroundColor="rgb(15, 56, 56)";
                     activeButton.style.backgroundColor="rgb(2, 17, 23)";
                     completedButton.style.backgroundColor="rgb(2, 17, 23)";
                 },100);  
@@ -98,6 +102,8 @@ async function reload(){
         method:"get"
     });
     const projects=await data.json();
+    allProjects=[];
+    grid.innerHTML="";
     allProjects.push(...projects.arr);
     if(projects.arr.length===0){
         searchInput.disabled=true;
@@ -107,26 +113,26 @@ async function reload(){
         allButton.style.backgroundColor="rgb(100, 103, 104)";
         activeButton.style.backgroundColor="rgb(100, 103, 104)";
         completedButton.style.backgroundColor="rgb(100, 103, 104)";
-        grid.style.marginTop="7vh";
+        grid.style.marginTop="60px";
         grid.style.display="block";
         emptyState.forEach((state)=>{
             state.style.display="block";
         });
     }else{
         projects.arr.forEach((project)=>{
-            let div=projectCard(project.owner.fullName,project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
+            let div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id);
             div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
-    console.log(projects.arr);
     const span=document.createElement("span");
+    welcomePara1.innerHTML="";
     span.innerHTML=
         `Good Evening, ${projects.dashboardOwner.fullName}`
     welcomePara1.appendChild(span);
 }
 reload();
 
-function projectCard(owner,projectName,description,trackingMode,deadline,projectId){
+function projectCard(owner,projectName,description,deadline,projectId){
     let div=document.createElement("div");
     let cardButton=document.createElement("button");
     div.classList.add("project");
@@ -138,23 +144,21 @@ function projectCard(owner,projectName,description,trackingMode,deadline,project
                 <p class="projectName">${projectName}</p>
             </div>
             <p class="projectPara">Description: <span class="projectAnsPara">${description}</span></p>
-            <p class="projectPara">Owener: <span class="projectAnsPara">${owner}</span></p>
-            <p class="projectPara">Tracking Mode: <span class="projectAnsPara">${trackingMode}</span></p>
+            <p class="projectPara">Owner: <span class="projectAnsPara">${owner}</span></p>
             <p class="projectPara">Due: <span class="projectAnsPara">${deadline}</span></p>
             <div class="status"><div class="statusRepresenter" style="margin-bottom:15px;"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
         </div>`;
-        cardButton.appendChild(div);
-        cardButton.dataset.projectId=projectId;
-        cardButton.addEventListener("click",()=>{
-            location.href=`/dashboard/projects/${cardButton.dataset.projectId}`;
-        })
-        grid.appendChild(cardButton);
-        return div;
+    cardButton.appendChild(div);
+    cardButton.dataset.projectId=projectId;
+    cardButton.addEventListener("click",()=>{
+        location.href=`/dashboard/projects/${cardButton.dataset.projectId}`;
+    })
+    grid.appendChild(cardButton);
+    return div;
 }
 
 function renderProjects(){
     let filtered=allProjects;
-    console.log(allProjects);
     if(filtered.length!==0){
        if(currentFilter !== "All"){
             filtered=filtered.filter((project)=>{
@@ -169,7 +173,6 @@ function renderProjects(){
     }
     grid.innerHTML="";
     if(filtered.length===0){
-        console.log("hey");
         grid.style.marginTop="5vh";
         grid.innerHTML=
             `<h1 class="noSearchState" id="noSearchHeading" style="display:block;"><span style="font-size:3rem;color:none;background-color:transparent;"><i class="fa-solid fa-magnifying-glass-minus"></i></span> No matching projects found</h1>
@@ -177,12 +180,11 @@ function renderProjects(){
         grid.style.display="block";
         
     }else{
-        console.log("hey bro");
         let div;
-        grid.style.marginTop="10vh";
+        grid.style.marginTop="60px";
         grid.style.display="flex";
         filtered.forEach((project)=>{
-         div=projectCard(project.owner.fullName,project.projectName,project.description,project.trackingMode,dateCreater(project.deadline),project._id);
+         div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id);
          div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
@@ -192,6 +194,7 @@ function renderProjects(){
 allButton.addEventListener("click",()=>{
     allButton.style.backgroundColor="rgb(15, 56, 56)";
     activeBtn.style.backgroundColor="rgb(2, 17, 23)";
+    onHoldButton.style.backgroundColor="rgb(2, 17, 23)";
     completedButton.style.backgroundColor="rgb(2, 17, 23)";
     currentFilter="All";
     renderProjects();
@@ -200,6 +203,7 @@ allButton.addEventListener("click",()=>{
 completedButton.addEventListener("click",()=>{
     completedButton.style.backgroundColor="rgb(15, 56, 56)";
     activeBtn.style.backgroundColor="rgb(2, 17, 23)";
+    onHoldButton.style.backgroundColor="rgb(2, 17, 23)";
     allButton.style.backgroundColor="rgb(2, 17, 23)";
     currentFilter="Completed";
     renderProjects();
@@ -208,12 +212,192 @@ completedButton.addEventListener("click",()=>{
 activeBtn.addEventListener("click",()=>{
     activeBtn.style.backgroundColor="rgb(15, 56, 56)";
     allButton.style.backgroundColor="rgb(2, 17, 23)";
+    onHoldButton.style.backgroundColor="rgb(2, 17, 23)";
     completedButton.style.backgroundColor="rgb(2, 17, 23)";
     currentFilter="Active";
+    renderProjects();
+});
+
+onHoldButton.addEventListener("click",()=>{
+    onHoldButton.style.backgroundColor="rgb(15, 56, 56)";
+    allButton.style.backgroundColor="rgb(2, 17, 23)";
+    activeBtn.style.backgroundColor="rgb(2, 17, 23)";
+    completedButton.style.backgroundColor="rgb(2, 17, 23)";
+    currentFilter="onHold";
     renderProjects();
 });
 
 searchInput.addEventListener("input",()=>{
     searchText=searchInput.value;
     renderProjects();
+})
+
+const profileHolder=document.querySelector("#profileHolder");
+const profilePage=document.querySelector("#profilePage");
+const profileEditPage=document.querySelector("#profileEditPage");
+const profileEditPassPage=document.querySelector("#profileEditPassPage");
+const profileEditEmailPage=document.querySelector("#profileEditEmailPage");
+
+const profileEditEmailPageElement1=document.querySelector("#profileEditEmailPageElement1");
+const profileEditEmailPageElement2=document.querySelector("#profileEditEmailPageElement2");
+
+const profileButton=document.querySelector("#option");
+const profilePageEditButton=document.querySelector("#profilePageEditButton");
+const profilePageCloseButton=document.querySelector("#profilePageCloseButton");
+const profilePageOptionEditPasswordButton=document.querySelector("#profilePageOptionEditPasswordButton");
+const profilePageOptionEditEmailButton=document.querySelector("#profilePageOptionEditEmailButton");
+const profilePageEditNameButton=document.querySelector("#profilePageEditNameButton");
+const profilePageCancelEditNameButton=document.querySelector("#profilePageCancelEditNameButton");
+const profilePageChangePasswordButton=document.querySelector("#profilePageChangePasswordButton");
+const profilePageChangePasswordCancelButton=document.querySelector("#profilePageChangePasswordCancelButton");
+const profilePageSendEmailLinkButton=document.querySelector("#profilePageSendEmailLinkButton");
+const profilePageEmailEditCancelButton=document.querySelector("#profilePageEmailEditCancelButton");
+const profilePageEditEmailResendButton=document.querySelector("#profilePageEditEmailResendButton");
+const profilePageEditAnotherEmailButton=document.querySelector("#profilePageEditAnotherEmailButton");
+const profilePageWaitingPageCancelButton=document.querySelector("#profilePageWaitingPageCancelButton");
+
+const profilePageUserNameHolder=document.querySelector("#profilePageUserNameHolder");
+const profilePageUserEmailHolder=document.querySelector("#profilePageUserEmailHolder");
+const profilePageTotalProjectsHolder=document.querySelector("#profilePageTotalProjectsHolder");
+const profilePageEditNameInput=document.querySelector("#profilePageEditNameInput");
+
+let currUserName;
+profileButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/dashboard/projects/getProfile`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageUserNameHolder.innerText=`${result.user.fullName}`;
+        profilePageUserEmailHolder.innerText=`${result.user.email}`;
+        profilePageTotalProjectsHolder.innerText=`${allProjects.length}`;
+        currUserName=result.user.fullName;
+        profileHolder.style.display="flex";
+        profilePage.style.display="block";
+        document.body.style.overflow = "hidden";
+        profilePage.style.animation="newProject 0.5s ease 0s forwards";
+    }
+})
+profilePageCloseButton.addEventListener("click",()=>{
+    profilePage.style.animation="cancelProject 0.5s ease 0s forwards";
+    setTimeout(()=>{
+        profilePage.style.display="none";
+        profileHolder.style.display="none";
+        document.body.style.overflow = "auto";
+    },500);
+})
+profilePageEditButton.addEventListener("click",()=>{
+    profilePageEditNameInput.value=`${currUserName}`;
+    profilePage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profilePage.style.display="none";
+        profileEditPage.style.display="block";
+        profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profilePageCancelEditNameButton.addEventListener("click",()=>{
+    profileEditPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profilePage.style.display="block";
+        profileEditPage.style.display="none";
+        profilePage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profilePageOptionEditPasswordButton.addEventListener("click",()=>{
+    profileEditPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profileEditPassPage.style.display="block";
+        profileEditPage.style.display="none";
+        profileEditPassPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profilePageOptionEditEmailButton.addEventListener("click",()=>{
+    profileEditPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profileEditEmailPage.style.display="block";
+        profileEditPage.style.display="none";
+        profileEditEmailPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profilePageChangePasswordCancelButton.addEventListener("click",()=>{
+    profilePageEditNameInput.value=`${currUserName}`;
+    profileEditPassPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profileEditPage.style.display="block";
+        profileEditPassPage.style.display="none";
+        profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profilePageEmailEditCancelButton.addEventListener("click",()=>{
+    profilePageEditNameInput.value=`${currUserName}`;
+    profileEditEmailPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profileEditPage.style.display="block";
+        profileEditEmailPage.style.display="none";
+        profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+
+const profilePageNameEditForm=document.querySelector("#profilePageNameEditForm");
+
+profilePageNameEditForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    body={
+        newName:profilePageEditNameInput.value
+    }
+    const response=await fetch(`/dashboard/projects/editName`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageUserNameHolder.innerText=`${result.fullName}`;
+        currUserName=result.fullName;
+        reload();
+    }
+})
+
+const profilePageEditPasswordForm=document.querySelector("#profilePageEditPasswordForm");
+const profilePageNewPasswordInput=document.querySelector("#profilePageNewPasswordInput");
+const profilePageConfirmPasswordInput=document.querySelector("#profilePageConfirmPasswordInput");
+
+profilePageEditPasswordForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const newPass=profilePageNewPasswordInput.value;
+    const confirmPass=profilePageConfirmPasswordInput.value;
+    if(!newPass || !confirmPass){
+        return;
+    }
+    if(newPass.length<8){
+        return;
+    }
+    if(newPass!==confirmPass){
+        return;
+    }
+    const body={
+        newPass:newPass,
+        confirmPass:confirmPass
+    }
+    const response=await fetch(`/dashboard/projects/setNewPassword`,{
+        method:"PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageNewPasswordInput.value="";
+        profilePageConfirmPasswordInput.value="";
+        profilePageEditNameInput.value=`${currUserName}`;
+        profileEditPassPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profileEditPage.style.display="block";
+            profileEditPassPage.style.display="none";
+            profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+        },300);
+    }
 })

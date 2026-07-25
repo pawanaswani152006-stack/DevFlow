@@ -9,10 +9,7 @@
 </head>
 <body>
     <header id="navBar">
-        <div id="navLogoContainer">
-            <div id="logo"></div>
-            <p id="navLogoPara">DevFlow</p>
-        </div>
+        <h1 id="logo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
         <div id="searchContainer">
             <div id="searchIconContainer">
                 <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
@@ -29,8 +26,9 @@
         <div id="filterContainer">
             <p id="welcomePara3">Choose a project to continue...</p>
             <div id="filterButtonContainer">
-                <button class="filterButton" id="allButton">All</button>
+                <button class="filterButton" id="allButton" style="padding-left:30px;padding-right:30px;">All</button>
                 <button class="filterButton" id="activeButton">Active</button>
+                <button class="filterButton" id="onHoldButton">On Hold</button>
                 <button class="filterButton" id="completedButton">Completed</button>
             </div>
         </div>
@@ -44,27 +42,15 @@
     <form id="form" method="post" action="/dashboard/projects">
         <div id="newProjectHolder">
             <div id="newProject">
-                <div id="newProjectHeading">Create Project</div>
+                <h1 id="newProjectHeading">Create Project</h1>
                 <div id="newProjectDataContainer">
-                    <div style="margin-bottom:40px;">
+                    <div style="margin-bottom:50px;margin-right:25px;">
                         <p class="newPara">Project Name</p>
                         <input required type="text" placeholder="Enter your project's name" class="newInput" id="projectName"> 
                     </div>
                     <div id="dateBox" style="margin-bottom:40px;">
-                        <p class="newPara" style="margin-bottom:0px;margin-right:20px;">Deadine</p>
-                        <input required type="date" placeholder="Your project's deadline" id="date"> 
-                    </div>
-                    <div style="margin-bottom:40px;">
-                        <p class="newPara" style="margin-bottom:15px;">Tracking Mode</p>
-                        <div id="selection">
-                            <label>
-                                <input required type="radio" value="taskBased" name="Mode" id="taskBased" >Task Based
-                            </label>
-                            <label>
-                                <input required type="radio" value="manual" name="Mode" id="manual">Manual
-                            </label>
-                        </div>
-
+                        <p class="newPara" style="margin-bottom:0px;margin-right:20px;">Deadline</p>
+                        <input required type="date" id="date"> 
                     </div>
                     <div style="margin-bottom:20px;">
                         <p class="newPara">Description</p>
@@ -80,6 +66,90 @@
             </div>
          </div>
     </form>
+
+    <div id="profileHolder">
+        <div id="profilePage">
+            <h1 class="profileHeading" style="margin-bottom:15px;">Profile</h1>
+            <p id="profileFullName"><i class="fa-solid fa-circle-user"></i> <span id="profilePageUserNameHolder"></span></p>
+            <div class="profileDataHolder">
+                <p class="profilePagePara">Email:</p>
+                <p class="profilePagePara profilePageAnsPara" id="profilePageUserEmailHolder"></p>
+            </div>
+            <div class="profileDataHolder">
+                <p class="profilePagePara">Total Projects:</p>
+                <p class="profilePagePara profilePageAnsPara" id="profilePageTotalProjectsHolder"></p>
+            </div>
+            <div id="profilePageButtonHolder">
+                <button class="profilePageButton" id="profilePageEditButton">Edit Profile</button>
+                <button class="profilePageButton" id="profilePageCloseButton">Close Profile</button>
+            </div>
+        </div>
+        <form id="profilePageNameEditForm">
+            <div id="profileEditPage">
+                <h1 class="profileHeading" style="margin-bottom:20px;">Edit Profile</h1>
+                <div class="profileEditNameHolder">
+                    <p class="profilePagePara" style="margin-bottom:10px;">Full Name</p>
+                    <input type="text" required placeholder="John Doe" class="newInput" id="profilePageEditNameInput">
+                </div>
+                <div class="profileEditNameHolder">
+                    <p class="profileEditPageOption">If you want to change your password than <button class="profileEditPageOptionButton" id="profilePageOptionEditPasswordButton" type="button">Click here</button></p>
+                    <p class="profileEditPageOption">If you want to change your email than <button class="profileEditPageOptionButton" id="profilePageOptionEditEmailButton" type="button">Click here</button></p>
+                </div>
+                <div id="profileEditPageButtonHolder">
+                    <button class="profileEditPageButton" id="profilePageEditNameButton" type="submit">Edit Name</button>
+                    <button class="profileEditPageButton" style="padding-left:35px;padding-right:35px;" id="profilePageCancelEditNameButton" type="button">Cancel</button>
+                </div>
+            </div>
+        </form>
+        <form id="profilePageEditPasswordForm">
+            <div id="profileEditPassPage">
+                <h1 class="profileHeading" style="margin-bottom:30px;">Change Password</h1>
+                <div class="profileEditPassPageDataHolder">
+                    <p class="profilePagePara" style="margin-bottom:10px;">New Password</p>
+                    <input type="password" required placeholder="Enter your new password" class="newInput" id="profilePageNewPasswordInput">
+                </div>
+                <div class="profileEditPassPageDataHolder">
+                    <p class="profilePagePara" style="margin-bottom:10px;">Confirm Password</p>
+                    <input type="password" required placeholder="Confirm your new password" class="newInput" id="profilePageConfirmPasswordInput">
+                </div>
+                <div id="profileEditPassPageButtonHolder">
+                    <button class="profileEditPassPageButton" id="profilePageChangePasswordButton" type="submit">Change</button>
+                    <button class="profileEditPassPageButton" id="profilePageChangePasswordCancelButton" type="button">Cancel</button>
+                </div>
+            </div>
+        </form>
+        <div id="profileEditEmailPage">
+            <h1 class="profileHeading" style="margin-bottom:20px;">Change Email</h1>
+            <div id="profileEditEmailPageElement1">
+                <div id="profileEditEmailPageDataHolder">
+                    <p class="profilePagePara" style="margin-bottom:15px;">New Email</p>
+                    <input type="email" required placeholder="name@example.com" class="newInput">
+                </div>
+                <p id="profileEditEmailPagePara">Follow these simple steps to change your email.</p>
+                <pre id="profileEditEmailPageSteps"><i class="fa-solid fa-right-long"></i> Enter your new email
+<i class="fa-solid fa-right-long"></i> Click the verification link from your inbox
+<i class="fa-solid fa-right-long"></i> And then youe new email will be set automatically</pre>
+                <div id="profileEditEmailPageButtonHolder">
+                    <button class="profileEditEmailPageButton" type="submit" style="padding-left:35px;padding-right:35px;" id="profilePageSendEmailLinkButton">Send</button>
+                    <button class="profileEditEmailPageButton" type="button" id="profilePageEmailEditCancelButton">Cancel</button>
+                </div>
+            </div>
+            <div id="profileEditEmailPageElement2">
+                <p class="profilePagePara" style="color:rgb(1, 38, 39);">Check Your Inbox</p>
+                <p class="profileEditEmailWaitingPagePara">We've sent a verification link to your new email address.</p>
+                <p class="profileEditEmailWaitingPagePara">Waiting for link verification<span id="waitingDot1">.</span><span id="waitingDot2">.</span><span id="waitingDot3">.</span></p>
+                <div id="profileEditEmailPageCountdownHolder">
+                    <button class="profileEditEmailWaitingPageButton" id="profilePageEditEmailResendButton">Resend Email</button>
+                    <p id="countdown">Resend in <span id="timer"></span>sec</p>
+                </div>
+                <div id="profileEditEmailWaitingPageButtonHolder">
+                    <button class="profileEditEmailWaitingPageButton" id="profilePageEditAnotherEmailButton">Set another email</button>
+                    <button class="profileEditEmailWaitingPageButton" style="margin-left:50px;padding-left:40px;padding-right:40px;" id="profilePageWaitingPageCancelButton">Cancel</button>
+                </div>
+                <p id="profileEditEmailWaitingPageExpireComment">The reset link will expire in 15 minutes.</p>
+            </div>
+        </div>
+    </div>
     <script src="/script3.js"></script>
 </body>
 </html>
