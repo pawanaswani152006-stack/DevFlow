@@ -238,9 +238,6 @@ const profileEditPage=document.querySelector("#profileEditPage");
 const profileEditPassPage=document.querySelector("#profileEditPassPage");
 const profileEditEmailPage=document.querySelector("#profileEditEmailPage");
 
-const profileEditEmailPageElement1=document.querySelector("#profileEditEmailPageElement1");
-const profileEditEmailPageElement2=document.querySelector("#profileEditEmailPageElement2");
-
 const profileButton=document.querySelector("#option");
 const profilePageEditButton=document.querySelector("#profilePageEditButton");
 const profilePageCloseButton=document.querySelector("#profilePageCloseButton");
@@ -258,8 +255,13 @@ const profilePageWaitingPageCancelButton=document.querySelector("#profilePageWai
 
 const profilePageUserNameHolder=document.querySelector("#profilePageUserNameHolder");
 const profilePageUserEmailHolder=document.querySelector("#profilePageUserEmailHolder");
+const profilePageJoinedAtHolder=document.querySelector("#profilePageJoinedAtHolder");
 const profilePageTotalProjectsHolder=document.querySelector("#profilePageTotalProjectsHolder");
 const profilePageEditNameInput=document.querySelector("#profilePageEditNameInput");
+
+const profilePageEditPasswordComment=document.querySelector("#profilePageEditPasswordComment");
+const profilePageEditEmailComment=document.querySelector("#profilePageEditEmailComment");
+const profilePageEditNameComment=document.querySelector("#profilePageEditNameComment");
 
 let currUserName;
 profileButton.addEventListener("click",async ()=>{
@@ -268,6 +270,7 @@ profileButton.addEventListener("click",async ()=>{
     });
     const result=await response.json();
     if(result.msg==="success"){
+        profilePageJoinedAtHolder.innerText=`${dateCreater(result.user.createdAt)}`;
         profilePageUserNameHolder.innerText=`${result.user.fullName}`;
         profilePageUserEmailHolder.innerText=`${result.user.email}`;
         profilePageTotalProjectsHolder.innerText=`${allProjects.length}`;
@@ -312,6 +315,7 @@ profilePageOptionEditPasswordButton.addEventListener("click",()=>{
     },300);
 })
 profilePageOptionEditEmailButton.addEventListener("click",()=>{
+    profileEditEmailPageInput.value="";
     profileEditPage.style.animation="pageFlip1 0.3s linear 0s forwards";
     setTimeout(()=>{
         profileEditEmailPage.style.display="block";
@@ -354,9 +358,19 @@ profilePageNameEditForm.addEventListener("submit",async (e)=>{
     });
     const result=await response.json();
     if(result.msg==="success"){
-        profilePageUserNameHolder.innerText=`${result.fullName}`;
-        currUserName=result.fullName;
-        reload();
+        profilePageEditNameComment.innerText="Name Changed Successfully";
+        profilePageEditNameComment.style.display="flex";
+        profilePageEditNameComment.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profilePageEditNameComment.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profilePageEditNameComment.style.display="none";
+            },300)
+            profilePageUserNameHolder.innerText=`${result.fullName}`;
+            currUserName=result.fullName;
+            reload();
+        },1300);
+        
     }
 })
 
@@ -390,14 +404,217 @@ profilePageEditPasswordForm.addEventListener("submit",async (e)=>{
     });
     const result=await response.json();
     if(result.msg==="success"){
-        profilePageNewPasswordInput.value="";
-        profilePageConfirmPasswordInput.value="";
+        profilePageEditPasswordComment.innerText="Password Changed Successfully";
+        profilePageEditPasswordComment.style.display="flex";
+        profilePageEditPasswordComment.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profilePageEditPasswordComment.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profilePageEditPasswordComment.style.display="none";
+            },300)
+            profilePageNewPasswordInput.value="";
+            profilePageConfirmPasswordInput.value="";
+            profilePageEditNameInput.value=`${currUserName}`;
+            profileEditPassPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profileEditPage.style.display="block";
+                profileEditPassPage.style.display="none";
+                profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+            },300);
+        },1300);
+        
+    }
+})
+
+const profileEditEmailPageForm=document.querySelector("#profileEditEmailPageForm");
+const profileEditEmailPageInput=document.querySelector("#profileEditEmailPageInput");
+const profileEditEmailPageElement1=document.querySelector("#profileEditEmailPageElement1");
+const profileEditEmailPageElement2=document.querySelector("#profileEditEmailPageElement2");
+let checkForNewEmail;
+let newEmail=null;
+profileEditEmailPageForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    newEmail=profileEditEmailPageInput.value;
+    const body={
+        newEmail:profileEditEmailPageInput.value
+    }
+    const response=await fetch(`/dashboard/projects/sendNewEmailChangeLink`,{
+        method:"post",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        clock=setInterval(resendCountDownFunction,1000);
+        checkForNewEmail=setInterval(checkForNewEmailVerification,5000);
+        profileEditEmailPageElement1.style.animation="fadeOut 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profileEditEmailPageElement1.style.display="none";
+            profileEditEmailPageElement2.style.display="block";
+            profileEditEmailPageElement2.style.animation="fadeIn 0.3s linear 0s forwards";
+        },300);
+    }
+})
+
+async function checkForNewEmailVerification(){
+    const response=await fetch(`/dashboard/projects/checkForNewEmailVerification`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageEditEmailComment.innerText="Email Changed Successfully";
+        profilePageEditEmailComment.style.display="flex";
+        profilePageEditEmailComment.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profilePageEditEmailComment.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profilePageEditEmailComment.style.display="none";
+            },300)
+            profileEditEmailPageInput.value="";
+            profilePageUserEmailHolder.innerText=`${result.email}`;
+            profilePageEditNameInput.value=`${currUserName}`;
+            profileEditEmailPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profileEditPage.style.display="block";
+                profileEditEmailPage.style.display="none";
+                profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+                profileEditEmailPageElement1.style.display="block";
+                profileEditEmailPageElement1.style.opacity=1;
+                profileEditEmailPageElement1.style.transform="translateY(0px)";
+                profileEditEmailPageElement1.style.animation="";
+                profileEditEmailPageElement2.style.animation="";
+                profileEditEmailPageElement2.style.opacity=0;
+                profileEditEmailPageElement2.style.transform="translateY(40px)";
+                profileEditEmailPageElement2.style.display="none";
+            },300);
+        },1300);
+        
+    }
+    if(result.msg==="link expired"){
+        clearInterval(checkForNewEmail);
+    }
+}
+
+profilePageEditAnotherEmailButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/dashboard/projects/cancelNewEmailSetProcess`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profileEditEmailPageInput.value="";
+        profileEditEmailPageElement2.style.animation="fadeOut 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profileEditEmailPageElement2.style.display="none";
+            profileEditEmailPageElement1.style.display="block";
+            profileEditEmailPageElement1.style.animation="fadeIn 0.3s linear 0s forwards";
+        },300);
+    }
+})
+
+profilePageWaitingPageCancelButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/dashboard/projects/cancelNewEmailSetProcess`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profileEditEmailPageInput.value="";
         profilePageEditNameInput.value=`${currUserName}`;
-        profileEditPassPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+        profileEditEmailPage.style.animation="pageFlip1 0.3s linear 0s forwards";
         setTimeout(()=>{
             profileEditPage.style.display="block";
-            profileEditPassPage.style.display="none";
+            profileEditEmailPage.style.display="none";
             profileEditPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+            profileEditEmailPageElement1.style.display="block";
+            profileEditEmailPageElement1.style.opacity=1;
+            profileEditEmailPageElement1.style.transform="translateY(0px)";
+            profileEditEmailPageElement1.style.animation="";
+            profileEditEmailPageElement2.style.animation="";
+            profileEditEmailPageElement2.style.opacity=0;
+            profileEditEmailPageElement2.style.transform="translateY(40px)";
+            profileEditEmailPageElement2.style.display="none";
         },300);
+    }
+})
+
+profilePageEditEmailResendButton.addEventListener("click",async ()=>{
+    if(newEmail===null){
+        return;
+    }
+    const body={
+        newEmail:newEmail
+    }
+    const response=await fetch(`/dashboard/projects/resendSetNewEmailLink`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        clock=setInterval(resendCountDownFunction,1000);
+        checkForNewEmail=setInterval(checkForNewEmailVerification,5000);
+        profilePageEditEmailComment.innerText="Link Sent Successfully";
+        profilePageEditEmailComment.style.display="flex";
+        profilePageEditEmailComment.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profilePageEditEmailComment.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profilePageEditEmailComment.style.display="none";
+            },300)
+        },1300);
+    }
+})
+
+const countdown=document.querySelector("#countdown");
+const timer=document.querySelector("#timer");
+let clock;
+
+async function resendCountDownFunction(){
+    const response=await fetch(`/dashboard/projects/resendAvailableTime`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageEditEmailResendButton.style.backgroundColor="rgb(87, 94, 96)";
+        profilePageEditEmailResendButton.disabled=true;
+        countdown.style.display="block";
+        timer.innerText=`${result.remainingSeconds}`;
+    }
+    if(result.msg==="timeout"){
+        clearInterval(clock);
+        profilePageEditEmailResendButton.style.backgroundColor="rgb(3, 45, 62)";
+        profilePageEditEmailResendButton.disabled=false;
+        countdown.style.display="none";
+    }
+    if(result.msg==="not available"){
+        clearInterval(clock);
+        profilePageEditEmailResendButton.style.backgroundColor="rgb(3, 45, 62)";
+        profilePageEditEmailResendButton.disabled=false;
+        countdown.style.display="none";
+    }
+}
+
+const logoutButton=document.querySelector("#logoutButton");
+const profilePageComment=document.querySelector("#profilePageComment");
+
+logoutButton.addEventListener("click",async ()=>{
+    const response=await fetch(`/dashboard/projects/logOut`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        profilePageComment.innerText="Logout Successfully";
+        profilePageComment.style.display="flex";
+        profilePageComment.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            profilePageComment.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                profilePageComment.style.display="none";
+                location.replace("/signIn.html?mode=signIn");
+            },300)
+        },1300);
     }
 })

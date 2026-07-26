@@ -37,14 +37,24 @@ async function createUser(req,res){
             password:password
         });
         const rawToken=crypto.randomBytes(32).toString("hex");
+        const hashedToken=crypto.createHash("sha256")
+            .update(rawToken)
+            .digest("hex");
         const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
         sendVarificationEmail(user.email,varificationLink);
-        await emailVarificationModel.create({
-            userId:user._id,
-            token:rawToken,
+        const entity=await emailVarificationModel.findOneAndUpdate({userId:user._id},{
+            token:hashedToken,
             expiresAt:new Date(Date.now()+(15*60*1000)),
             resendAvailableAt:new Date(Date.now()+(60*1000))
-        });
+        })
+        if(!entity){
+            await emailVarificationModel.create({
+                userId:user._id,
+                token:rawToken,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000))
+            });
+        }
         const verifyUserToken=await jwt.sign({
             userId:user._id
         },
@@ -226,6 +236,8 @@ async function goDashboard(req,res){
             jti:jti,
             expiresAt:new Date(Date.now()+(90*24*60*60*1000))
         });
+        await emailVarificationModel.findOneAndDelete({userId:userId});
+        res.clearCookie("verifyUserToken");
         return res.json({msg:"success"});
     }catch(error){
         console.log("Error:",error);

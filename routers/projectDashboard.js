@@ -2,7 +2,7 @@ const express=require("express");
 const multer=require("multer");
 const router1=express.Router();
 const checkAuth=require("../middlewares/dash.js");
-const {createProj,getProjects,getProfile,editName,setNewPass}=require("../controllers/dashControl.js");
+const {createProj,getProjects,getProfile,editName,setNewPass,sendNewEmailChangeLink,verifyEmail,checkForNewEmailVerification,cancelNewEmailSetProcess,resendSetNewEmailLink,resendAvailableTime,logOut}=require("../controllers/dashControl.js");
 const path=require("path");
 const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
@@ -29,9 +29,72 @@ router1.get("/",checkAuth,(req,res)=>{
     }
 })
 
+router1.get("/resendAvailableTime",checkAuth,(req,res)=>{
+    try{
+        resendAvailableTime(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.patch("/resendSetNewEmailLink",checkAuth,(req,res)=>{
+    try{
+        resendSetNewEmailLink(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/checkForNewEmailVerification",checkAuth,(req,res)=>{
+    try{
+        checkForNewEmailVerification(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.delete("/cancelNewEmailSetProcess",checkAuth,(req,res)=>{
+    try{
+        cancelNewEmailSetProcess(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.delete("/logOut",checkAuth,(req,res)=>{
+    try{
+        logOut(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/verifyEmail",checkAuth,(req,res)=>{
+    try{
+        verifyEmail(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
 router1.post("/",checkAuth,(req,res)=>{
     try{
         createProj(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.post("/sendNewEmailChangeLink",checkAuth,(req,res)=>{
+    try{
+        sendNewEmailChangeLink(req,res);
     }catch(err){
         console.log("error",err);
         return res.json({msg:"something went wrong"});

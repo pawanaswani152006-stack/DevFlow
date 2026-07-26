@@ -24,6 +24,12 @@ const emailVarificationSchema=new mongoose.Schema({
     isClick:{
         type:Boolean,
         default:false
+    },
+    newEmail:{
+        type:String,
+        require:true,
+        lowercase:true,
+        trim:true
     }
 },{timestamps:true});
 
@@ -35,5 +41,5 @@ emailVarificationSchema.pre("save",function (){
     this.token=hashedToken;
 });
 
-const emailVarificationModel=mongoose.model("emailVarificationModel",emailVarificationSchema);
-module.exports=emailVarificationModel;
+const newEmailVarificationModel=mongoose.model("newEmailVarificationModel",emailVarificationSchema);
+module.exports=newEmailVarificationModel;

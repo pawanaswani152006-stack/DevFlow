@@ -79,10 +79,18 @@
                 <p class="profilePagePara">Total Projects:</p>
                 <p class="profilePagePara profilePageAnsPara" id="profilePageTotalProjectsHolder"></p>
             </div>
+            <div class="profileDataHolder">
+                <p class="profilePagePara">Joined At:</p>
+                <p class="profilePagePara profilePageAnsPara" id="profilePageJoinedAtHolder"></p>
+            </div>
             <div id="profilePageButtonHolder">
-                <button class="profilePageButton" id="profilePageEditButton">Edit Profile</button>
+                <button class="profilePageButton" id="profilePageEditButton" style="padding-left:35px;padding-right:35px;">Edit Profile</button>
                 <button class="profilePageButton" id="profilePageCloseButton">Close Profile</button>
             </div>
+            <div id="profileLogoutButtonHolder">
+                <button id="logoutButton">Logout <i class="fa-solid fa-door-open"></i></button>
+            </div>
+            <p class="profilePageComments" id="profilePageComment"></p>
         </div>
         <form id="profilePageNameEditForm">
             <div id="profileEditPage">
@@ -99,6 +107,7 @@
                     <button class="profileEditPageButton" id="profilePageEditNameButton" type="submit">Edit Name</button>
                     <button class="profileEditPageButton" style="padding-left:35px;padding-right:35px;" id="profilePageCancelEditNameButton" type="button">Cancel</button>
                 </div>
+                <p class="profilePageComments" id="profilePageEditNameComment"></p>
             </div>
         </form>
         <form id="profilePageEditPasswordForm">
@@ -116,24 +125,27 @@
                     <button class="profileEditPassPageButton" id="profilePageChangePasswordButton" type="submit">Change</button>
                     <button class="profileEditPassPageButton" id="profilePageChangePasswordCancelButton" type="button">Cancel</button>
                 </div>
+                <p class="profilePageComments" id="profilePageEditPasswordComment"></p>
             </div>
         </form>
         <div id="profileEditEmailPage">
             <h1 class="profileHeading" style="margin-bottom:20px;">Change Email</h1>
-            <div id="profileEditEmailPageElement1">
-                <div id="profileEditEmailPageDataHolder">
-                    <p class="profilePagePara" style="margin-bottom:15px;">New Email</p>
-                    <input type="email" required placeholder="name@example.com" class="newInput">
-                </div>
-                <p id="profileEditEmailPagePara">Follow these simple steps to change your email.</p>
-                <pre id="profileEditEmailPageSteps"><i class="fa-solid fa-right-long"></i> Enter your new email
+            <form id="profileEditEmailPageForm">
+                <div id="profileEditEmailPageElement1">
+                    <div id="profileEditEmailPageDataHolder">
+                        <p class="profilePagePara" style="margin-bottom:15px;">New Email</p>
+                        <input type="email" required placeholder="name@example.com" class="newInput" id="profileEditEmailPageInput">
+                    </div>
+                    <p id="profileEditEmailPagePara">Follow these simple steps to change your email.</p>
+                    <pre id="profileEditEmailPageSteps"><i class="fa-solid fa-right-long"></i> Enter your new email
 <i class="fa-solid fa-right-long"></i> Click the verification link from your inbox
 <i class="fa-solid fa-right-long"></i> And then youe new email will be set automatically</pre>
-                <div id="profileEditEmailPageButtonHolder">
-                    <button class="profileEditEmailPageButton" type="submit" style="padding-left:35px;padding-right:35px;" id="profilePageSendEmailLinkButton">Send</button>
-                    <button class="profileEditEmailPageButton" type="button" id="profilePageEmailEditCancelButton">Cancel</button>
+                    <div id="profileEditEmailPageButtonHolder">
+                        <button class="profileEditEmailPageButton" type="submit" style="padding-left:35px;padding-right:35px;" id="profilePageSendEmailLinkButton" type="submit">Send</button>
+                        <button class="profileEditEmailPageButton" type="button" id="profilePageEmailEditCancelButton" type="button">Cancel</button>
+                    </div>
                 </div>
-            </div>
+            </form>
             <div id="profileEditEmailPageElement2">
                 <p class="profilePagePara" style="color:rgb(1, 38, 39);">Check Your Inbox</p>
                 <p class="profileEditEmailWaitingPagePara">We've sent a verification link to your new email address.</p>
@@ -148,6 +160,7 @@
                 </div>
                 <p id="profileEditEmailWaitingPageExpireComment">The reset link will expire in 15 minutes.</p>
             </div>
+            <p class="profilePageComments" id="profilePageEditEmailComment"></p>
         </div>
     </div>
     <script src="/script3.js"></script>

@@ -3,6 +3,13 @@ const project=require("../models/dashboard.js");
 const teamModel=require("../models/teamModel.js");
 const newUser=require("../models/logIn.js");
 const crypto=require("crypto");
+const newEmailVarificationModel=require("../models/newEmailVerificationModel.js");
+const validator=require("validator");
+const jwt=require("jsonwebtoken");
+const {sendVarificationEmail}=require("../utils/sendMail.js");
+const sessionModel = require("../models/refreshSession.js");
+
+const secretKey=process.env.secretKey;
 
 async function createProj(req,res){
     try{
@@ -55,7 +62,7 @@ async function getProjects(req,res){
 
 async function getProfile(req,res){
     try{
-        const user=await newUser.findById(req.user.id).select("fullName email");
+        const user=await newUser.findById(req.user.id).select("fullName email createdAt");
         return res.json({msg:"success",user:user});
     }catch(err){
         console.log("error",err);
@@ -106,10 +113,255 @@ async function setNewPass(req,res){
     }
 }
 
+async function sendNewEmailChangeLink(req,res){
+    try{
+        const body=req.body;
+        if(!body.newEmail){
+            return res.json({msg:"email is required."});
+        }
+        if(!validator.isEmail(body.newEmail)){
+            return res.json({msg:"Enter a valid email"});
+        }
+        const token=crypto.randomBytes(32).toString("hex");
+        const hashedToken=crypto.createHash("sha256")
+            .update(token)
+            .digest("hex");
+        const entity=await newEmailVarificationModel.findOneAndUpdate({userId:req.user.id},{
+            token:hashedToken,
+            expiresAt:new Date(Date.now()+(15*60*1000)),
+            resendAvailableAt:new Date(Date.now()+(60*1000)),
+            isClick:false,
+            newEmail:body.newEmail
+        });
+        if(!entity){
+            await newEmailVarificationModel.create({
+                userId:req.user.id,
+                token:token,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000)),
+                newEmail:body.newEmail
+            });
+        }
+        const newEmailSetToken=await jwt.sign({
+            token:token
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("newEmailSetToken",newEmailSetToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        const varificationLink=`http://localhost:8000/dashboard/projects/verifyEmail?token=${encodeURIComponent(token)}`;
+        sendVarificationEmail(body.newEmail,varificationLink);
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function resendSetNewEmailLink(req,res){
+    try{
+        const body=req.body;
+        if(!body.newEmail){
+            return res.json({msg:"email is required."});
+        }
+        if(!validator.isEmail(body.newEmail)){
+            return res.json({msg:"Enter a valid email"});
+        }
+        const existingToken=req.cookies.newEmailSetToken;
+        const token=crypto.randomBytes(32).toString("hex");
+        const hashedToken=crypto.createHash("sha256")
+            .update(token)
+            .digest("hex");
+        let entity=null;
+        if(existingToken){
+            const decodedToken=await jwt.verify(existingToken,secretKey);
+            const existingHashedToken=crypto.createHash("sha256")
+                .update(decodedToken.token)
+                .digest("hex");
+            entity=await newEmailVarificationModel.findOne({token:existingHashedToken}).select("resendAvailableAt");
+            if(entity){
+                const presentTime=new Date();
+                const allowedTime=entity.resendAvailableAt.getTime();
+                if(presentTime<allowedTime){
+                    return res.json({msg:"It is waiting time for resend"});
+                }
+                await newEmailVarificationModel.findByIdAndUpdate(entity._id,{
+                    token:hashedToken,
+                    expiresAt:new Date(Date.now()+(15*60*1000)),
+                    resendAvailableAt:new Date(Date.now()+(60*1000))
+                });
+            }
+        }else{
+            await newEmailVarificationModel.findOneAndDelete({userId:req.user.id});
+        }
+        if(entity===null || entity===undefined){
+            await newEmailVarificationModel.create({
+                userId:req.user.id,
+                token:token,
+                expiresAt:new Date(Date.now()+(15*60*1000)),
+                resendAvailableAt:new Date(Date.now()+(60*1000)),
+                newEmail:body.newEmail
+            });
+        }
+        const newEmailSetToken=await jwt.sign({
+            token:token
+        },
+        secretKey,
+        {
+            expiresIn:"15m"
+        });
+        res.cookie("newEmailSetToken",newEmailSetToken,{
+            httpOnly:true,
+            maxAge:(15 * 60 * 1000)
+        });
+        const varificationLink=`http://localhost:8000/dashboard/projects/verifyEmail?token=${encodeURIComponent(token)}`;
+        sendVarificationEmail(body.newEmail,varificationLink);
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function verifyEmail(req,res){
+    try{
+        const token=req.query.token;
+        if(!token){
+            return res.json({msg:"Token must be given."});
+        }
+        const hashedToken=crypto.createHash("sha256")
+            .update(token)
+            .digest("hex");
+        const entity=await newEmailVarificationModel.findOneAndUpdate({token:hashedToken},{
+            isClick:true
+        });
+        if(!entity){
+            return res.json({msg:"link expired"});
+        }
+        return res.json({msg:"done"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function checkForNewEmailVerification(req,res){
+    try{
+        const token=req.cookies.newEmailSetToken;
+        if(!token){
+            return res.json({msg:"link expired"});
+        }
+        const decodedToken=await jwt.verify(token,secretKey);
+        const hashedToken=crypto.createHash("sha256")
+            .update(decodedToken.token)
+            .digest("hex");
+        const entity=await newEmailVarificationModel.findOne({token:hashedToken});
+        if(!entity){
+            return res.json({msg:"link expired"});
+        }
+        if(!entity.isClick){
+            return res.json({msg:"failed"});
+        }
+        const user=await newUser.findByIdAndUpdate(entity.userId,{
+            email:entity.newEmail
+        },{
+            new:true
+        });
+        await newEmailVarificationModel.findByIdAndDelete(entity._id);
+        res.clearCookie("newEmailSetToken");
+        if(!user){
+            return res.json({msg:"user is not found."});
+        }
+        return res.json({msg:"success",email:user.email});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function cancelNewEmailSetProcess(req,res){
+    try{
+        const token=req.cookies.newEmailSetToken;
+        if(!token){
+            await newEmailVarificationModel.findOneAndDelete({userId:req.user.id});
+            return res.json({msg:"success"});
+        }
+        const decodedToken=await jwt.verify(token,secretKey);
+        const hashedToken=crypto.createHash("sha256")
+            .update(decodedToken.token)
+            .digest("hex");
+        const entity=await newEmailVarificationModel.findOne({token:hashedToken});
+        if(!entity){
+            res.clearCookie("newEmailSetToken")
+            return res.json({msg:"success"});
+        }
+        await newEmailVarificationModel.findByIdAndDelete(entity._id);
+        res.clearCookie("newEmailSetToken");
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function resendAvailableTime(req,res){
+    try{
+        const token=req.cookies.newEmailSetToken;
+        if(!token){
+            return res.json({msg:"not available"});
+        }
+        const decodedToken=await jwt.verify(token,secretKey);
+        const hashedToken=crypto.createHash("sha256")
+            .update(decodedToken.token)
+            .digest("hex");
+        const entity=await newEmailVarificationModel.findOne({token:hashedToken});
+        if(!entity){
+            return res.json({msg:"not available"});
+        }
+        const presentTime=new Date();
+        const allowedTime=entity.resendAvailableAt.getTime();
+        if(presentTime<allowedTime){
+            const remainingSeconds=Math.ceil((allowedTime-presentTime)/1000);
+            return res.json({msg:"success",remainingSeconds:remainingSeconds});
+        }
+        return res.json({msg:"timeout"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function logOut(req,res){
+    try{
+        const userId=req.user.id;
+        const refreshToken=req.cookies.refreshToken;
+        const decodedToken=await jwt.verify(refreshToken,secretKey);
+        const jti=decodedToken.jti;
+        await sessionModel.findOneAndDelete({jti:jti});
+        res.clearCookie("Token");
+        res.clearCookie("refreshToken");
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
 module.exports={
     createProj,
     getProjects,
     getProfile,
     editName,
-    setNewPass
+    setNewPass,
+    sendNewEmailChangeLink,
+    verifyEmail,
+    checkForNewEmailVerification,
+    cancelNewEmailSetProcess,
+    resendSetNewEmailLink,
+    resendAvailableTime,
+    logOut
 }
