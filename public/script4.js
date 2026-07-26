@@ -117,6 +117,16 @@ cancelBtn.addEventListener("click",()=>{
         document.body.style.overflow="auto";
     },300);
 })
+
+const overviewProgressCardDataHolder=document.querySelector("#overviewProgressCardDataHolder");
+const overviewTotalTaskDataHolder=document.querySelector("#overviewTotalTaskDataHolder");
+const overviewTotalTeamMembersDataHolder=document.querySelector("#overviewTotalTeamMembersDataHolder");
+const overviewProjectDeadlineDataHolder=document.querySelector("#overviewProjectDeadlineDataHolder");
+const overviewRecentTaskCardDataHolder=document.querySelector("#overviewRecentTaskCardDataHolder");
+const overviewRecentActivityDataHolder=document.querySelector("#overviewRecentActivityDataHolder");
+
+let totalTeamMembers=0;
+
 async function reload(){
     const projectId=window.location.pathname.split("/").pop();
     const allMembers=await fetch(`/dashboard/projects/${projectId}/team`,{
@@ -124,6 +134,7 @@ async function reload(){
     });
     const members=await allMembers.json();
     workHeading.innerHTML=`${members.projectName}`;
+    overviewProjectDeadlineDataHolder.innerText=`${dateCreater(members.deadline)}`
     const list=document.createElement("li");
     list.innerHTML=
         `<i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> ${members.owner} </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span>`
@@ -137,6 +148,8 @@ async function reload(){
             taskButton.style.display="none";
         }
     }
+    overviewTotalTeamMembersDataHolder.innerText=`${members.team.length+1}`;
+    totalTeamMembers=members.team.length+1;
     if(members.team.length===0){
         return;
     }
@@ -172,6 +185,8 @@ inviteForm.addEventListener("submit",async (e)=>{
     activityReload();
     discussionOptionReload();
     if(result.success===true){
+        totalTeamMembers+=1;
+        overviewTotalTeamMembersDataHolder.innerText=`${totalTeamMembers}`;
         invitePage.style.animation="cancelPage 0.3s linear 0s forwards";
         setTimeout(()=>{
             invitePageHolder.style.display="none";
@@ -190,7 +205,6 @@ manageTeamButton.addEventListener("click",async ()=>{
         method:"get"
     })
     const result=await response.json();
-    console.log(result);
     manageFormDataHolder.innerHTML="";
     result.arr.forEach((teamMember)=>{
         const div=document.createElement("div");
@@ -340,6 +354,10 @@ taskAssignForm.addEventListener("submit",async (e)=>{
     });
     const result=await taskCreated.json();
     activityReload();
+    if(currUserId===result.createdTask.assignedTo._id.toString()){
+        overviewMyTask+=1;
+    }
+    overviewTotalTaskDataHolder.innerText=`${overviewMyTask}`;
     const customizedTaskDeadline=dateCreater(result.createdTask.deadline);
     filteredTasks.push(...[result.createdTask]);
     const div=document.createElement("div");
@@ -417,6 +435,7 @@ taskAssignForm.addEventListener("submit",async (e)=>{
 let currentUser="";
 let currUserId="";
 let currUserRole="";
+let overviewMyTask=0;
 
 async function taskReload(){
     projectId=window.location.pathname.split("/").pop();
@@ -430,46 +449,51 @@ async function taskReload(){
     currUserRole=allTasks.userRole;
     assignedTasks.innerHTML="";
     if(allTasks.allTasks.length===0){
+        overviewTotalTaskDataHolder.innerText=`0`;
         return;
     }
     allTasks.allTasks.forEach((task)=>{
-    const customizedTaskDeadline=dateCreater(task.deadline);
-    const div=document.createElement("div");
-    div.classList.add("singleTaskHolder");
-    div.dataset.taskId=task._id;
-    if(currUserId!==task.assignedTo._id.toString() && currUserRole==="Member"){
-        div.innerHTML=
-        `<p class="taskPara">${task.task}</p>
-        <hr class="taskHr">
-        <div class="taskInfoHolderRow">
-            <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
-            <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
-        </div>
-        <div class="taskInfoHolderRow" style="margin-bottom:0px;">
-            <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
-            <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
-        </div>`;
-    }else{
-        div.innerHTML=
-        `<p class="taskPara">${task.task}</p>
-        <hr class="taskHr">
-        <div class="taskInfoHolderRow">
-            <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
-            <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
-        </div>
-        <div class="taskInfoHolderRow" style="margin-bottom:0px;">
-            <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
-            <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
-        </div>
-        <hr class="taskHr">
-        <div class="singleTaskButtonHolder">
-            <button class="singleTaskButton taskStatusButton">Status</button>
-            <button class="singleTaskButton taskEditsButton">Edit</button>
-            <button class="singleTaskButton taskDeleteButton">Delete</button>
-        </div>`;
-    }
-    assignedTasks.appendChild(div);
+        if(currUserId===task.assignedTo._id.toString()){
+            overviewMyTask+=1;
+        }
+        const customizedTaskDeadline=dateCreater(task.deadline);
+        const div=document.createElement("div");
+        div.classList.add("singleTaskHolder");
+        div.dataset.taskId=task._id;
+        if(currUserId!==task.assignedTo._id.toString() && currUserRole==="Member"){
+            div.innerHTML=
+            `<p class="taskPara">${task.task}</p>
+            <hr class="taskHr">
+            <div class="taskInfoHolderRow">
+                <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
+                <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
+            </div>
+            <div class="taskInfoHolderRow" style="margin-bottom:0px;">
+                <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
+                <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
+            </div>`;
+        }else{
+            div.innerHTML=
+            `<p class="taskPara">${task.task}</p>
+            <hr class="taskHr">
+            <div class="taskInfoHolderRow">
+                <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
+                <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
+            </div>
+            <div class="taskInfoHolderRow" style="margin-bottom:0px;">
+                <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
+                <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
+            </div>
+            <hr class="taskHr">
+            <div class="singleTaskButtonHolder">
+                <button class="singleTaskButton taskStatusButton">Status</button>
+                <button class="singleTaskButton taskEditsButton">Edit</button>
+                <button class="singleTaskButton taskDeleteButton">Delete</button>
+            </div>`;
+        }
+        assignedTasks.appendChild(div);
     });
+    overviewTotalTaskDataHolder.innerText=`${overviewMyTask}`;
     if(currUserRole==="Member"){
         const taskEditsButton=document.querySelectorAll(".taskEditsButton");
         const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
@@ -778,17 +802,28 @@ async function activityReload(){
     if(allActivities.msg==="success"){
         allActivitiesForFilter=allActivities.activity;
         activityHolder.innerHTML="";
-        allActivities.activity.forEach((singleActivity)=>{
-            const div=document.createElement("div");
-            const hr=document.createElement("hr");
-            div.classList.add("singleActivityHolder");
-            hr.classList.add("activityHr");
-            div.innerHTML=
-                `<p class="activityPara">${singleActivity.message}</p>
-                <p class="activityTimeline" data-created-at="${singleActivity.createdAt.toString()}">${getRelativeTime(singleActivity.createdAt.toString())}</p>`;
-            activityHolder.prepend(hr);
-            activityHolder.prepend(div);
-        });
+        overviewRecentActivityDataHolder.innerHTML="";
+        let count=0;
+        if(allActivities.activity.length!==0){
+            allActivities.activity.forEach((singleActivity)=>{
+                if(count<=5){
+                    const list=document.createElement("li");
+                    list.innerHTML=
+                        `<i class="fa-solid fa-right-long"></i> <span style="color:rgb(7, 72, 84);">${singleActivity.message}</span>`
+                    count+=1;
+                    overviewRecentActivityDataHolder.prepend(list);
+                }
+                const div=document.createElement("div");
+                const hr=document.createElement("hr");
+                div.classList.add("singleActivityHolder");
+                hr.classList.add("activityHr");
+                div.innerHTML=
+                    `<p class="activityPara">${singleActivity.message}</p>
+                    <p class="activityTimeline" data-created-at="${singleActivity.createdAt.toString()}">${getRelativeTime(singleActivity.createdAt.toString())}</p>`;
+                activityHolder.prepend(hr);
+                activityHolder.prepend(div);
+            });
+        }
     }
 }
 activityReload();

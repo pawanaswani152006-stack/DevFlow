@@ -124,7 +124,7 @@ label{
     justify-content:center;
     align-items:center;
     font-size:3.5rem;
-    margin-bottom:60px;
+    margin-bottom:40px;
     padding-left:30px;
     padding-right:30px;
     padding-top:40px;
@@ -160,11 +160,12 @@ button:active{
     background-color:transparent;
     color:rgb(118, 184, 169);
     font-size:2rem;
-    margin-bottom:40px;
+    margin-bottom:30px;
     display:flex;
     align-items:center;
     border-radius:20px;
     padding:15px;
+    padding-right:25px;
 }
 #sideBarButtons{
     display:flex;
@@ -225,10 +226,17 @@ button:active{
     border-radius:20px;
     box-shadow:8px 20px 25px rgba(0,0,0,0.6);
     padding:20px;
+    padding-left:10px;
+    padding-right:10px;
 }
 .row1CardData,.managePara{
     font-size:1.6rem;
     color:rgb(3, 28, 22);
+}
+.row1CardData{
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
 }
 .row1Ans{
     color:rgb(25, 115, 130);
@@ -248,6 +256,7 @@ hr{
 #row2Card1,#row2Card2,#row3Card{
     margin-top:80px;
     max-width:450px;
+    min-width:450px;
     background-color:rgb(171, 217, 209);
     padding:10px;
     padding-top:30px;
@@ -276,10 +285,10 @@ ul{
     padding-left:0px;
     font-size:1.8rem;
     line-height:40px;
-    margin-bottom:30px;
+    margin-bottom:20px;
     list-style:none;
     margin-top:20px;
-    color:rgb(3, 28, 22);
+    color:rgb(3, 25, 28);
 }
 li{
     margin-bottom:10px;
@@ -302,6 +311,10 @@ li{
     padding-left:80px;
     margin-top:20px;
     transform:rotateY(90deg);
+}
+#discussionArea{
+    margin-top:0px;
+    padding-top:0px;
 }
 #manageButtonsHolder{
     display:flex;
@@ -545,7 +558,7 @@ select,#taskAssignmentDate,#taskEditDate{
     }
 }
 #MsgHolder{
-    min-height:60vh;
+    min-height:70vh;
     margin-top:40px;
     margin-bottom:10px;
     display:flex;
@@ -571,9 +584,8 @@ select,#taskAssignmentDate,#taskEditDate{
     border-bottom:2px solid rgb(4, 36, 42);
     position:sticky;
     top:0px;
-    /* top:17vh; */
     padding-bottom:15px;
-    padding-top:15px;
+    padding-top:40px;
     color:rgb(92, 205, 205);
     background-color:rgb(15, 60, 80)
 }
@@ -584,9 +596,6 @@ select,#taskAssignmentDate,#taskEditDate{
     border:none;
     outline:none;
     color:rgb(92, 205, 205);
-}
-#discussionArea{
-    padding-top:10px;
 }
 .msgPara{
     font-size:1.5rem;
@@ -776,4 +785,7 @@ p{
 }
 .senderName{
     font-size:1.2rem;
+}
+#chatOptions{
+    margin-top:40px;
 }

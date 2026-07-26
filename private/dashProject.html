@@ -174,41 +174,34 @@
             <h1 id="workHeading"></h1>
             <div id="firstRow">
                 <div class="row1Card">
-                    <h3 class="row1CardData"><i class="fa-solid fa-chart-line"></i> Progress <span class="row1Ans">70%</span></h3>
+                    <h3 class="row1CardData"><i class="fa-solid fa-chart-line"></i><pre> Progress </pre><span class="row1Ans" id="overviewProgressCardDataHolder"></span></h3>
                 </div>
                 <div class="row1Card">
-                    <h3 class="row1CardData"><i class="fa-solid fa-clipboard-list"></i> Total Tasks <span class="row1Ans">10</span></h3>
+                    <h3 class="row1CardData"><i class="fa-solid fa-clipboard-list"></i><pre> My Tasks </pre><span class="row1Ans" id="overviewTotalTaskDataHolder"></span></h3>
                 </div>
                 <div class="row1Card">
-                    <h3 class="row1CardData"><i class="fa-solid fa-users"></i> Team Members <span class="row1Ans">5</span></h3>
+                    <h3 class="row1CardData"><i class="fa-solid fa-users"></i><pre> Team Members </pre><span class="row1Ans" id="overviewTotalTeamMembersDataHolder"></span></h3>
                 </div>
                 <div class="row1Card">
-                    <h3 class="row1CardData"><i class="fa-solid fa-calendar-days"></i> Deadline <span class="row1Ans">7 July</span></h3>
+                    <h3 class="row1CardData"><i class="fa-solid fa-calendar-days"></i><pre> Deadline </pre><span class="row1Ans"><pre id="overviewProjectDeadlineDataHolder"></pre></span></h3>
                 </div>
             </div>
             <hr>
             <div class="secondRow">
                 <div id="row2Card1">
                     <h2 class="row2CardHeading"><i class="fa-solid fa-clipboard-list"></i> Recent Tasks</h2>
-                    <ul>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan </pre><span style="color:rgb(7, 72, 84);"> Create Homepage with perfect designing.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul </pre><span style="color:rgb(7, 72, 84);"> Create sign in and sign up pages.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin </pre><span style="color:rgb(7, 72, 84);"> Do authentication from backend.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik </pre><span style="color:rgb(7, 72, 84);"> Make dashboard page with all projects user have.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra </pre><span style="color:rgb(7, 72, 84);"> write backend code of dashbaoard page.</span></li>
+                    <ul id="overviewRecentTaskCardDataHolder">
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan</pre> <span style="color:rgb(7, 72, 84);">Create Homepage.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul</pre> <span style="color:rgb(7, 72, 84);">Create sign.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin</pre> <span style="color:rgb(7, 72, 84);">Do authentication.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik</pre> <span style="color:rgb(7, 72, 84);">Make dashboard.</span></li>
+                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra</pre> <span style="color:rgb(7, 72, 84);">write backend.</span></li>
                     </ul>
-                    <button class="quickButtons">Assigned Members <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
                 </div>
                 <div id="row2Card2">
                     <h2 class="row2CardHeading"><i class="fa-solid fa-chart-line"></i> Recent Activity</h2>
-                    <ul>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan </pre><span style="color:rgb(7, 72, 84);"> Homepage created.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul </pre><span style="color:rgb(7, 72, 84);"> Sign in and Sign up pages done.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin </pre><span style="color:rgb(7, 72, 84);"> Authentication done.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik </pre><span style="color:rgb(7, 72, 84);"> Dashboard created.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra </pre><span style="color:rgb(7, 72, 84);"> Dashboard backend written.</span></li>
+                    <ul id="overviewRecentActivityDataHolder">
                     </ul>
-                    <button class="quickButtons">View Full Activity <i class="fa-solid fa-angle-right"style="display:inline-block;"></i></button>
                 </div>
             </div>
             <hr>

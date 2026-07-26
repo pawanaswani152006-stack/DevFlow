@@ -61,7 +61,7 @@ async function getTeamMembers(req,res){
         const teamMembers=await teamModel.find({projectId}).populate("member","fullName");
         const owner=await projectModel.findById(projectId).populate("owner","fullName");
         if(owner.owner._id.toString()===req.user.id){
-            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:"Owner",projectName:owner.projectName});
+            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:"Owner",projectName:owner.projectName,deadline:owner.deadline});
         }else{
             const memberPosition=await teamModel.find({projectId:projectId,member:req.user.id}).select("position");
             return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:memberPosition[0].position,projectName:owner.projectName});
