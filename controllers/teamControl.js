@@ -8,7 +8,8 @@ const {createActivity}=require("./activityControl.js");
 async function addTeamMember(req,res){
     try{
         const body=req.body;
-        const {projectId , memberEmail , spaciality , position}=body;
+        const projectId=req.params.projectId;
+        const {memberEmail,spaciality,position}=body;
         if(!memberEmail){
             return res.json({emailMsg:"please provide email"});
         }
@@ -25,12 +26,15 @@ async function addTeamMember(req,res){
         if(!user){
             return res.json({userExistMsg:"Email doesn't exists"});
         }
+        const owner=await projectModel.findById(projectId).select("owner");
+        if(user._id.toString()===owner.owner.toString()){
+            return res.json({msg:"member already exist."});
+        }
         const memberExist=await teamModel.findOne({
             projectId:projectId,
             memberEmail:memberEmail
         })
         if(memberExist){
-            console.log("yha per");
             return res.json({existMsg:"Already in your team"});
         }
         const member=await teamModel.create({
@@ -45,8 +49,7 @@ async function addTeamMember(req,res){
         const activityMessage=`${actorName.fullName} add new team member "${user.fullName}"`
         createActivity(req.user.id.toString(),activityMessage,projectId,"member_invited",res);
         return res.json({
-            success:true,
-            member:user
+            msg:"success"
         })
 
     }catch(err){
@@ -59,15 +62,7 @@ async function getTeamMembers(req,res){
     try{
         const projectId=req.params.projectId;
         const teamMembers=await teamModel.find({projectId}).populate("member","fullName");
-        const owner=await projectModel.findById(projectId).populate("owner","fullName");
-        if(owner.owner._id.toString()===req.user.id){
-            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:"Owner",projectName:owner.projectName,deadline:owner.deadline});
-        }else{
-            const memberPosition=await teamModel.find({projectId:projectId,member:req.user.id}).select("position");
-            return res.json({team:teamMembers,owner:owner.owner.fullName,memberPosition:memberPosition[0].position,projectName:owner.projectName});
-        }
-        
-        
+        return res.json({msg:"success",team:teamMembers});
     }catch(err){
         console.log("error:",err);
         return res.json({err:"something went worng"});
@@ -79,7 +74,7 @@ async function manageTeamMember(req,res){
         const projectId=req.params.projectId;
         if(req.position==="Owner"){
             const allMembers=await teamModel.find({projectId:projectId}).populate("member","fullName");
-            return res.json({arr:allMembers});
+            return res.json({msg:"success",arr:allMembers});
         }
     }catch(err){
         console.log("error:",err);
@@ -89,9 +84,11 @@ async function manageTeamMember(req,res){
 
 async function updateRole(req,res){
     try{
+        console.log("hello");
         const teamId=req.params.teamId;
         const team=await teamModel.findById(teamId).select("position");
         const newPosition=team.position==="Admin"?"Member":"Admin";
+        console.log("yha");
         const updated=await teamModel.findByIdAndUpdate(teamId,{
             position:newPosition
         },{
@@ -101,7 +98,8 @@ async function updateRole(req,res){
         const actorName=await newUser.findById(req.user.id).select("fullName");
         const activityMessage=`${actorName.fullName} changed role of "${user.member.fullName}" to ${newPosition}`
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"role_changed",res);
-        return res.json({updatedPosition:newPosition});
+        console.log("hello bro");
+        return res.json({msg:"success",updatedPosition:newPosition});
     }catch(err){
         console.log("error:",err);
         return res.json({msg:"Something went wrong."});
@@ -116,7 +114,7 @@ async function deleteMember(req,res){
         const actorName=await newUser.findById(req.user.id).select("fullName");
         const activityMessage=`${actorName.fullName} removed "${user.member.fullName}" from team`
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"member_removed",res);
-        return res.json({msg:"deleted"});
+        return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);
         return res.json({msg:"Something went wrong."});
@@ -127,7 +125,10 @@ async function getTeamMembersName(req,res){
     try{
         const projectId=req.params.projectId;
         const names=await teamModel.find({projectId:projectId}).populate("member","fullName").select("member");
-        return res.json({names:names});
+        if(!names){
+            return res.json({msg:"failed"});
+        }
+        return res.json({msg:"success",names:names});
     }catch(err){
         console.log("Error:",err);
         return res.json({msg:"Something went wrong."});

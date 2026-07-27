@@ -11,6 +11,7 @@ const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
 const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf}=require("../controllers/notesControl.js");
 const project=require("../models/dashboard.js");
+const {getOverviewInfo}=require("../controllers/overviewControl.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
@@ -157,6 +158,15 @@ router1.post("/:projectId/team",checkAuth,restrictTo("Admin","Owner"),(req,res)=
 router1.get("/:projectId/team",checkAuth,(req,res)=>{
     try{
         getTeamMembers(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.get("/:projectId/overview",checkAuth,(req,res)=>{
+    try{
+        getOverviewInfo(req,res);
     }catch(err){
         console.log("error",err);
         return res.json({msg:"something went wrong"});

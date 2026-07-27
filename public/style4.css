@@ -99,6 +99,9 @@ label{
     width:98%;
     margin-bottom:25px;
 }
+#taskAssignmentButtonsHolder{
+    margin-top:40px;
+}
 .inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton{
     font-size:2rem;
     padding:5px;
@@ -311,6 +314,9 @@ li{
     padding-left:80px;
     margin-top:20px;
     transform:rotateY(90deg);
+}
+#taskArea{
+    padding-right:40px;
 }
 #discussionArea{
     margin-top:0px;
@@ -735,8 +741,6 @@ p{
     justify-content:center;
     align-items:center;
     padding:30px;
-    /* padding-top:20px;
-    padding-bottom:20px; */
     background:
         linear-gradient(0deg,#c14646,#920303);
     font-size:2.5rem;
@@ -750,7 +754,7 @@ p{
     background-color:transparent;
     outline:none;
     min-width:200px;
-    max-width:200px;
+    max-width:300px;
     margin-right:30px;
     margin-bottom:50px;
 }
@@ -758,6 +762,11 @@ p{
     font-size:1.5rem;
     color:rgb(4, 40, 48);
     line-height:35px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    width:100%;
 }
 .personalPDFName{
     padding:5px;
@@ -788,4 +797,61 @@ p{
 }
 #chatOptions{
     margin-top:40px;
+}
+
+.EmptyStateTitle{
+    display:flex;
+    align-items:center;
+    font-size:2.5rem;
+    color:rgb(152, 240, 247);
+    font-weight:550;
+    margin-top:30px;
+}
+.EmptyStateDescription{
+    line-height:50px;
+    font-size:2rem;
+    color:rgb(152, 240, 247);
+    margin-top:15px;
+    margin-bottom:40px;
+}
+.notesExitButton{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background-color:transparent;
+    border:none;
+    outline:none;
+    font-size:2.5rem;
+    color:rgb(113, 231, 247);
+}
+.NoRecentParaTitle{
+    color:rgb(14, 61, 65);
+    font-size:2rem;
+    margin-top:20px;
+}
+.NoRecentParaDescription{
+    color:rgb(14, 61, 65);
+    line-height:35px;
+    margin-top:10px;
+    font-size:1.5rem;
+    margin-bottom:15px;
+}
+.emptyState{
+    /* opacity:0;
+    transform:translateY(20px); */
+    /* animation:emptyCommentShow 0.3s linear 0s forwards; */
+    display:none;
+}
+@keyframes emptyCommentShow{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0px);
+    }
+}
+.overviewRecentCards{
+    display:none;
 }

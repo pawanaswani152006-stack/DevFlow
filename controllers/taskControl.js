@@ -40,11 +40,11 @@ async function createTask(req,res){
             priority:priority,
             deadline:taskDeadline
         });
-        const assignedName=await taskModel.findById(createdTask._id).populate("assignedTo","fullName");
+        const assignedName=await taskModel.findById(createdTask._id).populate("assignedTo","fullName").select(assignedTo);
         const actorName=await newUser.findById(req.user.id).select("fullName");
         const activityMessage=`${actorName.fullName} assigned a task to "${assignedName.assignedTo.fullName}"`
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_created",res);
-        return res.json({createdTask:assignedName});
+        return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"Something went wrong"});
@@ -60,10 +60,10 @@ async function getTasks(req,res){
         let ownerId=owner.owner.toString();
        
         if(req.user.id===ownerId){
-            return res.json({allTasks:allTasks,user:currUser,userRole:"Owner"});
+            return res.json({allTasks:allTasks,user:currUser,userRole:"Owner",msg:"success"});
         }
         const userRole=await teamModel.findOne({projectId:projectId,member:req.user.id}).select("position");
-        return res.json({allTasks:allTasks,user:currUser,userRole:userRole.position});
+        return res.json({allTasks:allTasks,user:currUser,userRole:userRole.position,msg:"success"});
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"Something went wrong"});
@@ -73,15 +73,13 @@ async function getTasks(req,res){
 
 async function deleteTask(req,res){
     try{
-        console.log("hello deleted");
         const taskId=req.params.taskId;
         const assignedName=await taskModel.findById(taskId).populate("assignedTo","fullName").select("assignedTo");
         await taskModel.findByIdAndDelete(taskId);
         const actorName=await newUser.findById(req.user.id).select("fullName");
-        console.log(assignedName);
         const activityMessage=`${actorName.fullName} deleted a task which is assigned to "${assignedName.assignedTo.fullName}"`;
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_deleted",res);
-        return res.json({msg:"Success"});
+        return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"Something went wrong"});
@@ -94,7 +92,7 @@ async function getStatus(req,res){
         const taskId=req.params.taskId;
         const status=await taskModel.findById(taskId);
         const names=await teamModel.find({projectId:projectId}).populate("member","fullName").select("member");
-        return res.json({currStatus:status.status,task:status,names:names});
+        return res.json({currStatus:status.status,task:status,names:names,msg:"success"});
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"Something went wrong"});
@@ -112,7 +110,7 @@ async function updateStatus(req,res){
         const actorName=await newUser.findById(req.user.id).select("fullName");
         const activityMessage=`${actorName.fullName} update status of task , which is assigned to "${assignedName.assignedTo.fullName}" , to ${body.newStatus}`;
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"task_status_changed",res);
-        return res.json({success:"true"});
+        return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"Something went wrong"});

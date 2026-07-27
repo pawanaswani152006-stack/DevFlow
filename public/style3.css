@@ -153,7 +153,8 @@ hr{
 #gridPara1,#gridPara2,#noSearchPara2{
     font-size:2rem;
     color:rgb(144, 201, 188);
-    line-height:50px;
+    /* line-height:50px; */
+    margin-bottom:25px;
 }
 @keyframes emptyFade{
     form{

@@ -191,17 +191,20 @@
                 <div id="row2Card1">
                     <h2 class="row2CardHeading"><i class="fa-solid fa-clipboard-list"></i> Recent Tasks</h2>
                     <ul id="overviewRecentTaskCardDataHolder">
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Pawan</pre> <span style="color:rgb(7, 72, 84);">Create Homepage.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Rahul</pre> <span style="color:rgb(7, 72, 84);">Create sign.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Nitin</pre> <span style="color:rgb(7, 72, 84);">Do authentication.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Ritik</pre> <span style="color:rgb(7, 72, 84);">Make dashboard.</span></li>
-                        <li><i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">Satendra</pre> <span style="color:rgb(7, 72, 84);">write backend.</span></li>
                     </ul>
+                    <div id="overviewNoRecentTaskStateHolder" class="overviewRecentCards">
+                        <p class="NoRecentParaTitle">No recent tasks</p>
+                        <p class="NoRecentParaDescription">Tasks you create or update will appear here for quick access.</p>
+                    </div>
                 </div>
                 <div id="row2Card2">
                     <h2 class="row2CardHeading"><i class="fa-solid fa-chart-line"></i> Recent Activity</h2>
                     <ul id="overviewRecentActivityDataHolder">
                     </ul>
+                    <div id="overviewNoRecentactivityStateHolder" class="overviewRecentCards">
+                        <p class="NoRecentParaTitle">No recent activity</p>
+                        <p class="NoRecentParaDescription">Team updates, task changes, and project events will appear here.</p>
+                    </div>
                 </div>
             </div>
             <hr>
@@ -237,6 +240,10 @@
             <div id="assignedTasks">
                 
             </div>
+            <div id="noTaskStateHolder" class="emptyState">
+                <pre class="EmptyStateTitle" style="margin-top:20px;"><i class="fa-solid fa-clipboard-list"></i> No task assigned yet</pre>
+                <p class="EmptyStateDescription">Tasks will appear here as your project starts making progress.</p>
+            </div>
             <div id="taskButtonHolder">
                 <button id="taskButton"><span id="taskNewIcon">+</span> Assign Task</button>
             </div>
@@ -251,6 +258,10 @@
                 </div>
             </div>
             <div id="activityHolder">
+            </div>
+            <div id="noActivityStateHolder" class="emptyState">
+                <pre class="EmptyStateTitle"><i class="fa-solid fa-chart-line"></i> No activity yet</pre>
+                <p class="EmptyStateDescription">Updates will appear here when team members create tasks, change statuses, upload files, or make other project updates.</p>
             </div>
         </div>
         <div id="discussionArea">
@@ -280,7 +291,7 @@
             </div>
             <div id="personalNotesHolder">
                 <div id="personalNotesHeader">
-                    <h2 id="personalNotesHeading">Write your note here...</h2>
+                    <h2 id="personalNotesHeading"><button class="notesExitButton" id="personalNotesLeaveButton" style="display:inline-block;"><i class="fa-solid fa-left-long"></i></button> Write your note here...</h2>
                     <form id="personalNotesForm">
                         <div id="personalNoteInputHolder">
                             <textarea id="personalNotesInput" required placeholder="Enter your note here"></textarea>
@@ -289,21 +300,33 @@
                     </form>
                 </div>
                 <div id="personalNotesGrid"></div>
+                <div id="noPersonalNotesStateHolder" class="emptyState">
+                    <pre class="EmptyStateTitle"><i class="fa-solid fa-book"></i> No notes yet</pre>
+                    <p class="EmptyStateDescription">Capture ideas, reminders, or anything you want to keep handy. Your notes stay private to you.</p>
+                </div>
             </div>
             <div id="personalPDFsHolder">
                 <div id="personalNotesHeader">
-                    <h2 id="personalPdfsHeading">Keep your personal documents organized and always within reach.</h2>
+                    <h2 id="personalPdfsHeading"><button class="notesExitButton" id="personalPdfLeaveButton" style="display:inline-block;"><i class="fa-solid fa-left-long"></i></button> Keep your personal documents organized and always within reach.</h2>
                     <button id="personalPdfUploadButton">Upload PDF</button>
                 </div>
                 <div id="personalPDFsGrid">
                 </div>
+                <div id="noPersonalPdfStateHolder" class="emptyState">
+                    <pre class="EmptyStateTitle" style="margin-top:0px;"><i class="fa-solid fa-file"></i> No PDFs yet</pre>
+                    <p class="EmptyStateDescription">Create your own document library by uploading PDFs you want to keep private and easy to access.</p>
+                </div>
             </div>
             <div id="teamPDFsHolder">
                 <div id="teamPDFHeader">
-                    <h2 id="teamPdfHeading">Keep your team's knowledge organized in one secure place.</h2>
+                    <h2 id="teamPdfHeading"><button class="notesExitButton" id="teamPdfLeaveButton" style="display:inline-block;"><i class="fa-solid fa-left-long"></i></button> Keep your team's knowledge organized in one secure place.</h2>
                     <button id="teamPdfUploadButton">Upload PDF</button>
                 </div>
                 <div id="teamPDFsGrid">
+                </div>
+                <div id="noTeamPdfStateHolder" class="emptyState">
+                    <pre class="EmptyStateTitle" style="margin-top:0px;"><i class="fa-solid fa-file"></i> No PDFs yet</pre>
+                    <p class="EmptyStateDescription">Keep project documents organized in one place. Uploaded PDFs will appear here automatically.</p>
                 </div>
             </div>
         </div>

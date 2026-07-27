@@ -22,11 +22,14 @@ newBtn.addEventListener("click",()=>{
     newProjPageHolder.style.display="flex";
     document.body.style.overflow = "hidden";
     newProjPage.style.animation="newProject 0.5s ease 0s forwards";
-    allButton.style.backgroundColor="rgb(15, 56, 56)";
-    activeBtn.style.backgroundColor="rgb(2, 17, 23)";
-    completedButton.style.backgroundColor="rgb(2, 17, 23)";
-    currentFilter="All";
-    renderProjects();
+    if(allProjects.length!==0){
+        allButton.style.backgroundColor="rgb(15, 56, 56)";
+        activeButton.style.backgroundColor="rgb(2, 17, 23)";
+        onHoldButton.style.backgroundColor="rgb(2, 17, 23)";
+        completedButton.style.backgroundColor="rgb(2, 17, 23)";
+        currentFilter="All";
+        renderProjects();
+    }
 })
 function cancelAnimation(){
     newProjPage.style.animation="cancelProject 0.5s ease 0s forwards";
@@ -65,17 +68,19 @@ form.addEventListener("submit",async (e)=>{
             emptyState.forEach((state)=>{
                 state.style.animation="emptyFade 0.1s linear 0s forwards"; 
                 setTimeout(()=>{
-                    grid.style.marginTop="10vh";
+                    grid.style.marginTop="50px";
                     grid.style.display="flex";
                     state.style.display="none";
-                    searchInput.disabled=false;
-                    allButton.disabled=false;
-                    activeButton.disabled=false;
-                    completedButton.disabled=false;
-                    allButton.style.backgroundColor="rgb(15, 56, 56)";
-                    activeButton.style.backgroundColor="rgb(2, 17, 23)";
-                    completedButton.style.backgroundColor="rgb(2, 17, 23)";
-                },100);  
+                },100);
+                searchInput.disabled=false;
+                allButton.disabled=false;
+                activeButton.disabled=false;
+                completedButton.disabled=false;
+                onHoldButton.disabled=false;
+                allButton.style.backgroundColor="rgb(15, 56, 56)";
+                activeButton.style.backgroundColor="rgb(2, 17, 23)";
+                onHoldButton.style.backgroundColor="rgb(2, 17, 23)";
+                completedButton.style.backgroundColor="rgb(2, 17, 23)";
             });
             setTimeout(()=>{
                 div.scrollIntoView({
@@ -109,14 +114,17 @@ async function reload(){
         searchInput.disabled=true;
         allButton.disabled=true;
         activeButton.disabled=true;
+        onHoldButton.disabled=true;
         completedButton.disabled=true;
         allButton.style.backgroundColor="rgb(100, 103, 104)";
         activeButton.style.backgroundColor="rgb(100, 103, 104)";
+        onHoldButton.style.backgroundColor="rgb(100, 103, 104)";
         completedButton.style.backgroundColor="rgb(100, 103, 104)";
-        grid.style.marginTop="60px";
+        grid.style.marginTop="30px";
         grid.style.display="block";
         emptyState.forEach((state)=>{
             state.style.display="block";
+            grid.appendChild(state);
         });
     }else{
         projects.arr.forEach((project)=>{
@@ -173,7 +181,7 @@ function renderProjects(){
     }
     grid.innerHTML="";
     if(filtered.length===0){
-        grid.style.marginTop="5vh";
+        grid.style.marginTop="30px";
         grid.innerHTML=
             `<h1 class="noSearchState" id="noSearchHeading" style="display:block;"><span style="font-size:3rem;color:none;background-color:transparent;"><i class="fa-solid fa-magnifying-glass-minus"></i></span> No matching projects found</h1>
             <p class="noSearchState" id="noSearchPara2" style="display:block;">Try a different search or change the selected filter.</p>`;

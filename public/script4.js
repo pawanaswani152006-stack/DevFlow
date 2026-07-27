@@ -55,6 +55,12 @@ const taskEditBtn=document.querySelector("#taskEditBtn");
 const taskEditCancelBtn=document.querySelector("#taskEditCancelBtn");
 const taskEditSelection=document.querySelector("#taskEditSelection");
 
+const noTaskStateHolder=document.querySelector("#noTaskStateHolder");
+const noActivityStateHolder=document.querySelector("#noActivityStateHolder");
+const noPersonalNotesStateHolder=document.querySelector("#noPersonalNotesStateHolder");
+const noPersonalPdfStateHolder=document.querySelector("#noPersonalPdfStateHolder");
+const noTeamPdfStateHolder=document.querySelector("#noTeamPdfStateHolder");
+
 function pageFlipAnimation(curr,currBtn){
     overviewArea.style.animation="page1Flip 0.3s linear 0s forwards";
     taskArea.style.animation="page1Flip 0.3s linear 0s forwards";
@@ -125,41 +131,78 @@ const overviewProjectDeadlineDataHolder=document.querySelector("#overviewProject
 const overviewRecentTaskCardDataHolder=document.querySelector("#overviewRecentTaskCardDataHolder");
 const overviewRecentActivityDataHolder=document.querySelector("#overviewRecentActivityDataHolder");
 
-let totalTeamMembers=0;
+const overviewNoRecentTaskStateHolder=document.querySelector("#overviewNoRecentTaskStateHolder");
+const overviewNoRecentactivityStateHolder=document.querySelector("#overviewNoRecentactivityStateHolder");
+
 
 async function reload(){
     const projectId=window.location.pathname.split("/").pop();
-    const allMembers=await fetch(`/dashboard/projects/${projectId}/team`,{
+    const response=await fetch(`/dashboard/projects/${projectId}/overview`,{
         method:"get"
     });
-    const members=await allMembers.json();
-    workHeading.innerHTML=`${members.projectName}`;
-    overviewProjectDeadlineDataHolder.innerText=`${dateCreater(members.deadline)}`
-    const list=document.createElement("li");
-    list.innerHTML=
-        `<i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> ${members.owner} </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span>`
-    teamList.appendChild(list);
-    if(members.memberPosition!=="Owner"){
-        if(members.memberPosition==="Admin"){
-            manageTeamButton.style.display="none";
-        }else{
-            manageTeamButton.style.display="none";
-            inviteCardButton.style.display="none";
-            taskButton.style.display="none";
+    const result=await response.json();
+    if(result.msg==="success"){
+        workHeading.innerHTML=`${result.project.projectName}`;
+        overviewProjectDeadlineDataHolder.innerText=`${dateCreater(result.project.deadline)}`
+        teamList.innerHTML="";
+        const list=document.createElement("li");
+        list.innerHTML=
+            `<i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> ${result.project.owner.fullName} </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span>`
+        teamList.appendChild(list);
+        if(result.position!=="Owner"){
+            if(result.position==="Admin"){
+                manageTeamButton.style.display="none";
+            }else{
+                manageTeamButton.style.display="none";
+                inviteCardButton.style.display="none";
+                taskButton.style.display="none";
+            }
         }
+        overviewTotalTaskDataHolder.innerText=`${result.myTask}`;
+        overviewTotalTeamMembersDataHolder.innerText=`${result.teamLength+1}`;
+        overviewProgressCardDataHolder.innerText=`${result.progress}`;
+        overviewRecentActivityDataHolder.innerHTML="";
+        overviewRecentTaskCardDataHolder.innerHTML="";
+        if(result.recentTasks.length!==0){
+            overviewNoRecentTaskStateHolder.style.display="none";
+            result.recentTasks.forEach((task)=>{
+                const li=document.createElement("li");
+                li.innerHTML=
+                    `<i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;">${task.assignedTo.fullName}</pre> <span style="color:rgb(7, 72, 84);">${task.task}</span>`;
+                overviewRecentTaskCardDataHolder.appendChild(li);
+            })
+        }else{
+            overviewNoRecentTaskStateHolder.style.display="block";
+            overviewNoRecentTaskStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                overviewNoRecentTaskStateHolder.style.animation="";
+            },300);
+        }
+        if(result.recentActivity.length!==0){
+            overviewNoRecentactivityStateHolder.style.display="none";
+            result.recentActivity.forEach((activity)=>{
+                const li=document.createElement("li");
+                li.innerHTML=
+                    `<i class="fa-solid fa-right-long"></i> <span style="color:rgb(7, 72, 84);">${activity.message}</span>`
+                overviewRecentActivityDataHolder.appendChild(li);
+            })
+        }else{
+            overviewNoRecentactivityStateHolder.style.display="block";
+            overviewNoRecentactivityStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                overviewNoRecentactivityStateHolder.style.animation="";
+            },300);
+        }
+        if(result.teamLength===0){
+            return;
+        }
+        result.teamMembers.forEach((member)=>{
+            const li=document.createElement("li");
+            li.innerHTML=
+                `<i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> ${member.member.fullName} (${member.spaciality}) </pre><span style="color:rgb(7, 72, 84);"> ${member.position}</span></li>`;
+            teamList.appendChild(li);
+        })
     }
-    overviewTotalTeamMembersDataHolder.innerText=`${members.team.length+1}`;
-    totalTeamMembers=members.team.length+1;
-    if(members.team.length===0){
-        return;
-    }
-    members.team.forEach((member)=>{
-        const li=document.createElement("li");
-        li.innerHTML=
-            `<i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> ${member.member.fullName} (${member.spaciality}) </pre><span style="color:rgb(7, 72, 84);"> ${member.position}</span></li>`;
-        teamList.appendChild(li);
-    })
-
 }
 reload();
 
@@ -168,12 +211,10 @@ inviteForm.addEventListener("submit",async (e)=>{
     const positionInput=document.querySelector('input[name="position"]:checked');
     const projectId=window.location.pathname.split("/").pop();
     const body={
-        projectId:projectId,
         memberEmail:emailInput.value,
         spaciality:spacialityInput.value,
         position:positionInput.value
     }
-    console.log(projectId);
     const member=await fetch(`/dashboard/projects/${projectId}/team`,{
         method:"post",
         headers: {
@@ -182,20 +223,15 @@ inviteForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await member.json();
-    activityReload();
-    discussionOptionReload();
-    if(result.success===true){
-        totalTeamMembers+=1;
-        overviewTotalTeamMembersDataHolder.innerText=`${totalTeamMembers}`;
+    if(result.msg==="success"){
+        reload();
+        activityReload();
+        discussionOptionReload();
         invitePage.style.animation="cancelPage 0.3s linear 0s forwards";
         setTimeout(()=>{
             invitePageHolder.style.display="none";
             document.body.style.overflow="auto";
         },300);
-        const li=document.createElement("li");
-        li.innerHTML=
-            `<i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> ${result.member.fullName} (${body.spaciality}) </pre><span style="color:rgb(7, 72, 84);"> ${body.position}</span></li>`;
-        teamList.appendChild(li);
     }
 })
 
@@ -205,22 +241,24 @@ manageTeamButton.addEventListener("click",async ()=>{
         method:"get"
     })
     const result=await response.json();
-    manageFormDataHolder.innerHTML="";
-    result.arr.forEach((teamMember)=>{
-        const div=document.createElement("div");
-        div.classList.add("manageMember");
-        div.dataset.teamId=teamMember._id;
-        div.innerHTML=
-            `<pre class="managePara" style="display:inline-block;font-weight:549;"><i class="fa-solid fa-user"></i> ${teamMember.member.fullName} (${teamMember.spaciality}) <span style="color:rgb(7, 72, 84);"> ${teamMember.position}</span></pre>
-            <div id="manageButtonsHolder">
-                <button class="manageButton manageAdminButton">Change Role</button>
-                <button class="manageButton manageRemoveMember">Remove Member</button>
-            </div>`;
-        manageFormDataHolder.appendChild(div);
-    })
-   manageFormPlaceHolder.style.display="flex";
-   manageFormContainer.style.animation="invitePage 0.3s linear 0s forwards";
-   document.body.style.overflow="hidden";
+    if(result.msg==="success"){
+        manageFormDataHolder.innerHTML="";
+        result.arr.forEach((teamMember)=>{
+            const div=document.createElement("div");
+            div.classList.add("manageMember");
+            div.dataset.teamId=teamMember._id;
+            div.innerHTML=
+                `<pre class="managePara" style="display:inline-block;font-weight:549;"><i class="fa-solid fa-user"></i> ${teamMember.member.fullName} (${teamMember.spaciality}) <span style="color:rgb(7, 72, 84);"> ${teamMember.position}</span></pre>
+                <div id="manageButtonsHolder">
+                    <button class="manageButton manageRoleButton">Change Role</button>
+                    <button class="manageButton manageRemoveMember">Remove Member</button>
+                </div>`;
+            manageFormDataHolder.appendChild(div);
+        })
+        manageFormPlaceHolder.style.display="flex";
+        manageFormContainer.style.animation="invitePage 0.3s linear 0s forwards";
+        document.body.style.overflow="hidden";
+    }
 })
 
 manageFormCancelButton.addEventListener("click",()=>{
@@ -232,8 +270,7 @@ manageFormCancelButton.addEventListener("click",()=>{
 })
 
 document.addEventListener("click",async (e)=>{
-    if
-    (e.target.classList.contains("manageAdminButton")){
+    if(e.target.closest(".manageRoleButton")){
         const row=e.target.closest(".manageMember");
         const memberId=row.dataset.teamId;
     
@@ -242,8 +279,10 @@ document.addEventListener("click",async (e)=>{
             method:"PATCH"
         });
         const respond=await result.json();
-        activityReload();
-        updatePage();
+        if(respond.msg==="success"){
+            activityReload();
+            updatePage();
+        }
     }
 })
 
@@ -258,65 +297,66 @@ document.addEventListener("click",async (e)=>{
             method:"delete"
         });
         const respond=await result.json();
-        activityReload();
-        updatePage();
-        discussionOptionReload();
+        if(respond.msg==="success"){
+            activityReload();
+            updatePage();
+            discussionOptionReload();
+        }
     }
 })
 
 async function updatePage(){
     const projectId=window.location.pathname.split("/").pop();
-    const allMembers=await fetch(`/dashboard/projects/${projectId}/team`,{
+    const response=await fetch(`/dashboard/projects/${projectId}/team`,{
         method:"get"
     });
-    const members=await allMembers.json();
-    manageFormDataHolder.innerHTML="";
-    teamList.innerHTML="";
-    const list=document.createElement("li");
-    list.innerHTML=
-        `<i class="fa-solid fa-crown"></i><pre style="display:inline-block;font-weight:550;"> ${members.owner} </pre><span style="color:rgb(7, 72, 84);font-weight:550;"> Owner</span>`
-    teamList.appendChild(list);
-    members.team.forEach((teamMember)=>{
-        const div=document.createElement("div");
-        div.classList.add("manageMember");
-        div.dataset.teamId=teamMember._id;
-        div.innerHTML=
-            `<pre class="managePara" style="display:inline-block;font-weight:549;"><i class="fa-solid fa-user"></i> ${teamMember.member.fullName} (${teamMember.spaciality}) <span style="color:rgb(7, 72, 84);"> ${teamMember.position}</span></pre>
-            <div id="manageButtonsHolder">
-                <button class="manageButton manageAdminButton">Change Role</button>
-                <button class="manageButton manageRemoveMember">Remove Member</button>
-            </div>`;
-        manageFormDataHolder.appendChild(div);
-
-        const li=document.createElement("li");
-        li.innerHTML=
-            `<i class="fa-solid fa-user"></i><pre style="display:inline-block;font-weight:549;"> ${teamMember.member.fullName} (${teamMember.spaciality}) </pre><span style="color:rgb(7, 72, 84);"> ${teamMember.position}</span></li>`;
-        teamList.appendChild(li);
-    })
+    const result=await response.json();
+    if(result.msg==="success"){
+        manageFormDataHolder.innerHTML="";
+        result.team.forEach((teamMember)=>{
+            const div=document.createElement("div");
+            div.classList.add("manageMember");
+            div.dataset.teamId=teamMember._id;
+            div.innerHTML=
+                `<pre class="managePara" style="display:inline-block;font-weight:549;"><i class="fa-solid fa-user"></i> ${teamMember.member.fullName} (${teamMember.spaciality}) <span style="color:rgb(7, 72, 84);"> ${teamMember.position}</span></pre>
+                <div id="manageButtonsHolder">
+                    <button class="manageButton manageRoleButton">Change Role</button>
+                    <button class="manageButton manageRemoveMember">Remove Member</button>
+                </div>`;
+            manageFormDataHolder.appendChild(div);
+        })
+    }
 }
 
+let isNoTeamMember=false;
 taskButton.addEventListener("click",async ()=>{
     const projectId=window.location.pathname.split("/").pop();
     const taskMembers=await fetch(`/dashboard/projects/${projectId}/task/names`,{
         method:"get"
     });
     const taskMemberList=await taskMembers.json();
-    taskSelection.innerHTML="";
-    if(taskMemberList.names.length===0){
-        const selectOption=document.createElement("option");
-        selectOption.innerText=`No Team Members`;
-        taskSelection.appendChild(selectOption);
-    }else{
-        taskMemberList.names.forEach((name)=>{
+    if(taskMemberList.msg==="success"){
+        taskInput.value="";
+        taskDeadline.value="";
+        taskSelection.innerHTML="";
+        if(taskMemberList.names.length===0){
+            isNoTeamMember=true;
             const selectOption=document.createElement("option");
-            selectOption.value=name.member._id;
-            selectOption.innerText=`${name.member.fullName}`;
+            selectOption.innerText=`No Team Members`;
             taskSelection.appendChild(selectOption);
-        })
+        }else{
+            isNoTeamMember=false;
+            taskMemberList.names.forEach((name)=>{
+                const selectOption=document.createElement("option");
+                selectOption.value=name.member._id;
+                selectOption.innerText=`${name.member.fullName}`;
+                taskSelection.appendChild(selectOption);
+            })
+        }
+        taskAssignmentPageHolder.style.display="flex";
+        document.body.style.overflow="hidden";
+        taskAssignmentPage.style.animation="invitePage 0.3s linear 0s forwards";
     }
-    taskAssignmentPageHolder.style.display="flex";
-    document.body.style.overflow="hidden";
-    taskAssignmentPage.style.animation="invitePage 0.3s linear 0s forwards";
 })
 taskCancelBtn.addEventListener("click",()=>{
     taskAssignmentPage.style.animation="cancelPage 0.3s linear 0s forwards";
@@ -339,6 +379,11 @@ taskAssignForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const projectId=window.location.pathname.split("/").pop();
     const priorityInput=document.querySelector('input[name="taskPriority"]:checked');
+    if(isNoTeamMember){
+        taskInput.value="";
+        taskDeadline.value="";
+        return;
+    }
     const body={
         task:taskInput.value,
         assignedTo:taskSelection.value,
@@ -353,65 +398,54 @@ taskAssignForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await taskCreated.json();
-    activityReload();
-    if(currUserId===result.createdTask.assignedTo._id.toString()){
-        overviewMyTask+=1;
+    if(result.msg==="success"){
+        activityReload();
+        noTaskStateHolder.style.display="none";
+        taskAssignmentPage.style.animation="cancelPage 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            taskAssignmentPageHolder.style.display="none";
+            document.body.style.overflow="auto";
+        },300);
+        filterTask="All";
+        taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
+        myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+        todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+        inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+        completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+        highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        taskReload();
     }
-    overviewTotalTaskDataHolder.innerText=`${overviewMyTask}`;
-    const customizedTaskDeadline=dateCreater(result.createdTask.deadline);
-    filteredTasks.push(...[result.createdTask]);
-    const div=document.createElement("div");
-    div.classList.add("singleTaskHolder");
-    div.dataset.taskId=result.createdTask._id;
-    div.innerHTML=
-        `<p class="taskPara">${result.createdTask.task}</p>
-        <hr class="taskHr">
-        <div class="taskInfoHolderRow">
-            <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${result.createdTask.assignedTo.fullName}</span></p>
-            <p class="taskInfoPara">Priority <span class="taskInfoAns">${result.createdTask.priority}</span></p>
-        </div>
-        <div class="taskInfoHolderRow" style="margin-bottom:0px;">
-            <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
-            <p class="taskInfoPara">Status <span class="taskInfoAns">${result.createdTask.status}</span></p>
-        </div>
-        <hr class="taskHr">
-        <div class="singleTaskButtonHolder">
-            <button class="singleTaskButton taskStatusButton">Status</button>
-            <button class="singleTaskButton taskEditsButton">Edit</button>
-            <button class="singleTaskButton taskDeleteButton">Delete</button>
-        </div>`;
-    assignedTasks.appendChild(div);
-    taskAssignmentPage.style.animation="cancelPage 0.3s linear 0s forwards";
-    setTimeout(()=>{
-        taskAssignmentPageHolder.style.display="none";
-        document.body.style.overflow="auto";
-    },300);
-    filterTask="All";
-    taskUpdation();
-    document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskStatusButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            currTaskId=row.dataset.taskId;
-            const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"get"
-            });
-            const nonEditStatus=await currStatus.json();
-            currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
+});
+
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".taskStatusButton")){
+        const row=e.target.closest(".singleTaskHolder");
+        const taskId=row.dataset.taskId;
+        currTaskId=row.dataset.taskId;
+        const response=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+            method:"get"
+        });
+        const result=await response.json();
+        if(result.msg==="success"){
+            currStatusAns.innerText=`  ${result.currStatus}`;
             taskStatusPageHolder.style.display="flex";
             taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
             document.body.style.overflow="hidden";
         }
-    })
-    document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskEditsButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            currTaskId=row.dataset.taskId;
-            const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"get"
-            });
-            const response=await result.json();
+    }
+})
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".taskEditsButton")){
+        const row=e.target.closest(".singleTaskHolder");
+        const taskId=row.dataset.taskId;
+        currTaskId=row.dataset.taskId;
+        const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+            method:"get"
+        });
+        const response=await result.json();
+        if(response.msg==="success"){
             taskEditPageHolder.style.display="flex";
             taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
             document.body.style.overflow="hidden";
@@ -429,13 +463,38 @@ taskAssignForm.addEventListener("submit",async (e)=>{
                 taskEditSelection.appendChild(option);
             })
         }
-    })
+    }
+})
+document.addEventListener("click",async (e)=>{
+    if(e.target.closest(".taskDeleteButton")){
+        const row=e.target.closest(".singleTaskHolder");
+        const taskId=row.dataset.taskId;
+        const response=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+            method:"delete"
+        });
+        const result=await response.json();
+        if(result.msg==="success"){
+            filteredTasks=filteredTasks.filter((task)=>{
+                return task._id!==taskId;
+            })
+            taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
+            myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+            todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+            inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+            completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+            highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+            mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+            lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+            filterTask="All";
+            taskReload();
+            activityReload();
+        }
+    }
 })
 
 let currentUser="";
 let currUserId="";
 let currUserRole="";
-let overviewMyTask=0;
 
 async function taskReload(){
     projectId=window.location.pathname.split("/").pop();
@@ -443,175 +502,30 @@ async function taskReload(){
         method:"get"
     });
     const allTasks=await taskElements.json();
-    filteredTasks=allTasks.allTasks;
-    currentUser=allTasks.user.fullName;
-    currUserId=allTasks.user._id.toString();
-    currUserRole=allTasks.userRole;
-    assignedTasks.innerHTML="";
-    if(allTasks.allTasks.length===0){
-        overviewTotalTaskDataHolder.innerText=`0`;
-        return;
-    }
-    allTasks.allTasks.forEach((task)=>{
-        if(currUserId===task.assignedTo._id.toString()){
-            overviewMyTask+=1;
+    if(allTasks.msg==="success"){
+        taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
+        myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+        todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+        inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+        completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+        highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+        filteredTasks=allTasks.allTasks;
+        currentUser=allTasks.user.fullName;
+        currUserId=allTasks.user._id.toString();
+        currUserRole=allTasks.userRole;
+        assignedTasks.innerHTML="";
+        if(allTasks.allTasks.length===0){
+            overviewTotalTaskDataHolder.innerText=`0`;
+            noTaskStateHolder.style.display="block";
+            noTaskStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                noTaskStateHolder.style.animation="";
+                return;
+            },300);
         }
-        const customizedTaskDeadline=dateCreater(task.deadline);
-        const div=document.createElement("div");
-        div.classList.add("singleTaskHolder");
-        div.dataset.taskId=task._id;
-        if(currUserId!==task.assignedTo._id.toString() && currUserRole==="Member"){
-            div.innerHTML=
-            `<p class="taskPara">${task.task}</p>
-            <hr class="taskHr">
-            <div class="taskInfoHolderRow">
-                <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
-                <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
-            </div>
-            <div class="taskInfoHolderRow" style="margin-bottom:0px;">
-                <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
-                <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
-            </div>`;
-        }else{
-            div.innerHTML=
-            `<p class="taskPara">${task.task}</p>
-            <hr class="taskHr">
-            <div class="taskInfoHolderRow">
-                <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
-                <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
-            </div>
-            <div class="taskInfoHolderRow" style="margin-bottom:0px;">
-                <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
-                <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
-            </div>
-            <hr class="taskHr">
-            <div class="singleTaskButtonHolder">
-                <button class="singleTaskButton taskStatusButton">Status</button>
-                <button class="singleTaskButton taskEditsButton">Edit</button>
-                <button class="singleTaskButton taskDeleteButton">Delete</button>
-            </div>`;
-        }
-        assignedTasks.appendChild(div);
-    });
-    overviewTotalTaskDataHolder.innerText=`${overviewMyTask}`;
-    if(currUserRole==="Member"){
-        const taskEditsButton=document.querySelectorAll(".taskEditsButton");
-        const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
-        const taskStatusButton=document.querySelectorAll(".taskStatusButton");
-        taskEditsButton.forEach((button)=>{
-            button.style.display="none";
-        })
-        taskDeleteButton.forEach((button)=>{
-            button.style.display="none";
-        })
-    }
-    document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskStatusButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            currTaskId=row.dataset.taskId;
-            const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"get"
-            });
-            const nonEditStatus=await currStatus.json();
-            currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
-            taskStatusPageHolder.style.display="flex";
-            taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
-            document.body.style.overflow="hidden";
-        }
-    })
-    document.addEventListener("click",async (e)=>{
-        if(e.target.classList.contains("taskEditsButton")){
-            const row=e.target.closest(".singleTaskHolder");
-            const taskId=row.dataset.taskId;
-            currTaskId=row.dataset.taskId;
-            const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                method:"get"
-            });
-            const response=await result.json();
-            taskEditPageHolder.style.display="flex";
-            taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
-            document.body.style.overflow="hidden";
-            taskEditInput.value=response.task.task;
-            taskEditDate.value=response.task.deadline.split("T")[0];
-            taskEditSelection.innerHTML="";
-            response.names.forEach((name)=>{
-                const option=document.createElement("option");
-                option.innerText=`${name.member.fullName}`;
-                option.value=name.member._id.toString();
-                if(response.task.assignedTo.toString()===name.member._id.toString()){
-                    option.selected=true;
-                }
-                taskEditSelection.appendChild(option);
-            })
-        }
-    })
-}
-taskReload();
-
-const taskAllBtn=document.querySelector("#taskAllBtn");
-const myTaskBtn=document.querySelector("#myTaskBtn");
-const todoBtn=document.querySelector("#todoBtn");
-const inProgressBtn=document.querySelector("#inProgressBtn");
-const completedBtn=document.querySelector("#completedBtn");
-const highPriorityBtn=document.querySelector("#highPriorityBtn");
-const mediumPriorityBtn=document.querySelector("#mediumPriorityBtn");
-const lowPriorityBtn=document.querySelector("#lowPriorityBtn");
-
-let filterTask="All";
-taskAllBtn.addEventListener("click",()=>{
-    filterTask="All";
-    taskUpdation();
-});
-myTaskBtn.addEventListener("click",()=>{
-    filterTask="MyTasks";
-    taskUpdation();
-});
-todoBtn.addEventListener("click",()=>{
-    filterTask="Todo";
-    taskUpdation();
-});
-inProgressBtn.addEventListener("click",()=>{
-    filterTask="In Progress";
-    taskUpdation();
-});
-completedBtn.addEventListener("click",()=>{
-    filterTask="Completed";
-    taskUpdation();
-});
-highPriorityBtn.addEventListener("click",()=>{
-    filterTask="High";
-    taskUpdation();
-});
-lowPriorityBtn.addEventListener("click",()=>{
-    filterTask="Low";
-    taskUpdation();
-});
-mediumPriorityBtn.addEventListener("click",()=>{
-    filterTask="Medium";
-    taskUpdation();
-});
-
-async function taskUpdation(){
-    let filtered=filteredTasks;
-    if(filterTask==="MyTasks"){
-        filtered=filtered.filter((task)=>{
-            return task.assignedTo.fullName===currentUser;
-        })
-    }
-    if(filterTask==="Todo" || filterTask==="In Progress" || filterTask==="Completed"){
-        filtered=filtered.filter((task)=>{
-            return task.status===filterTask;
-        })
-    }
-    if(filterTask==="High" || filterTask==="Low" || filterTask==="Medium"){
-        filtered=filtered.filter((task)=>{
-            return task.priority===filterTask;
-        })
-    }
-    assignedTasks.innerHTML="";
-    if(filtered.length!==0){
-        filtered.forEach((task)=>{
+        allTasks.allTasks.forEach((task)=>{
             const customizedTaskDeadline=dateCreater(task.deadline);
             const div=document.createElement("div");
             div.classList.add("singleTaskHolder");
@@ -647,8 +561,35 @@ async function taskUpdation(){
                     <button class="singleTaskButton taskDeleteButton">Delete</button>
                 </div>`;
             }
-            assignedTasks.appendChild(div);
+            assignedTasks.prepend(div);
         });
+        if(allTasks.allTasks.length===0){
+            mediumPriorityBtn.style.backgroundColor="rgb(118, 135, 135)";
+            myTaskBtn.style.backgroundColor="rgb(118, 135, 135)";
+            todoBtn.style.backgroundColor="rgb(118, 135, 135)";
+            inProgressBtn.style.backgroundColor="rgb(118, 135, 135)";
+            completedBtn.style.backgroundColor="rgb(118, 135, 135)";
+            highPriorityBtn.style.backgroundColor="rgb(118, 135, 135)";
+            taskAllBtn.style.backgroundColor="rgb(118, 135, 135)";
+            lowPriorityBtn.style.backgroundColor="rgb(118, 135, 135)";
+            mediumPriorityBtn.disabled=true;
+            myTaskBtn.disabled=true;
+            todoBtn.disabled=true;
+            inProgressBtn.disabled=true;
+            completedBtn.disabled=true;
+            highPriorityBtn.disabled=true;
+            taskAllBtn.disabled=true;
+            lowPriorityBtn.disabled=true;
+        }else{
+            mediumPriorityBtn.disabled=false;
+            myTaskBtn.disabled=false;
+            todoBtn.disabled=false;
+            inProgressBtn.disabled=false;
+            completedBtn.disabled=false;
+            highPriorityBtn.disabled=false;
+            taskAllBtn.disabled=false;
+            lowPriorityBtn.disabled=false;
+        }
         if(currUserRole==="Member"){
             const taskEditsButton=document.querySelectorAll(".taskEditsButton");
             const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
@@ -660,63 +601,203 @@ async function taskUpdation(){
                 button.style.display="none";
             })
         }
-        const projectId=window.location.pathname.split("/").pop();
-        document.addEventListener("click",async (e)=>{
-            if(e.target.classList.contains("taskDeleteButton")){
-                const row=e.target.closest(".singleTaskHolder");
-                const taskId=row.dataset.taskId;
-                await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                    method:"delete"
-                });
-                filteredTasks=filteredTasks.filter((task)=>{
-                    return task._id!==taskId;
-                })
-                taskUpdation();
-                activityReload();
-            }
+    }
+}
+taskReload();
+
+const taskAllBtn=document.querySelector("#taskAllBtn");
+const myTaskBtn=document.querySelector("#myTaskBtn");
+const todoBtn=document.querySelector("#todoBtn");
+const inProgressBtn=document.querySelector("#inProgressBtn");
+const completedBtn=document.querySelector("#completedBtn");
+const highPriorityBtn=document.querySelector("#highPriorityBtn");
+const mediumPriorityBtn=document.querySelector("#mediumPriorityBtn");
+const lowPriorityBtn=document.querySelector("#lowPriorityBtn");
+
+let filterTask="All";
+taskAllBtn.addEventListener("click",()=>{
+    taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="All";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0s linear 0s forwards";
+    // noTaskStateHolder.display="none";
+    taskUpdation();
+});
+myTaskBtn.addEventListener("click",()=>{
+    myTaskBtn.style.backgroundColor="rgb(51, 160, 160)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="MyTasks";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+todoBtn.addEventListener("click",()=>{
+    todoBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="Todo";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+inProgressBtn.addEventListener("click",()=>{
+    inProgressBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="In Progress";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+completedBtn.addEventListener("click",()=>{
+    completedBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="Completed";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+highPriorityBtn.addEventListener("click",()=>{
+    highPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="High";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+lowPriorityBtn.addEventListener("click",()=>{
+    lowPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="Low";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+mediumPriorityBtn.addEventListener("click",()=>{
+    mediumPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
+    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
+    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
+    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
+    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
+    highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
+    lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
+    filterTask="Medium";
+    // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+    taskUpdation();
+});
+
+function taskUpdation(){
+    let filtered=filteredTasks;
+    if(filterTask==="MyTasks"){
+        filtered=filtered.filter((task)=>{
+            return task.assignedTo.fullName===currentUser;
         })
-        document.addEventListener("click",async (e)=>{
-            if(e.target.classList.contains("taskStatusButton")){
-                const row=e.target.closest(".singleTaskHolder");
-                const taskId=row.dataset.taskId;
-                currTaskId=row.dataset.taskId;
-                const currStatus=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                    method:"get"
-                });
-                const nonEditStatus=await currStatus.json();
-                currStatusAns.innerText=`  ${nonEditStatus.currStatus}`;
-                taskStatusPageHolder.style.display="flex";
-                taskStatusUpdatePage.style.animation="invitePage 0.3s linear 0s forwards";
-                document.body.style.overflow="hidden";
-            }
+    }
+    if(filterTask==="Todo" || filterTask==="In Progress" || filterTask==="Completed"){
+        filtered=filtered.filter((task)=>{
+            return task.status===filterTask;
         })
-        document.addEventListener("click",async (e)=>{
-            if(e.target.classList.contains("taskEditsButton")){
-                const row=e.target.closest(".singleTaskHolder");
-                const taskId=row.dataset.taskId;
-                currTaskId=row.dataset.taskId;
-                const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
-                    method:"get"
-                });
-                const response=await result.json();
-                taskEditPageHolder.style.display="flex";
-                taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
-                document.body.style.overflow="hidden";
-                taskEditInput.value=response.task.task;
-                taskEditDate.value=response.task.deadline.split("T")[0];
-                currTaskPriority=response.task.priority.trim();
-                taskEditSelection.innerHTML="";
-                response.names.forEach((name)=>{
-                    const option=document.createElement("option");
-                    option.innerText=`${name.member.fullName}`;
-                    option.value=name.member._id.toString();
-                    if(response.task.assignedTo.toString()===name.member._id.toString()){
-                        option.selected=true;
-                    }
-                    taskEditSelection.appendChild(option);
+    }
+    if(filterTask==="High" || filterTask==="Low" || filterTask==="Medium"){
+        filtered=filtered.filter((task)=>{
+            return task.priority===filterTask;
+        })
+    }
+    assignedTasks.innerHTML="";
+    if(filtered.length!==0){
+        // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            noTaskStateHolder.style.display="none";
+            filtered.forEach((task)=>{
+                const customizedTaskDeadline=dateCreater(task.deadline);
+                const div=document.createElement("div");
+                div.classList.add("singleTaskHolder");
+                div.dataset.taskId=task._id;
+                if(currUserId!==task.assignedTo._id.toString() && currUserRole==="Member"){
+                    div.innerHTML=
+                    `<p class="taskPara">${task.task}</p>
+                    <hr class="taskHr">
+                    <div class="taskInfoHolderRow">
+                        <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
+                        <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
+                    </div>
+                    <div class="taskInfoHolderRow" style="margin-bottom:0px;">
+                        <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
+                        <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
+                    </div>`;
+                }else{
+                    div.innerHTML=
+                    `<p class="taskPara">${task.task}</p>
+                    <hr class="taskHr">
+                    <div class="taskInfoHolderRow">
+                        <p class="taskInfoPara">Assigned to <span class="taskInfoAns">${task.assignedTo.fullName}</span></p>
+                        <p class="taskInfoPara">Priority <span class="taskInfoAns">${task.priority}</span></p>
+                    </div>
+                    <div class="taskInfoHolderRow" style="margin-bottom:0px;">
+                        <p class="taskInfoPara">Deadline <span class="taskInfoAns">${customizedTaskDeadline}</span></p>
+                        <p class="taskInfoPara">Status <span class="taskInfoAns">${task.status}</span></p>
+                    </div>
+                    <hr class="taskHr">
+                    <div class="singleTaskButtonHolder">
+                        <button class="singleTaskButton taskStatusButton">Status</button>
+                        <button class="singleTaskButton taskEditsButton">Edit</button>
+                        <button class="singleTaskButton taskDeleteButton">Delete</button>
+                    </div>`;
+                }
+                assignedTasks.prepend(div);
+            });
+            if(currUserRole==="Member"){
+                const taskEditsButton=document.querySelectorAll(".taskEditsButton");
+                const taskDeleteButton=document.querySelectorAll(".taskDeleteButton");
+                const taskStatusButton=document.querySelectorAll(".taskStatusButton");
+                taskEditsButton.forEach((button)=>{
+                    button.style.display="none";
                 })
-        }
-    })
+                taskDeleteButton.forEach((button)=>{
+                    button.style.display="none";
+                })
+            }
+    }else{
+        noTaskStateHolder.style.display="block";
+        // noTaskStateHolder.style.animation="";
+        noTaskStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            noTaskStateHolder.style.animation="";
+        },300);
     }
 }
 
@@ -743,15 +824,16 @@ taskStatusForm.addEventListener("submit",async (e)=>{
         },
         body:JSON.stringify(body)
     });
-    const result=editStatus.json();
-    console.log("hello bro");
-    taskStatusUpdatePage.style.animation="cancelPage 0.3s linear 0s forwards";
-    setTimeout(()=>{
-        taskStatusPageHolder.style.display="none";
-        document.body.style.overflow="auto";
-        taskReload();
-        activityReload();
-    },300);
+    const result=await editStatus.json();
+    if(result.msg==="success"){
+        taskStatusUpdatePage.style.animation="cancelPage 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            taskStatusPageHolder.style.display="none";
+            document.body.style.overflow="auto";
+            taskReload();
+            activityReload();
+        },300);
+    }
 })
 
 taskEditCancelBtn.addEventListener("click",()=>{
@@ -800,19 +882,18 @@ async function activityReload(){
     });
     const allActivities=await activity.json();
     if(allActivities.msg==="success"){
+        activityFilter="All";
+        activityAllButton.style.backgroundColor="rgb(51, 160, 160)";
+        activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
+        activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
         allActivitiesForFilter=allActivities.activity;
         activityHolder.innerHTML="";
-        overviewRecentActivityDataHolder.innerHTML="";
-        let count=0;
         if(allActivities.activity.length!==0){
+            noActivityStateHolder.style.display="none";
+            activityAllButton.disabled=false;
+            activityTaskButton.disabled=false;
+            activityTeamButton.disabled=false;
             allActivities.activity.forEach((singleActivity)=>{
-                if(count<=5){
-                    const list=document.createElement("li");
-                    list.innerHTML=
-                        `<i class="fa-solid fa-right-long"></i> <span style="color:rgb(7, 72, 84);">${singleActivity.message}</span>`
-                    count+=1;
-                    overviewRecentActivityDataHolder.prepend(list);
-                }
                 const div=document.createElement("div");
                 const hr=document.createElement("hr");
                 div.classList.add("singleActivityHolder");
@@ -823,7 +904,20 @@ async function activityReload(){
                 activityHolder.prepend(hr);
                 activityHolder.prepend(div);
             });
+        }else{
+            activityAllButton.style.backgroundColor="rgb(91, 107, 107)";
+            activityTaskButton.style.backgroundColor="rgb(91, 107, 107)";
+            activityTeamButton.style.backgroundColor="rgb(91, 107, 107)";
+            activityAllButton.disabled=true;
+            activityTaskButton.disabled=true;
+            activityTeamButton.disabled=true;
+            noActivityStateHolder.style.display="block";
+            noActivityStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                noActivityStateHolder.style.animation="";
+            },300);
         }
+        reload();
     }
 }
 activityReload();
@@ -868,16 +962,25 @@ let activityFilter="All";
 
 activityAllButton.addEventListener("click",()=>{
     activityFilter="All";
+    activityAllButton.style.backgroundColor="rgb(51, 160, 160)";
+    activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
     activityFilterUpdation()
 });
 
 activityTaskButton.addEventListener("click",()=>{
     activityFilter="Task";
+    activityTaskButton.style.backgroundColor="rgb(51, 160, 160)";
+    activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
     activityFilterUpdation()
 });
 
 activityTeamButton.addEventListener("click",()=>{
     activityFilter="Team";
+    activityTeamButton.style.backgroundColor="rgb(51, 160, 160)";
+    activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
     activityFilterUpdation()
 });
 
@@ -895,6 +998,7 @@ function activityFilterUpdation(){
     }
     activityHolder.innerHTML="";
     if(filtered.length!==0){
+        noActivityStateHolder.style.display="none";
         filtered.forEach((singleActivity)=>{
             const div=document.createElement("div");
             const hr=document.createElement("hr");
@@ -906,6 +1010,12 @@ function activityFilterUpdation(){
             activityHolder.prepend(hr);
             activityHolder.prepend(div);
         });
+    }else{
+        noActivityStateHolder.style.display="block";
+        noActivityStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            noActivityStateHolder.style.animation="";
+        },300);
     }
 }
 
@@ -1287,6 +1397,7 @@ personalNotesForm.addEventListener("submit",async (e)=>{
         })
         const response=await result.json();
         if(response.createdNote){
+            noPersonalNotesStateHolder.style.display="none";
             const div=document.createElement("div");
             div.dataset.id=response.createdNote._id;
             div.dataset.note=response.createdNote.note;
@@ -1325,6 +1436,7 @@ async function getPersonalNotes(){
     personalNotesGrid.innerHTML="";
     if(response.msg==="success"){
         if(response.personalNotes.length!==0){
+            noPersonalNotesStateHolder.style.display="none";
             response.personalNotes.forEach((note)=>{
                 const div=document.createElement("div");
                 div.dataset.id=note._id;
@@ -1343,6 +1455,8 @@ async function getPersonalNotes(){
                 personalNotesGrid.prepend(div);
                 personalNotesInput.value="";
             })
+        }else{
+            noPersonalNotesStateHolder.style.display="block";
         }
     }
 }
@@ -1486,7 +1600,7 @@ async function PdfReload(){
     const response=await result.json();
     if(response.msg==="success"){
         if(response.pdfs.length!==0){
-            console.log("nhi yha per");
+            noPersonalPdfStateHolder.style.display="none";
             response.pdfs.forEach((pdf)=>{
                 const button=document.createElement("button");
                 button.classList.add("personalPDFButton");
@@ -1498,8 +1612,11 @@ async function PdfReload(){
                     <div class="personalPDFName"><p class="personalPDFNamePara">${pdf.pdfName}</p></div>`;
                 personalPDFsGrid.prepend(button);
             })
+        }else{
+            noPersonalPdfStateHolder.style.display="block";
         }
         if(response.teamPdfs.length!==0){
+            noTeamPdfStateHolder.style.display="none";
             response.teamPdfs.forEach((pdf)=>{
                 const button=document.createElement("button");
                 button.classList.add("personalPDFButton");
@@ -1517,11 +1634,43 @@ async function PdfReload(){
                     </div>`;
                 teamPDFsGrid.prepend(button);
             })
-            console.log(response);
             if(response.position==="Member"){
                 teamPdfUploadButton.style.display="none";
             }
+        }else{
+            noTeamPdfStateHolder.style.display="block";
         }
     }
 }
 PdfReload();
+
+const personalNotesLeaveButton=document.querySelector("#personalNotesLeaveButton");
+const personalPdfLeaveButton=document.querySelector("#personalPdfLeaveButton");
+const teamPdfLeaveButton=document.querySelector("#teamPdfLeaveButton");
+
+personalNotesLeaveButton.addEventListener("click",()=>{
+    personalNotesHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="block";
+        personalNotesHolder.style.display="none";
+        notesNavigationHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+personalPdfLeaveButton.addEventListener("click",()=>{
+    personalPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="block";
+        personalPDFsHolder.style.display="none";
+        notesNavigationHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
+
+teamPdfLeaveButton.addEventListener("click",()=>{
+    teamPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        notesNavigationHolder.style.display="block";
+        teamPDFsHolder.style.display="none";
+        notesNavigationHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+    },300);
+})
