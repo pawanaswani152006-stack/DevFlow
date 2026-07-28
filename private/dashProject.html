@@ -156,6 +156,79 @@
         </div>
     </form>
 
+    <div id="projectSettingPageHolder">
+        <form id="taskSettingEditPageForm">
+            <div id="projectSettingEditPage">
+                <h1 id="projectSettingEditPageHeading">Edit Project</h1>
+                <div class="projectSettingEditPageDataHolder">
+                    <p class="projectSettingEditPagePara">Project Name</p>
+                    <input id="projectSettingEditPageProjectNameInput" class="input" required type="text" placeholder="Enter your project name">
+                </div>
+                <div id="projectSettingEditPageDateHolder">
+                    <p class="projectSettingEditPagePara">Deadline</p>
+                    <input id="projectSettingEditPageDeadlineInput" required type="date">
+                </div>
+                <div class="projectSettingEditPageDataHolder">
+                    <p class="projectSettingEditPagePara">Description</p>
+                    <textarea required maxlength="80" placeholder="Maximum 80 characters" class="input" id="projectSettingEditPageDescriptionHolder"></textarea>
+                </div>
+                <div id="projectSettingEditPageButtonHolder">
+                    <button class="projectSettingEditPageButton" style="padding-left:30px;padding-right:30px;" type="submit">Edit</button>
+                    <button class="projectSettingEditPageButton" type="button" id="projectSettingEditPageCancelButton">Cancel</button>
+                </div>
+                <p class="projectSettingCommentPara" id="projectSettingEditPageComment"></p>
+            </div>
+        </form>
+        <form id="projectSettingStatusForm">
+            <div id="projectSettingEditStatusPage">
+                <h1 id="projectSettingEditStatusHeading">Change Status</h1>
+                <div id="projectSettingEditStatusDataHolder">
+                    <p id="projectSettingEditStatusPara">New Status</p>
+                    <label>
+                        <input type="radio" name="projectNewStatus" required value="Active">Active
+                    </label>
+                    <label>
+                       <input type="radio" name="projectNewStatus" required value="On Hold">On Hold
+                    </label>
+                    <label>
+                        <input type="radio" name="projectNewStatus" required value="Completed">Completed
+                    </label>
+                </div>
+                <div id="projectSettingEditStatusButtonHolder">
+                    <button class="projectSettingEditStatusButton" type="submit">Change</button>
+                    <button class="projectSettingEditStatusButton" type="button" id="projectSettingEditStatusCancelButton">Cancel</button>
+                </div>
+                <p class="projectSettingCommentPara" id="projectSettingEditStatusPageComment" style="margin-top:25px;"></p>
+            </div>
+        </form>
+        <div id="projectSettingDeletePage">
+            <h1 id="projectSettingDeletePageHeading">Delete Project</h1>
+            <p id="projectSettingDeletePagePara">Warning</p>
+            <p id="projectSettingDeletePageDescription">This action is permanent and cannot be undone. Deleting this project will permanently remove all tasks, notes, files, and activity associated with it.</p>
+            <div id="projectSettingDeletePageButtonHolder">
+                <button class="projectSettingDeletePageButton" id="projectSettingDeletePageDeleteButton">Delete</button>
+                <button class="projectSettingDeletePageButton" id="projectSettingDeletePageCancelButton">Cancel</button>
+            </div>
+            <p class="projectSettingCommentPara" id="projectSettingDeletePageComment"></p>
+        </div>
+
+        <div id="projectSettingPage">
+            <h1 id="projectSettingHeading">Project Settings</h1>
+            <p id="projectSettingNameHolder">Tic Tac Toe</p>
+            <pre class="projectSettingPara">Description <span class="projectSettingAnsPara" id="projectSettingDescriptionHolder"></span></pre>
+            <pre class="projectSettingPara">Owner <span class="projectSettingAnsPara" id="projectSettingOwnerNameHolder"></span></pre>
+            <pre class="projectSettingPara">Deadline <span class="projectSettingAnsPara" id="projectSettingDeadlineHolder"></span></pre>
+            <pre class="projectSettingPara">Status <span class="projectSettingAnsPara" id="projectSettingStatusHolder"></span></pre>
+            <pre id="projectSettingOptions">If you want to change project's status than <button class="projectSettingOptionButton" id="projectSettingEditStatusButton">Click here</button>
+If you want to transfer the project's ownership than <button class="projectSettingOptionButton" id="projectSettingTransferOwnershipButton">Click here</button>
+If you want to delete this project than <button class="projectSettingOptionButton" id="projectSettingDeleteProjectButton">Click here</button></pre>
+            <div id="projectSettingButtonHolder">
+                <button class="projectSettingButton" style="padding-left:35px;padding-right:35px;" id="projectSettingEditButton">Edit Project</button>
+                <button class="projectSettingButton" id="projectSettingCloseButton">Close Settings</button>
+            </div>
+        </div>
+    </div>
+
     <div id="mainArea">
         <div id="sideBar">
             <h1 id="logo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
@@ -167,6 +240,7 @@
                     <button id="discussion" class="button"><i class="fa-solid fa-message"></i><pre> Discussion</pre></button>
                     <button id="notes" class="button"><i class="fa-solid fa-book-open"></i><pre> Notes</pre></button>
                     <button id="projectSetting" class="button"><i class="fa-solid fa-gear"></i><pre> Project</pre></button>
+                    <button id="backToDashboard" class="button"><i class="fa-solid fa-door-open"></i><pre> Leave</pre></button>
                 </div>
             </div>
         </div>

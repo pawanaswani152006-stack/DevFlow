@@ -159,7 +159,7 @@ function projectCard(owner,projectName,description,deadline,projectId){
     cardButton.appendChild(div);
     cardButton.dataset.projectId=projectId;
     cardButton.addEventListener("click",()=>{
-        location.href=`/dashboard/projects/${cardButton.dataset.projectId}`;
+        location.replace(`/dashboard/projects/${cardButton.dataset.projectId}`);
     })
     grid.appendChild(cardButton);
     return div;
@@ -231,7 +231,7 @@ onHoldButton.addEventListener("click",()=>{
     allButton.style.backgroundColor="rgb(2, 17, 23)";
     activeBtn.style.backgroundColor="rgb(2, 17, 23)";
     completedButton.style.backgroundColor="rgb(2, 17, 23)";
-    currentFilter="onHold";
+    currentFilter="On Hold";
     renderProjects();
 });
 

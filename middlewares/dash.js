@@ -3,6 +3,8 @@ const secretKey=process.env.secretKey;
 const newUser=require("../models/logIn.js");
 const crypto=require("crypto");
 const sessionModel=require("../models/refreshSession.js");
+const projectModel=require("../models/dashboard.js");
+const teamModel=require("../models/teamModel.js");
 
 async function checkAuth(req,res,next){
     try{
@@ -77,4 +79,25 @@ async function checkAuth(req,res,next){
     }
 }
 
-module.exports=checkAuth;
+async function checkForProject(req,res,next){
+    try{
+        const userId=req.user.id;
+        const projectId=req.params.projectId;
+        const project=await projectModel.findById(projectId);
+        if(!project){
+            return res.redirect("/dashboard");
+        }
+        if(req.user.id!==project.owner.toString()){
+            const member=await teamModel.findOne({projectId:projectId,member:req.user.id});
+            if(!member){
+                return res.redirect("/dashboard");
+            }
+        }
+        next();
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+}
+
+module.exports={checkAuth,checkForProject};

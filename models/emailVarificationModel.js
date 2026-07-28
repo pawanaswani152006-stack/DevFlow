@@ -20,10 +20,6 @@ const emailVarificationSchema=new mongoose.Schema({
     },
     resendAvailableAt:{
         type:Date
-    },
-    isClick:{
-        type:Boolean,
-        default:false
     }
 },{timestamps:true});
 

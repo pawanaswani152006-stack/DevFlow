@@ -17,6 +17,8 @@ async function createProj(req,res){
         const {projectName,textArea}=body;
         const deadline=new Date(body.deadline);
         const today=new Date();
+        today.setHours(0,0,0,0);
+        deadline.setHours(0,0,0,0);
         if(!projectName){
             return res.json({name:"Project name can't be empty."});
         }else if(!deadline){
@@ -351,6 +353,27 @@ async function logOut(req,res){
     }
 }
 
+async function getProjectInfo(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const existingProject=await project.findById(projectId).populate("owner","fullName");
+        if(!project){
+            return req.json({msg:"project is not found."});
+        }
+        let position;
+        if(req.user.id===existingProject.owner._id.toString()){
+            position="Owner"
+        }else{
+            const userPosition=await teamModel.findOne({member:req.user.id}).select("position");
+            position=userPosition.position;
+        }
+        return res.json({msg:"success",project:existingProject,position:position});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
 module.exports={
     createProj,
     getProjects,
@@ -363,5 +386,6 @@ module.exports={
     cancelNewEmailSetProcess,
     resendSetNewEmailLink,
     resendAvailableTime,
-    logOut
+    logOut,
+    getProjectInfo
 }

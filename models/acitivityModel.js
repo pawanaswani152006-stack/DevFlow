@@ -21,7 +21,8 @@ const activitySchema=new mongoose.Schema({
             "task_status_changed",
             "member_invited",
             "member_removed",
-            "role_changed"
+            "role_changed",
+            "project_related"
         ]
     },
     message:{

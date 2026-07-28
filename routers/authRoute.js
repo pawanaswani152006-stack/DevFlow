@@ -1,7 +1,7 @@
 const express=require("express");
 const router=express.Router();
 let {createUser,varifyUser,emailVarification,getUser,goDashboard,resendEmail,getEmail,changeEmail,resendTime,sendLink,emailVarificationForResetPassword,checkForResetPass,cancelResetPassProcess,setNewPassword,resendResetPassLink,passResendTime,isSuccess}=require("../controllers/authControl.js");
-const checkAuth=require("../middlewares/dash.js");
+const {checkAuth}=require("../middlewares/dash.js");
 const path=require("path");
 
 router.get("/",(req,res)=>{

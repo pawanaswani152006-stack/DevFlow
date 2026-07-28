@@ -19,7 +19,7 @@ const projectSchema=new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:["Active","onHold","Completed"],
+        enum:["Active","On Hold","Completed"],
         default:"Active"
     },
     isArchived:{

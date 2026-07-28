@@ -450,7 +450,7 @@ document.addEventListener("click",async (e)=>{
             taskEditPage.style.animation="invitePage 0.3s linear 0s forwards";
             document.body.style.overflow="hidden";
             taskEditInput.value=response.task.task;
-            taskEditDate.value=response.task.deadline.split("T")[0];
+            taskEditDate.value=correctDateCreator(response.task.deadline);
             currTaskPriority=response.task.priority.trim();
             taskEditSelection.innerHTML="";
             response.names.forEach((name)=>{
@@ -1541,6 +1541,7 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
 
     pdfSubmitButton.style.display="none";
     pdfCancelButton.innerText="Uploading...";
+    pdfCancelButton.disabled=true;
     pdfFormButtonHolder.style.justifyContent="center";
 
     formData.append("pdf",file);
@@ -1561,6 +1562,7 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
 
     pdfSubmitButton.style.display="flex";
     pdfCancelButton.innerText="Cancel";
+    pdfCancelButton.disabled=false;
     pdfFormButtonHolder.style.justifyContent="space-around";
 
     pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
@@ -1577,9 +1579,11 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
         </div>
         <div class="personalPDFName"><p class="personalPDFNamePara">${result.createdPdf.pdfName}</p></div>`;
     if(isTeamPdf){
+        noTeamPdfStateHolder.style.display="none";
         teamPDFsGrid.prepend(button);
         isTeamPdf=false;
     }else{
+        noPersonalPdfStateHolder.style.display="none";
         personalPDFsGrid.prepend(button);
     }
 });
@@ -1673,4 +1677,255 @@ teamPdfLeaveButton.addEventListener("click",()=>{
         teamPDFsHolder.style.display="none";
         notesNavigationHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
     },300);
+})
+
+const backToDashboard=document.querySelector("#backToDashboard");
+
+backToDashboard.addEventListener("click",()=>{
+    location.replace("/dashboard");
+})
+
+const projectSetting=document.querySelector("#projectSetting");
+const projectSettingCloseButton=document.querySelector("#projectSettingCloseButton");
+
+const projectSettingPageHolder=document.querySelector("#projectSettingPageHolder");
+const projectSettingPage=document.querySelector("#projectSettingPage");
+
+const projectSettingNameHolder=document.querySelector("#projectSettingNameHolder");
+const projectSettingDescriptionHolder=document.querySelector("#projectSettingDescriptionHolder");
+const projectSettingOwnerNameHolder=document.querySelector("#projectSettingOwnerNameHolder");
+const projectSettingDeadlineHolder=document.querySelector("#projectSettingDeadlineHolder");
+const projectSettingStatusHolder=document.querySelector("#projectSettingStatusHolder");
+
+const projectSettingEditPageProjectNameInput=document.querySelector("#projectSettingEditPageProjectNameInput");
+const projectSettingEditPageDeadlineInput=document.querySelector("#projectSettingEditPageDeadlineInput");
+const projectSettingEditPageDescriptionHolder=document.querySelector("#projectSettingEditPageDescriptionHolder");
+
+const projectSettingOptions=document.querySelector("#projectSettingOptions");
+const projectSettingButtonHolder=document.querySelector("#projectSettingButtonHolder");
+
+let currProjectName;
+let currProjectDeadline;
+let currProjectDescription;
+
+projectSetting.addEventListener("click",async ()=>{
+    const projectId=document.location.pathname.split("/").pop();
+    const response=await fetch(`/dashboard/projects/${projectId}/projectInfo`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        console.log(result.position);
+        if(result.position==="Member"){
+            projectSettingOptions.style.display="none";
+            projectSettingEditButton.style.display="none";
+            projectSettingButtonHolder.style.justifyContent="center";
+        }else if(result.position==="Admin"){
+            projectSettingOptions.style.display="none";
+            projectSettingEditButton.style.display="flex";
+            projectSettingButtonHolder.style.justifyContent="space-around";
+        }else{
+            projectSettingOptions.style.display="";
+            projectSettingEditButton.style.display="flex";
+            projectSettingButtonHolder.style.justifyContent="space-around";
+        }
+        document.body.style.overflow="hidden";
+        projectSettingNameHolder.innerText=`${result.project.projectName}`;
+        projectSettingDescriptionHolder.innerText=`${result.project.description}`;
+        projectSettingOwnerNameHolder.innerText=`${result.project.owner.fullName}`;
+        projectSettingDeadlineHolder.innerText=`${dateCreater(result.project.deadline)}`;
+        projectSettingStatusHolder.innerText=`${result.project.status}`;
+        projectSettingPageHolder.style.display="flex";
+        projectSettingPage.style.animation="invitePage 0.3s linear 0s forwards";
+        currProjectName=result.project.projectName;
+        currProjectDeadline=correctDateCreator(result.project.deadline);
+        currProjectDescription=result.project.description;
+    }
+})
+
+projectSettingCloseButton.addEventListener("click",()=>{
+    projectSettingPage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        document.body.style.overflow="auto";
+        projectSettingPageHolder.style.display="none";
+    },300);
+})
+
+const projectSettingEditButton=document.querySelector("#projectSettingEditButton");
+const projectSettingEditPageCancelButton=document.querySelector("#projectSettingEditPageCancelButton");
+const projectSettingEditPage=document.querySelector("#projectSettingEditPage");
+
+projectSettingEditButton.addEventListener("click",()=>{
+    projectSettingEditPageProjectNameInput.value=currProjectName;
+    projectSettingEditPageDeadlineInput.value=currProjectDeadline;
+    projectSettingEditPageDescriptionHolder.value=currProjectDescription;
+    projectSettingPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingPage.style.display="none";
+        projectSettingEditPage.style.display="block";
+        projectSettingEditPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+projectSettingEditPageCancelButton.addEventListener("click",()=>{
+    projectSettingEditPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingEditPage.style.display="none";
+        projectSettingPage.style.display="block";
+        projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+
+const projectSettingEditPageComment=document.querySelector("#projectSettingEditPageComment");
+const taskSettingEditPageForm=document.querySelector("#taskSettingEditPageForm");
+taskSettingEditPageForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const projectId=document.location.pathname.split("/").pop();
+    const body={
+        projectName:projectSettingEditPageProjectNameInput.value,
+        deadline:projectSettingEditPageDeadlineInput.value,
+        description:projectSettingEditPageDescriptionHolder.value
+    };
+    const response=await fetch(`/dashboard/projects/${projectId}/projectUpdate`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        projectSettingEditPageComment.innerText="Edit Successfully";
+        projectSettingEditPageComment.style.display="flex";
+        projectSettingEditPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingEditPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                projectSettingEditPageComment.style.display="none";
+                currProjectName=result.project.projectName;
+                currProjectDeadline=correctDateCreator(result.project.deadline);
+                currProjectDescription=result.project.description;
+                projectSettingNameHolder.innerText=`${result.project.projectName}`;
+                projectSettingDescriptionHolder.innerText=`${result.project.description}`;
+                projectSettingDeadlineHolder.innerText=`${dateCreater(result.project.deadline)}`;
+                projectSettingEditPage.style.animation="page1Flip 0.3s linear 0s forwards";
+                setTimeout(()=>{
+                    projectSettingEditPage.style.display="none";
+                    projectSettingPage.style.display="block";
+                    projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+                },300);
+                activityReload();
+            },400);
+        },1500);
+    }
+})
+
+function correctDateCreator(deadline){
+    const date=new Date(deadline);
+    const year=date.getFullYear();
+    const month=String(date.getMonth()+1).padStart(2,"0");
+    const day=String(date.getDate()).padStart(2,"0");
+    return `${year}-${month}-${day}`;
+}
+
+const projectSettingEditStatusButton=document.querySelector("#projectSettingEditStatusButton");
+const projectSettingTransferOwnershipButton=document.querySelector("#projectSettingTransferOwnershipButton");
+const projectSettingDeleteProjectButton=document.querySelector("#projectSettingDeleteProjectButton");
+const projectSettingEditStatusCancelButton=document.querySelector("#projectSettingEditStatusCancelButton");
+const projectSettingDeletePageCancelButton=document.querySelector("#projectSettingDeletePageCancelButton");
+
+const projectSettingEditStatusPage=document.querySelector("#projectSettingEditStatusPage");
+const projectSettingDeletePage=document.querySelector("#projectSettingDeletePage");
+const projectSettingStatusForm=document.querySelector("#projectSettingStatusForm");
+
+projectSettingEditStatusButton.addEventListener("click",()=>{
+    projectSettingPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingPage.style.display="none";
+        projectSettingEditStatusPage.style.display="block";
+        projectSettingEditStatusPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+
+projectSettingDeleteProjectButton.addEventListener("click",()=>{
+    projectSettingPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingPage.style.display="none";
+        projectSettingDeletePage.style.display="block";
+        projectSettingDeletePage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+
+projectSettingDeletePageCancelButton.addEventListener("click",()=>{
+    projectSettingDeletePage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingDeletePage.style.display="none";
+        projectSettingPage.style.display="block";
+        projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+
+projectSettingEditStatusCancelButton.addEventListener("click",()=>{
+    projectSettingEditStatusPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingEditStatusPage.style.display="none";
+        projectSettingPage.style.display="block";
+        projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+
+const projectSettingEditStatusPageComment=document.querySelector("#projectSettingEditStatusPageComment");
+projectSettingStatusForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    const projectSettingStatusInput=document.querySelector('input[name="projectNewStatus"]:checked');
+    const projectId=document.location.pathname.split("/").pop();
+    const body={
+        status:projectSettingStatusInput.value
+    }
+    const response=await fetch(`/dashboard/projects/${projectId}/updateProjectStatus`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        projectSettingEditStatusPageComment.innerText="Change Successfully";
+        projectSettingEditStatusPageComment.style.display="flex";
+        projectSettingEditStatusPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingEditStatusPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                projectSettingStatusHolder.innerText=`${result.status}`;
+                projectSettingEditStatusPage.style.animation="page1Flip 0.3s linear 0s forwards";
+                setTimeout(()=>{
+                    projectSettingEditStatusPage.style.display="none";
+                    projectSettingPage.style.display="block";
+                    projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+                },300);
+                activityReload();
+            },400);
+        },1500);
+    }
+})
+
+const projectSettingDeletePageDeleteButton=document.querySelector("#projectSettingDeletePageDeleteButton");
+const projectSettingDeletePageComment=document.querySelector("#projectSettingDeletePageComment");
+projectSettingDeletePageDeleteButton.addEventListener("click",async ()=>{
+    const projectId=document.location.pathname.split("/").pop();
+    const response=await fetch(`/dashboard/projects/${projectId}/deleteProject`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        projectSettingDeletePageComment.innerText="Deleted Successfully";
+        projectSettingDeletePageComment.style.display="flex";
+        projectSettingDeletePageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingDeletePageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                location.replace("/dashboard");
+            },400);
+        },1500);
+    }
 })

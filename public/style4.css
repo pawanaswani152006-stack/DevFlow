@@ -6,7 +6,7 @@
 body{
     background-color:rgb(15, 60, 80);
 }
-#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder,#pdfUploadHolder{
+#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder,#pdfUploadHolder,#projectSettingPageHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -20,13 +20,28 @@ body{
     backdrop-filter:blur(2px);
     display:none;
 }
-#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage,#pdfUploadPage{
+/* #projectSettingPageHolder{
+    display:flex;
+} */
+#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage,#pdfUploadPage,#projectSettingPage,#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
     border:2px solid rgba(255,255,255,1);
     padding:20px;
     padding-right:10px;
+}
+#projectSettingPage{
+    /* display:none; */
+    max-width:700px;
+    min-width:700px;
+}
+#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage{
+    display:none;
+    transform:rotateY(90deg);
+}
+#projectSettingDeletePage{
+    width:700px;
 }
 #manageFormContainer{
     padding-right:20px;
@@ -48,7 +63,7 @@ body{
         transform:scale(0);
     }
 }
-#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading,#pdfFormHeading{
+#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading,#pdfFormHeading,#projectSettingHeading,#projectSettingEditPageHeading,#projectSettingEditStatusHeading,#projectSettingDeletePageHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -62,10 +77,16 @@ body{
     margin-top:20px;
     margin-bottom:50px;
 }
-.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara,.pdfUploadPara{
+.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara,.pdfUploadPara,.projectSettingEditPagePara,#projectSettingEditStatusPara,#projectSettingDeletePagePara{
     font-size:2rem;
     margin-bottom:15px;
     color:rgb(2, 39, 40);
+}
+#projectSettingDeletePageDescription{
+    font-size:1.5rem;
+    margin-bottom:30px;
+    color:rgb(2, 39, 40);
+    line-height:40px;
 }
 .input{
     border:none;
@@ -91,18 +112,29 @@ label{
     display:flex inline-block;
     justify-content:center;
     align-items:center;
+    color:#07282e;
 }
-#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder,#pdfFormButtonHolder{
+#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder,#pdfFormButtonHolder,#projectSettingButtonHolder,#projectSettingEditPageButtonHolder,#projectSettingEditStatusButtonHolder,#projectSettingDeletePageButtonHolder{
     display:flex;
     align-items:center;
     justify-content:space-around;
     width:98%;
     margin-bottom:25px;
 }
+#projectSettingEditStatusButtonHolder{
+    margin-bottom:10px;
+}
+#projectSettingButtonHolder{
+    margin-top:30px;
+    margin-bottom:20px;
+}
+#projectSettingEditPageButtonHolder{
+    margin-top:40px;
+}
 #taskAssignmentButtonsHolder{
     margin-top:40px;
 }
-.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton{
+.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton,.projectSettingButton,.projectSettingEditPageButton,.projectSettingEditStatusButton,.projectSettingDeletePageButton{
     font-size:2rem;
     padding:5px;
     padding-left:30px;
@@ -116,6 +148,15 @@ label{
     box-shadow:
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
+}
+.projectSettingEditPageButton{
+    padding-left:15px;
+    padding-right:15px;
+}
+.projectSettingButton{
+    padding:10px;
+    padding-left:20px;
+    padding-right:20px;
 }
 #inviteBtn{
     padding-left:35px;
@@ -163,7 +204,7 @@ button:active{
     background-color:transparent;
     color:rgb(118, 184, 169);
     font-size:2rem;
-    margin-bottom:30px;
+    margin-bottom:20px;
     display:flex;
     align-items:center;
     border-radius:20px;
@@ -457,7 +498,7 @@ li{
     margin-bottom:30px;
     margin-top:20px;
 }
-select,#taskAssignmentDate,#taskEditDate{
+select,#taskAssignmentDate,#taskEditDate,#projectSettingEditPageDeadlineInput{
     border:none;
     outline:none;
     font-size:1.5rem;
@@ -466,6 +507,10 @@ select,#taskAssignmentDate,#taskEditDate{
     appearance:none;
     -webkit-appearance:none;
     -moz-appearance:none;
+}
+#projectSettingEditPageDeadlineInput{
+    margin-bottom:15px;
+    margin-left:20px;
 }
 #currStatusAns{
     color:rgb(2, 105, 105);
@@ -693,6 +738,16 @@ p{
 #personalNotesInput::-webkit-scrollbar{
     display:none;
 }
+#projectSettingEditPageDescriptionHolder::-webkit-scrollbar{
+    display:none;
+}
+#projectSettingEditPageDescriptionHolder{
+    width:92%;
+    min-height:100px;
+    padding:10px;
+
+    line-height:30px;
+}
 .NotePara{
     font-size:2.5rem;
     color:rgb(140, 236, 236);
@@ -852,6 +907,71 @@ p{
         transform:translateY(0px);
     }
 }
+@keyframes emptyCommentHide{
+    from{
+        opacity:1;
+        transform:translateY(0px);
+    }
+    to{
+        opacity:0;
+        transform:translateY(20px);
+    }
+}
 .overviewRecentCards{
     display:none;
+}
+#projectSettingNameHolder{
+    font-size:2.5rem;
+    color:#04282e;
+    font-weight:550;
+    margin-bottom:15px;
+    margin-top:15px;
+}
+.projectSettingPara{
+    font-size:2rem;
+    color:#03171b;
+    margin-bottom:10px;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+.projectSettingAnsPara{
+    color:#09323a;
+    line-height:50px;
+    /* display:inline-block; */
+}
+#projectSettingOptions{
+    color:#03171b;
+    font-size:1.5rem;
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:40px;
+}
+.projectSettingOptionButton{
+    background-color:transparent;
+    outline:none;
+    border:none;
+    color:blue;
+    font-size:1.5rem;
+}
+
+#projectSettingEditPageDateHolder{
+    display:flex;
+    align-items:center;
+    margin-top:50px;
+}
+.projectSettingEditPageDataHolder{
+    margin-top:15px;
+}
+.projectSettingCommentPara{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    color:blue;
+    font-size:1.5rem;
+    display:none;
+}
+#projectSettingEditStatusDataHolder{
+    margin-bottom:30px;
+    margin-top:15px;
 }
