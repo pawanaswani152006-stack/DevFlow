@@ -46,7 +46,7 @@ async function addTeamMember(req,res){
             invitedBy:req.user.id
         });
         const actorName=await newUser.findById(req.user.id).select("fullName");
-        const activityMessage=`${actorName.fullName} add new team member "${user.fullName}"`
+        const activityMessage=`${actorName.fullName} add new team member ${user.fullName}.`
         createActivity(req.user.id.toString(),activityMessage,projectId,"member_invited",res);
         return res.json({
             msg:"success"
@@ -96,7 +96,7 @@ async function updateRole(req,res){
         })
         const user=await teamModel.findById(teamId).populate("member","fullName").select("member");
         const actorName=await newUser.findById(req.user.id).select("fullName");
-        const activityMessage=`${actorName.fullName} changed role of "${user.member.fullName}" to ${newPosition}`
+        const activityMessage=`${actorName.fullName} changed role of ${user.member.fullName} to ${newPosition}.`;
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"role_changed",res);
         console.log("hello bro");
         return res.json({msg:"success",updatedPosition:newPosition});
@@ -112,7 +112,7 @@ async function deleteMember(req,res){
         const user=await teamModel.findById(teamId).populate("member","fullName").select("member");
         await teamModel.findByIdAndDelete(teamId);
         const actorName=await newUser.findById(req.user.id).select("fullName");
-        const activityMessage=`${actorName.fullName} removed "${user.member.fullName}" from team`
+        const activityMessage=`${actorName.fullName} removed ${user.member.fullName} from team.`;
         createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"member_removed",res);
         return res.json({msg:"success"});
     }catch(err){
@@ -128,11 +128,37 @@ async function getTeamMembersName(req,res){
         if(!names){
             return res.json({msg:"failed"});
         }
-        return res.json({msg:"success",names:names});
+        let position;
+        const existingProject=await projectModel.findById(projectId).populate("owner","fullName").select("owner");
+        if(existingProject.owner._id.toString()===req.user.id){
+            position="Owner";
+        }else{
+            const member=await teamModel.findOne({projectId:projectId,member:req.user.id}).select("position");
+            position=member.position;
+        }
+        return res.json({msg:"success",names:names,position:position,owner:existingProject.owner});
     }catch(err){
         console.log("Error:",err);
         return res.json({msg:"Something went wrong."});
     }
 }
 
-module.exports={addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName};
+async function getPosition(req,res){
+    try{
+        const projectId=req.params.projectId;
+        let position;
+        const existingProject=await projectModel.findById(projectId).select("owner");
+        if(existingProject.owner.toString()===req.user.id){
+            position="Owner";
+        }else{
+            const member=await teamModel.findOne({projectId:projectId,member:req.user.id}).select("position");
+            position=member.position;
+        }
+        return res.json({msg:"success",position:position});
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+module.exports={addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName,getPosition};

@@ -4,6 +4,8 @@ const pdfModel=require("../models/pdfModel.js");
 const teamModel=require("../models/teamModel.js");
 const project=require("../models/dashboard.js");
 const cloudinary = require("../config/cloudinary");
+const {createActivity}=require("./activityControl.js");
+const newUser = require("../models/logIn.js");
 
 async function createNote(req,res){
     try{
@@ -83,8 +85,6 @@ function uploadPdf(buffer) {
             console.log("STREAM ERROR:", error);
             reject(error);
         });
-        console.log(Buffer.isBuffer(buffer));
-        console.log(buffer.length);
         uploadStream.end(buffer);
     });
 }
@@ -95,9 +95,6 @@ async function pdf(req, res) {
     .ping()
     .then((result)=> console.log("PING SUCCESS:",result))
     .catch((error)=> console.log("PING ERROR:",error));
-
-        console.log(req.file.size);
-        console.log(req.file.mimetype);
 
         const body=req.body;
         const projectId=req.params.projectId;
@@ -111,7 +108,7 @@ async function pdf(req, res) {
             scope:"personal"
         })
         return res.json({
-            success: true,
+            msg:"success",
             createdPdf:createdPdf
         });
 
@@ -137,9 +134,12 @@ async function teamPdf(req, res) {
             storageId:uploadedPdf.public_id,
             scope:"team"
         })
+        const teamPdf=await pdfModel.findById(createdPdf._id).populate("sender","fullName");
+        const activityMessage=`${teamPdf.sender.fullName} add new pdf named "${teamPdf.pdfName}".`;
+        createActivity(req.user.id.toString(),activityMessage,projectId,"pdf_related",res);
         return res.json({
-            success: true,
-            createdPdf:createdPdf
+            msg:"success",
+            createdPdf:teamPdf
         });
 
     } catch (err) {
@@ -172,4 +172,78 @@ async function getPdf(req,res){
     }
 }
 
-module.exports={createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf};
+async function getPdfName(req,res){
+    try{
+        const pdfId=req.params.pdfId;
+        const projectId=req.params.projectId;
+        const userId=req.user.id;
+        const pdfName=await pdfModel.findById(pdfId).select("pdfName scope");
+        if(!pdfName){
+            return res.json({msg:"pdf is not found."});
+        }
+        let position;
+        const existingProject=await project.findById(projectId).select("owner");
+        if(userId===existingProject.owner.toString()){
+            position="Owner";
+        }else{
+            const member=await teamModel.findOne({projectId:projectId,member:req.user.id}).select("position");
+            position=member.position;
+        }
+        return res.json({msg:"success",name:pdfName.pdfName,position:position,scope:pdfName.scope});
+    }catch (err) {
+        console.log("UPLOAD ERROR:", err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function editPdf(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const pdfId=req.params.pdfId;
+        const body=req.body;
+        if(!body.name){
+            return res.json({msg:"pdfName can't be empty."});
+        }
+        const pdf=await pdfModel.findByIdAndUpdate(pdfId,{
+            pdfName:body.name.trim()
+        });
+        if(!pdf){
+            return res.json({msg:"pdf can't be found"});
+        }
+        if(pdf.scope==="team"){
+            const user=await newUser.findById(req.user.id).select("fullName");
+            const activityMessage=`${user.fullName} edit pdf's name from "${pdf.pdfName}" to "${body.name.trim()}".`;
+            createActivity(req.user.id.toString(),activityMessage,projectId,"pdf_related",res);
+        }
+        return res.json({msg:"success"});
+    }catch (err) {
+        console.log("UPLOAD ERROR:", err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+async function deletePdf(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const pdfId=req.params.pdfId;
+        const pdf=await pdfModel.findById(pdfId);
+        if(!pdf){
+            return res.json({msg:"pdf is not found"});
+        }
+        await cloudinary.uploader.destroy(pdf.storageId,{
+            resource_type:"image"
+        });
+        await pdfModel.findByIdAndDelete(pdfId);
+        if(pdf.scope==="team"){
+            const user=await newUser.findById(req.user.id).select("fullName");
+            const activityMessage=`${user.fullName} deleted a pdf named "${pdf.pdfName}".`;
+            createActivity(req.user.id.toString(),activityMessage,projectId,"pdf_related",res);
+        }
+        return res.json({msg:"success"});
+    }catch (err) {
+        console.log("UPLOAD ERROR:", err);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
+module.exports={createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf,getPdfName,editPdf,deletePdf};

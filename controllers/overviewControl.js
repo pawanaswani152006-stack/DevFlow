@@ -117,13 +117,49 @@ async function updateProjectStatus(req,res){
 async function deleteProject(req,res){
     try{
         const projectId=req.params.projectId;
-        await taskModel.deleteMany({projectId:projectId});
-        await teamModel.deleteMany({projectId:projectId});
-        await activity.deleteMany({projectId:projectId});
-        await chatModel.deleteMany({projectId:projectId});
-        await pdfModel.deleteMany({projectId:projectId});
-        await personalNoteModel.deleteMany({projectId:projectId});
+        await Promise.all([
+            taskModel.deleteMany({projectId:projectId}),
+            teamModel.deleteMany({projectId:projectId}),
+            activity.deleteMany({projectId:projectId}),
+            chatModel.deleteMany({projectId:projectId}),
+            pdfModel.deleteMany({projectId:projectId}),
+            personalNoteModel.deleteMany({projectId:projectId})
+        ])
         await projectModel.findByIdAndDelete(projectId);
+        return res.json({msg:"success"});
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+}
+
+async function transferOwnership(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const body=req.body;
+        const {member,newPosition,spaciality}=body;
+        if(!member || !newPosition || !spaciality){
+            return res.json({msg:"all info are required."});
+        }
+        const existingMember=await teamModel.findOne({member:member.toString()}).populate("member","fullName");
+        if(!existingMember){
+            return res.json({msg:"Selected Member is not exist in team."});
+        }
+        const project=await projectModel.findByIdAndUpdate(projectId,{
+            owner:existingMember.member
+        });
+        const existingUser=await newUser.findById(req.user.id).select("fullName email");
+        await teamModel.findByIdAndDelete(existingMember._id);
+        await teamModel.create({
+            projectId:projectId,
+            member:req.user.id,
+            memberEmail:existingUser.email,
+            position:newPosition,
+            spaciality:spaciality,
+            invitedBy:req.user.id
+        });
+        const activityMessage=`${existingUser.fullName} transfer the ownership of project to ${existingMember.member.fullName}.`;
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"project_related",res);
         return res.json({msg:"success"});
     }catch(err){
         console.log("Error:",err);
@@ -135,5 +171,6 @@ module.exports={
     getOverviewInfo,
     projectUpdate,
     updateProjectStatus,
-    deleteProject
+    deleteProject,
+    transferOwnership
 };

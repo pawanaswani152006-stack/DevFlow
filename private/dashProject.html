@@ -156,7 +156,47 @@
         </div>
     </form>
 
+    <form id="pdfSettingPageForm">
+        <div id="pdfSettingPageHolder">
+            <div id="pdfSettingPage">
+                <h1 id="pdfSettingPageHeading">PDF Settings</h1>
+                <p id="pdfSettingPagePara">PDF Name</p>
+                <input type="text" required placeholder="Enter pdf's name" class="input" id="pdfSettingNameInput">
+                <p id="pdfSettingDeleteButtonPara">If you want to delete this pdf than <button id="pdfSettingDeleteButton" type="button">Click here</button></p>
+                <div id="pdfSettingButtonHolder">
+                    <button class="pdfSettingButton" type="submit" style="padding-left:40px;padding-right:40px;" id="pdfSettingEditButton">Edit</button>
+                    <button class="pdfSettingButton" type="button" id="pdfSettingCloseButton">Close</button>
+                </div>
+                <p class="projectSettingCommentPara" id="pdfSettingEditPageComment"></p>
+            </div>
+        </div>
+    </form>
+
     <div id="projectSettingPageHolder">
+        <form id="projectSettingTransferOwnershipForm">
+            <div id="projectSettingTransferOwnershipPage">
+                <h1 id="projectSettingTransferOwnershipHeading">Transfer Ownership</h1>
+                <p class="projectSettingTransferOwnershipPagePara">Select team member</p>
+                <select id="projectSettingTransferOwnershipSelection">
+                </select>
+                <p class="projectSettingTransferOwnershipPagePara">Select your new position</p>
+                <label>
+                    <input type="radio" name="ownerNewPosition" required value="Member">Member
+                </label>
+                <label>
+                   <input type="radio" name="ownerNewPosition" required value="Admin">Admin
+                </label>
+                <p class="projectSettingTransferOwnershipPagePara">Your Spaciality</p>
+                <input type="text" required placeholder="Enter your spaciality" class="input" id="projectSettingTransferPageSpacialityInput">
+                <p class="projectSettingTransferOwnershipPagePara" style="margin-bottom:5px;margin-top:35px;">Note</p>
+                <p id="projectSettingTransferOwnershipDescription">Transferring ownership will make the selected member the new project owner. You will lose owner-only permissions, and this action cannot be undone.</p>
+                <div id="projectSettingTransferOwnershipPageButtonHolder">
+                    <button class="projectSettingTransferOwnershipPageButton" type="submit">Transfer</button>
+                    <button class="projectSettingTransferOwnershipPageButton" type="button" id="projectSettingTransferOwnershipCancelButton">Cancel</button>
+                </div>
+                <p class="projectSettingCommentPara" id="projectSettingTransferOwnershipPageComment"></p>
+            </div>
+        </form>
         <form id="taskSettingEditPageForm">
             <div id="projectSettingEditPage">
                 <h1 id="projectSettingEditPageHeading">Edit Project</h1>
@@ -329,6 +369,8 @@ If you want to delete this project than <button class="projectSettingOptionButto
                     <button class="activityFilterButton" id="activityAllButton">All</button>
                     <button class="activityFilterButton" id="activityTaskButton">Task</button>
                     <button class="activityFilterButton" id="activityTeamButton">Team</button>
+                    <button class="activityFilterButton" id="activityPdfButton">PDF</button>
+                    <button class="activityFilterButton" id="activityProjectButton">Project</button>
                 </div>
             </div>
             <div id="activityHolder">

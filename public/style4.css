@@ -6,7 +6,7 @@
 body{
     background-color:rgb(15, 60, 80);
 }
-#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder,#pdfUploadHolder,#projectSettingPageHolder{
+#invitePageHolder,#manageFormPlaceHolder,#taskAssignmentPageHolder,#taskManage,#taskEditPageHolder,#pdfUploadHolder,#projectSettingPageHolder,#pdfSettingPageHolder{
     height:100vh;
     width:100vw;
     display:flex;
@@ -23,7 +23,7 @@ body{
 /* #projectSettingPageHolder{
     display:flex;
 } */
-#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage,#pdfUploadPage,#projectSettingPage,#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage{
+#invitePage,#manageFormContainer,#taskAssignmentPage,#taskStatusUpdatePage,#taskEditPage,#pdfUploadPage,#projectSettingPage,#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage,#pdfSettingPage,#projectSettingTransferOwnershipPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
@@ -32,15 +32,14 @@ body{
     padding-right:10px;
 }
 #projectSettingPage{
-    /* display:none; */
     max-width:700px;
     min-width:700px;
 }
-#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage{
+#projectSettingEditPage,#projectSettingEditStatusPage,#projectSettingDeletePage,#projectSettingTransferOwnershipPage{
     display:none;
     transform:rotateY(90deg);
 }
-#projectSettingDeletePage{
+#projectSettingDeletePage,#projectSettingTransferOwnershipPage{
     width:700px;
 }
 #manageFormContainer{
@@ -63,7 +62,7 @@ body{
         transform:scale(0);
     }
 }
-#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading,#pdfFormHeading,#projectSettingHeading,#projectSettingEditPageHeading,#projectSettingEditStatusHeading,#projectSettingDeletePageHeading{
+#inviteHeading,#manageFormHeading,#taskAssignmentHeading,#taskStatusHeading,#taskEditHeading,#pdfFormHeading,#projectSettingHeading,#projectSettingEditPageHeading,#projectSettingEditStatusHeading,#projectSettingDeletePageHeading,#pdfSettingPageHeading,#projectSettingTransferOwnershipHeading{
     display:flex;
     justify-content:center;
     align-items:center;
@@ -77,16 +76,34 @@ body{
     margin-top:20px;
     margin-bottom:50px;
 }
-.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara,.pdfUploadPara,.projectSettingEditPagePara,#projectSettingEditStatusPara,#projectSettingDeletePagePara{
+.invitePara,.taskAssignmentPara,.statusPara,.taskEditPara,.pdfUploadPara,.projectSettingEditPagePara,#projectSettingEditStatusPara,#projectSettingDeletePagePara,#pdfSettingPagePara,.projectSettingTransferOwnershipPagePara{
     font-size:2rem;
     margin-bottom:15px;
     color:rgb(2, 39, 40);
 }
-#projectSettingDeletePageDescription{
+.projectSettingTransferOwnershipPagePara{
+    margin-top:30px;
+}
+#pdfSettingPagePara{
+    margin-top:20px;
+}
+#projectSettingDeletePageDescription,#projectSettingTransferOwnershipDescription{
     font-size:1.5rem;
     margin-bottom:30px;
     color:rgb(2, 39, 40);
     line-height:40px;
+}
+#pdfSettingDeleteButtonPara{
+    color:rgb(2, 39, 40);
+    font-size:1.5rem;
+    margin-top:40px;
+}
+#pdfSettingDeleteButton{
+    background-color:transparent;
+    border:none;
+    outline:none;
+    font-size:1.5rem;
+    color:blue;
 }
 .input{
     border:none;
@@ -114,12 +131,16 @@ label{
     align-items:center;
     color:#07282e;
 }
-#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder,#pdfFormButtonHolder,#projectSettingButtonHolder,#projectSettingEditPageButtonHolder,#projectSettingEditStatusButtonHolder,#projectSettingDeletePageButtonHolder{
+#inviteButtonsHolder,#taskAssignmentButtonsHolder,#editTaskButtonsHolder,#taskEditButtonsHolder,#pdfFormButtonHolder,#projectSettingButtonHolder,#projectSettingEditPageButtonHolder,#projectSettingEditStatusButtonHolder,#projectSettingDeletePageButtonHolder,#pdfSettingButtonHolder,#projectSettingTransferOwnershipPageButtonHolder{
     display:flex;
     align-items:center;
     justify-content:space-around;
     width:98%;
     margin-bottom:25px;
+}
+#pdfSettingButtonHolder{
+    margin-top:30px;
+    margin-bottom:15px;
 }
 #projectSettingEditStatusButtonHolder{
     margin-bottom:10px;
@@ -134,7 +155,7 @@ label{
 #taskAssignmentButtonsHolder{
     margin-top:40px;
 }
-.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton,.projectSettingButton,.projectSettingEditPageButton,.projectSettingEditStatusButton,.projectSettingDeletePageButton{
+.inviteButton,.taskAssignmentButton,.editTaskButton,.taskEditButton,.pdfUploadButton,.projectSettingButton,.projectSettingEditPageButton,.projectSettingEditStatusButton,.projectSettingDeletePageButton,.pdfSettingButton,.projectSettingTransferOwnershipPageButton{
     font-size:2rem;
     padding:5px;
     padding-left:30px;
@@ -849,6 +870,7 @@ p{
 }
 .senderName{
     font-size:1.2rem;
+    color:#04282e;
 }
 #chatOptions{
     margin-top:40px;

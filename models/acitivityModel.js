@@ -22,7 +22,8 @@ const activitySchema=new mongoose.Schema({
             "member_invited",
             "member_removed",
             "role_changed",
-            "project_related"
+            "project_related",
+            "pdf_related"
         ]
     },
     message:{

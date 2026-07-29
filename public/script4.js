@@ -340,10 +340,12 @@ taskButton.addEventListener("click",async ()=>{
         taskDeadline.value="";
         taskSelection.innerHTML="";
         if(taskMemberList.names.length===0){
-            isNoTeamMember=true;
-            const selectOption=document.createElement("option");
-            selectOption.innerText=`No Team Members`;
-            taskSelection.appendChild(selectOption);
+            if(taskMemberList.position!=="Owner"){
+                isNoTeamMember=true;
+                const selectOption=document.createElement("option");
+                selectOption.innerText=`No Team Members`;
+                taskSelection.appendChild(selectOption);
+            }
         }else{
             isNoTeamMember=false;
             taskMemberList.names.forEach((name)=>{
@@ -352,6 +354,13 @@ taskButton.addEventListener("click",async ()=>{
                 selectOption.innerText=`${name.member.fullName}`;
                 taskSelection.appendChild(selectOption);
             })
+        }
+        if(taskMemberList.position==="Owner"){
+            const selectOption=document.createElement("option");
+            selectOption.selected=true;
+            selectOption.value=taskMemberList.owner._id;
+            selectOption.innerText=`${taskMemberList.owner.fullName}`;
+            taskSelection.prepend(selectOption);
         }
         taskAssignmentPageHolder.style.display="flex";
         document.body.style.overflow="hidden";
@@ -407,6 +416,8 @@ taskAssignForm.addEventListener("submit",async (e)=>{
             document.body.style.overflow="auto";
         },300);
         filterTask="All";
+        statusFilterTasks=null;
+        priorityFilterTasks=null;
         taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
         myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
         todoBtn.style.backgroundColor="rgb(152, 240, 247)";
@@ -441,7 +452,7 @@ document.addEventListener("click",async (e)=>{
         const row=e.target.closest(".singleTaskHolder");
         const taskId=row.dataset.taskId;
         currTaskId=row.dataset.taskId;
-        const result=await fetch(`/dashboard/projects/${projectId}/task/${taskId}`,{
+        const result=await fetch(`/dashboard/projects/${projectId}/editTask/${taskId}`,{
             method:"get"
         });
         const response=await result.json();
@@ -462,6 +473,15 @@ document.addEventListener("click",async (e)=>{
                 }
                 taskEditSelection.appendChild(option);
             })
+            if(response.position==="Owner"){
+                const option=document.createElement("option");
+                option.innerText=`${response.owner.fullName}`;
+                option.value=response.owner._id.toString();
+                if(response.task.assignedTo.toString()===response.owner._id.toString()){
+                    option.selected=true;
+                }
+                taskEditSelection.appendChild(option);
+            }
         }
     }
 })
@@ -486,6 +506,8 @@ document.addEventListener("click",async (e)=>{
             mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
             lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
             filterTask="All";
+            statusFilterTasks=null;
+            priorityFilterTasks=null;
             taskReload();
             activityReload();
         }
@@ -503,6 +525,9 @@ async function taskReload(){
     });
     const allTasks=await taskElements.json();
     if(allTasks.msg==="success"){
+        filterTask="All";
+        statusFilterTasks=null;
+        priorityFilterTasks=null;
         taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
         myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
         todoBtn.style.backgroundColor="rgb(152, 240, 247)";
@@ -615,6 +640,8 @@ const mediumPriorityBtn=document.querySelector("#mediumPriorityBtn");
 const lowPriorityBtn=document.querySelector("#lowPriorityBtn");
 
 let filterTask="All";
+let statusFilterTasks=null;
+let priorityFilterTasks=null;
 taskAllBtn.addEventListener("click",()=>{
     taskAllBtn.style.backgroundColor="rgb(51, 160, 160)";
     myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
@@ -625,8 +652,8 @@ taskAllBtn.addEventListener("click",()=>{
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     filterTask="All";
-    // noTaskStateHolder.style.animation="emptyCommentHide 0s linear 0s forwards";
-    // noTaskStateHolder.display="none";
+    statusFilterTasks=null;
+    priorityFilterTasks=null;
     taskUpdation();
 });
 myTaskBtn.addEventListener("click",()=>{
@@ -639,84 +666,68 @@ myTaskBtn.addEventListener("click",()=>{
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     filterTask="MyTasks";
+    statusFilterTasks=null;
+    priorityFilterTasks=null;
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 todoBtn.addEventListener("click",()=>{
     todoBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
     inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
     completedBtn.style.backgroundColor="rgb(152, 240, 247)";
     highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="Todo";
+    statusFilterTasks="Todo";
+    priorityFilterTasks=null;
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 inProgressBtn.addEventListener("click",()=>{
     inProgressBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
     todoBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
     completedBtn.style.backgroundColor="rgb(152, 240, 247)";
     highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="In Progress";
+    statusFilterTasks="In Progress";
+    priorityFilterTasks=null;
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 completedBtn.addEventListener("click",()=>{
     completedBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
     todoBtn.style.backgroundColor="rgb(152, 240, 247)";
     inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
     highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="Completed";
+    statusFilterTasks="Completed";
+    priorityFilterTasks=null;
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 highPriorityBtn.addEventListener("click",()=>{
     highPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
-    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
-    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
-    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="High";
+    priorityFilterTasks="High";
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 lowPriorityBtn.addEventListener("click",()=>{
     lowPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
-    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
-    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
-    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
     highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
     mediumPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="Low";
+    priorityFilterTasks="Low";
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
 mediumPriorityBtn.addEventListener("click",()=>{
     mediumPriorityBtn.style.backgroundColor="rgb(51, 160, 160)";
-    myTaskBtn.style.backgroundColor="rgb(152, 240, 247)";
-    todoBtn.style.backgroundColor="rgb(152, 240, 247)";
-    inProgressBtn.style.backgroundColor="rgb(152, 240, 247)";
-    completedBtn.style.backgroundColor="rgb(152, 240, 247)";
     highPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    taskAllBtn.style.backgroundColor="rgb(152, 240, 247)";
     lowPriorityBtn.style.backgroundColor="rgb(152, 240, 247)";
-    filterTask="Medium";
+    priorityFilterTasks="Medium";
     // noTaskStateHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
     taskUpdation();
 });
@@ -728,14 +739,14 @@ function taskUpdation(){
             return task.assignedTo.fullName===currentUser;
         })
     }
-    if(filterTask==="Todo" || filterTask==="In Progress" || filterTask==="Completed"){
+    if(statusFilterTasks==="Todo" || statusFilterTasks==="In Progress" || statusFilterTasks==="Completed"){
         filtered=filtered.filter((task)=>{
-            return task.status===filterTask;
+            return task.status===statusFilterTasks;
         })
     }
-    if(filterTask==="High" || filterTask==="Low" || filterTask==="Medium"){
+    if(priorityFilterTasks==="High" || priorityFilterTasks==="Low" || priorityFilterTasks==="Medium"){
         filtered=filtered.filter((task)=>{
-            return task.priority===filterTask;
+            return task.priority===priorityFilterTasks;
         })
     }
     assignedTasks.innerHTML="";
@@ -886,6 +897,8 @@ async function activityReload(){
         activityAllButton.style.backgroundColor="rgb(51, 160, 160)";
         activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
         activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
+        activityPdfButton.style.backgroundColor="rgb(152, 240, 247)";
+        activityProjectButton.style.backgroundColor="rgb(152, 240, 247)";
         allActivitiesForFilter=allActivities.activity;
         activityHolder.innerHTML="";
         if(allActivities.activity.length!==0){
@@ -893,6 +906,8 @@ async function activityReload(){
             activityAllButton.disabled=false;
             activityTaskButton.disabled=false;
             activityTeamButton.disabled=false;
+            activityProjectButton.disabled=false;
+            activityPdfButton.disabled=false;
             allActivities.activity.forEach((singleActivity)=>{
                 const div=document.createElement("div");
                 const hr=document.createElement("hr");
@@ -908,9 +923,13 @@ async function activityReload(){
             activityAllButton.style.backgroundColor="rgb(91, 107, 107)";
             activityTaskButton.style.backgroundColor="rgb(91, 107, 107)";
             activityTeamButton.style.backgroundColor="rgb(91, 107, 107)";
+            activityProjectButton.style.backgroundColor="rgb(91, 107, 107)";
+            activityPdfButton.style.backgroundColor="rgb(91, 107, 107)";
             activityAllButton.disabled=true;
             activityTaskButton.disabled=true;
             activityTeamButton.disabled=true;
+            activityPdfButton.disabled=true;
+            activityProjectButton.disabled=true;
             noActivityStateHolder.style.display="block";
             noActivityStateHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
             setTimeout(()=>{
@@ -958,6 +977,8 @@ setInterval(updateActivityTime,60000);
 const activityAllButton=document.querySelector("#activityAllButton");
 const activityTaskButton=document.querySelector("#activityTaskButton");
 const activityTeamButton=document.querySelector("#activityTeamButton");
+const activityPdfButton=document.querySelector("#activityPdfButton");
+const activityProjectButton=document.querySelector("#activityProjectButton");
 let activityFilter="All";
 
 activityAllButton.addEventListener("click",()=>{
@@ -965,6 +986,8 @@ activityAllButton.addEventListener("click",()=>{
     activityAllButton.style.backgroundColor="rgb(51, 160, 160)";
     activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
     activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityPdfButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityProjectButton.style.backgroundColor="rgb(152, 240, 247)";
     activityFilterUpdation()
 });
 
@@ -973,6 +996,8 @@ activityTaskButton.addEventListener("click",()=>{
     activityTaskButton.style.backgroundColor="rgb(51, 160, 160)";
     activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
     activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityPdfButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityProjectButton.style.backgroundColor="rgb(152, 240, 247)";
     activityFilterUpdation()
 });
 
@@ -981,6 +1006,28 @@ activityTeamButton.addEventListener("click",()=>{
     activityTeamButton.style.backgroundColor="rgb(51, 160, 160)";
     activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
     activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityPdfButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityProjectButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityFilterUpdation()
+});
+
+activityPdfButton.addEventListener("click",()=>{
+    activityFilter="Pdf";
+    activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityPdfButton.style.backgroundColor="rgb(51, 160, 160)";
+    activityProjectButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityFilterUpdation()
+});
+
+activityProjectButton.addEventListener("click",()=>{
+    activityFilter="Project";
+    activityTeamButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityTaskButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityAllButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityPdfButton.style.backgroundColor="rgb(152, 240, 247)";
+    activityProjectButton.style.backgroundColor="rgb(51, 160, 160)";
     activityFilterUpdation()
 });
 
@@ -994,6 +1041,16 @@ function activityFilterUpdation(){
     if(activityFilter==="Team"){
         filtered=filtered.filter((activity)=>{
             return (activity.type==="member_invited" || activity.type==="member_removed" || activity.type==="role_changed");
+        })
+    }
+    if(activityFilter==="Pdf"){
+        filtered=filtered.filter((activity)=>{
+            return (activity.type==="pdf_related");
+        })
+    }
+    if(activityFilter==="Project"){
+        filtered=filtered.filter((activity)=>{
+            return (activity.type==="project_related");
         })
     }
     activityHolder.innerHTML="";
@@ -1351,17 +1408,29 @@ personalPDFsButton.addEventListener("click",()=>{
     },300);
 })
 
-teamPDFsButton.addEventListener("click",()=>{
-    notesNavigationHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
-    personalPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
-    personalNotesHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
-    setTimeout(()=>{
-        notesNavigationHolder.style.display="none";
-        personalPDFsHolder.style.display="none";
-        teamPDFsHolder.style.display="block";
-        personalNotesHolder.style.display="none";
-        teamPDFsHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
-    },300);
+teamPDFsButton.addEventListener("click",async (e)=>{
+    const projectId=document.location.pathname.split("/").pop();
+    const response=await fetch(`/dashboard/projects/${projectId}/getPosition`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        if(result.position==="Member"){
+            teamPdfUploadButton.style.display="none";
+        }else{
+            teamPdfUploadButton.style.display="flex";
+        }
+        notesNavigationHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+        personalPDFsHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+        personalNotesHolder.style.animation="chatScreenOfAnimation 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            notesNavigationHolder.style.display="none";
+            personalPDFsHolder.style.display="none";
+            teamPDFsHolder.style.display="block";
+            personalNotesHolder.style.display="none";
+            teamPDFsHolder.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
+        },300);
+    }
 })
 
 const personalNotesGrid=document.querySelector("#personalNotesGrid");
@@ -1512,12 +1581,16 @@ const teamPDFsGrid=document.querySelector("#teamPDFsGrid");
 let isTeamPdf=false;
 
 personalPdfUploadButton.addEventListener("click",()=>{
+    pdfFileInput.value="";
+    pdfFileNameInput.value="";
     pdfUploadHolder.style.display="flex";
     pdfUploadPage.style.animation="invitePage 0.3s linear 0s forwards";
     document.body.style.overflow="hidden";
 })
 
 teamPdfUploadButton.addEventListener("click",()=>{
+    pdfFileInput.value="";
+    pdfFileNameInput.value="";
     pdfUploadHolder.style.display="flex";
     pdfUploadPage.style.animation="invitePage 0.3s linear 0s forwards";
     document.body.style.overflow="hidden";
@@ -1532,13 +1605,18 @@ pdfCancelButton.addEventListener("click",()=>{
     },300);
 })
 
+let isPdfUploading=false;
 pdfUploadForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
+    if(isPdfUploading){
+        return;
+    }
     const projectId=document.location.pathname.split("/").pop();
     const file=pdfFileInput.files[0];
     const fileName=pdfFileNameInput.value;
     const formData=new FormData();
 
+    isPdfUploading=true;
     pdfSubmitButton.style.display="none";
     pdfCancelButton.innerText="Uploading...";
     pdfCancelButton.disabled=true;
@@ -1559,40 +1637,203 @@ pdfUploadForm.addEventListener("submit",async (e)=>{
         })
     }
     const result=await response.json();
+    if(result.msg==="success"){
+        pdfSubmitButton.style.display="flex";
+        pdfCancelButton.innerText="Cancel";
+        pdfCancelButton.disabled=false;
+        pdfFormButtonHolder.style.justifyContent="space-around";
 
-    pdfSubmitButton.style.display="flex";
-    pdfCancelButton.innerText="Cancel";
-    pdfCancelButton.disabled=false;
-    pdfFormButtonHolder.style.justifyContent="space-around";
-
-    pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
-    setTimeout(()=>{
-        pdfUploadHolder.style.display="none";
-        document.body.style.overflow="auto";
-    },300);
-    const button=document.createElement("button");
-    button.classList.add("personalPDFButton");
-    button.dataset.url=result.createdPdf.fileUrl;
-    button.innerHTML=
-        `<div class="personalPDFIcon">
-            <i>PDF</i>
-        </div>
-        <div class="personalPDFName"><p class="personalPDFNamePara">${result.createdPdf.pdfName}</p></div>`;
-    if(isTeamPdf){
-        noTeamPdfStateHolder.style.display="none";
-        teamPDFsGrid.prepend(button);
-        isTeamPdf=false;
-    }else{
-        noPersonalPdfStateHolder.style.display="none";
-        personalPDFsGrid.prepend(button);
+        pdfUploadPage.style.animation="cancelPage 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            pdfUploadHolder.style.display="none";
+            document.body.style.overflow="auto";
+        },300);
+        const button=document.createElement("button");
+        button.classList.add("personalPDFButton");
+        button.dataset.url=result.createdPdf.fileUrl;
+        button.dataset.id=result.createdPdf._id;
+        if(isTeamPdf){
+            activityReload();
+            button.innerHTML=
+                `<div class="personalPDFIcon">
+                    <i>PDF</i>
+                </div>
+                <div class="personalPDFName">
+                     <div class="senderNameHolder">
+                        <p class="senderName">${result.createdPdf.sender.fullName}</p>
+                    </div>
+                <div class="personalPDFName">
+                    <p class="personalPDFNamePara">${result.createdPdf.pdfName}</p>
+                </div>`;
+            teamPDFsGrid.prepend(button);
+            noTeamPdfStateHolder.style.display="none";
+            isTeamPdf=false;
+        }else{
+            button.innerHTML=
+                `<div class="personalPDFIcon">
+                    <i>PDF</i>
+                </div>
+                <div class="personalPDFName"><p class="personalPDFNamePara">${result.createdPdf.pdfName}</p></div>`;
+            noPersonalPdfStateHolder.style.display="none";
+            personalPDFsGrid.prepend(button);
+        }
     }
+    isPdfUploading=false;
 });
 
+let clickTimer;
 document.addEventListener("click",(e)=>{
     if(e.target.closest(".personalPDFButton")){
         const button=e.target.closest(".personalPDFButton");
-        const url=button.dataset.url;
-        window.open(url,"_blank");
+        if(!button) return;
+        clearTimeout(clickTimer);
+        clickTimer=setTimeout(()=>{
+            const url=button.dataset.url;
+            window.open(url,"_blank");
+        },250);
+    }
+})
+
+const pdfSettingPageForm=document.querySelector("#pdfSettingPageForm");
+const pdfSettingPageHolder=document.querySelector("#pdfSettingPageHolder");
+const pdfSettingPage=document.querySelector("#pdfSettingPage");
+const pdfSettingCloseButton=document.querySelector("#pdfSettingCloseButton");
+const pdfSettingNameInput=document.querySelector("#pdfSettingNameInput");
+const pdfSettingDeleteButton=document.querySelector("#pdfSettingDeleteButton");
+
+let currUserPosition;
+let currPdfScope;
+let currPdfId;
+document.addEventListener("dblclick",async (e)=>{
+    if(e.target.closest(".personalPDFButton")){
+        const button=e.target.closest(".personalPDFButton");
+        if(!button) return;
+        clearTimeout(clickTimer);
+        const projectId=document.location.pathname.split("/").pop();
+        const pdfId=button.dataset.id;
+        const response=await fetch(`/dashboard/projects/${projectId}/${pdfId}/getPdfName`,{
+            method:"get"
+        });
+        const result=await response.json();
+        if(result.msg==="success"){
+            currUserPosition=result.position;
+            currPdfScope=result.scope;
+            currPdfId=button.dataset.id;
+            if(result.position==="Member" && result.scope==="team"){
+                const url=button.dataset.url;
+                window.open(url,"_blank");
+                return;
+            }else{
+                pdfSettingNameInput.value=`${result.name}`;
+                pdfSettingPageHolder.style.display="flex";
+                pdfSettingPage.style.animation="invitePage 0.3s linear 0s forwards";
+            }
+        }
+    }
+})
+pdfSettingCloseButton.addEventListener("click",()=>{
+    pdfSettingPage.style.animation="cancelPage 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        pdfSettingPageHolder.style.display="none";
+    },300);
+})
+
+const pdfSettingEditPageComment=document.querySelector("#pdfSettingEditPageComment");
+pdfSettingPageForm.addEventListener("submit",async (e)=>{
+    if(isDeleteProcess){
+        return;
+    }
+    e.preventDefault();
+    const projectId=document.location.pathname.split("/").pop();
+    const pdfId=currPdfId;
+    let response;
+    const body={
+        name:pdfSettingNameInput.value
+    }
+    if(currPdfScope==="team"){
+        response=await fetch(`/dashboard/projects/${projectId}/${pdfId}/editTeamPdf`,{
+            method:"PATCH",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(body)
+        });
+    }else{
+        response=await fetch(`/dashboard/projects/${projectId}/${pdfId}/editPersonalPdf`,{
+            method:"PATCH",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(body)
+        });
+    }
+    const result=await response.json();
+    if(result.msg==="success"){
+        pdfSettingEditPageComment.innerText="Edit Successfully";
+        pdfSettingEditPageComment.style.display="flex";
+        pdfSettingEditPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            pdfSettingEditPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                pdfSettingEditPageComment.style.display="none";
+                pdfSettingPage.style.animation="cancelPage 0.3s linear 0s forwards";
+                setTimeout(()=>{
+                    pdfSettingPageHolder.style.display="none";
+                },300);
+            })
+        },1300);
+        PdfReload();
+        activityReload();
+    }
+})
+const pdfSettingEditButton=document.querySelector("#pdfSettingEditButton");
+const pdfSettingButtonHolder=document.querySelector("#pdfSettingButtonHolder");
+let isDeleteProcess=false;
+pdfSettingDeleteButton.addEventListener("click",async (e)=>{
+    if(isDeleteProcess){
+        return;
+    }
+    pdfSettingEditButton.style.display="none";
+    pdfSettingEditButton.disabled=true;
+    pdfSettingCloseButton.disabled=true;
+    pdfSettingCloseButton.innerText="Wait for process";
+    pdfSettingButtonHolder.style.justifyContent="center";
+    const projectId=document.location.pathname.split("/").pop();
+    const pdfId=currPdfId;
+    let response;
+    isDeleteProcess=true;
+    if(currPdfScope==="team"){
+        response=await fetch(`/dashboard/projects/${projectId}/${pdfId}/deleteTeamPdf`,{
+            method:"delete"
+        });
+    }else{
+        response=await fetch(`/dashboard/projects/${projectId}/${pdfId}/deletePersonalPdf`,{
+            method:"delete"
+        });
+    }
+    const result=await response.json();
+    if(result.msg==="success"){
+        pdfSettingEditPageComment.innerText="Deleted Successfully";
+        pdfSettingEditPageComment.style.display="flex";
+        pdfSettingEditPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            pdfSettingEditPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                pdfSettingEditPageComment.style.display="none";
+                pdfSettingPage.style.animation="cancelPage 0.3s linear 0s forwards";
+                setTimeout(()=>{
+                    pdfSettingPageHolder.style.display="none";
+                    isDeleteProcess=false;
+                    pdfSettingEditButton.style.display="flex";
+                    pdfSettingEditButton.disabled=false;
+                    pdfSettingCloseButton.disabled=false;
+                    pdfSettingCloseButton.innerText="Close";
+                    pdfSettingButtonHolder.style.justifyContent="space-around";
+                },300);
+            })
+        },1300);
+        PdfReload();
+        activityReload();
     }
 })
 
@@ -1602,6 +1843,8 @@ async function PdfReload(){
         method:"GET"
     });
     const response=await result.json();
+    teamPDFsGrid.innerHTML="";
+    personalPDFsGrid.innerHTML="";
     if(response.msg==="success"){
         if(response.pdfs.length!==0){
             noPersonalPdfStateHolder.style.display="none";
@@ -1609,6 +1852,7 @@ async function PdfReload(){
                 const button=document.createElement("button");
                 button.classList.add("personalPDFButton");
                 button.dataset.url=pdf.fileUrl;
+                button.dataset.id=pdf._id;
                 button.innerHTML=
                     `<div class="personalPDFIcon">
                         <i>PDF</i>
@@ -1625,6 +1869,7 @@ async function PdfReload(){
                 const button=document.createElement("button");
                 button.classList.add("personalPDFButton");
                 button.dataset.url=pdf.fileUrl;
+                button.dataset.id=pdf._id;
                 button.innerHTML=
                     `<div class="personalPDFIcon">
                         <i>PDF</i>
@@ -1927,5 +2172,98 @@ projectSettingDeletePageDeleteButton.addEventListener("click",async ()=>{
                 location.replace("/dashboard");
             },400);
         },1500);
+    }
+})
+
+const projectSettingTransferOwnershipForm=document.querySelector("#projectSettingTransferOwnershipForm");
+const projectSettingTransferOwnershipPage=document.querySelector("#projectSettingTransferOwnershipPage");
+const projectSettingTransferOwnershipSelection=document.querySelector("#projectSettingTransferOwnershipSelection");
+const projectSettingTransferOwnershipCancelButton=document.querySelector("#projectSettingTransferOwnershipCancelButton");
+let projectSettingTeamMembers=false;
+projectSettingTransferOwnershipButton.addEventListener("click",async ()=>{
+    const projectId=document.location.pathname.split("/").pop();
+    const response=await fetch(`/dashboard/projects/${projectId}/task/names`,{
+        method:"get"
+    });
+    const result=await response.json();
+    projectSettingTransferOwnershipSelection.innerHTML="";
+    if(result.msg==="success"){
+        if(result.names.length===0){
+            projectSettingTeamMembers=true;
+            const option=document.createElement("option");
+            option.innerText="No Team Member";
+            projectSettingTransferOwnershipSelection.appendChild(option);
+        }else{
+            projectSettingTeamMembers=false;
+            result.names.forEach((name)=>{
+                const option=document.createElement("option");
+                option.innerText=`${name.member.fullName}`;
+                option.value=`${name.member._id}`;
+                projectSettingTransferOwnershipSelection.appendChild(option);
+            })
+        }
+        projectSettingPage.style.animation="page1Flip 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingPage.style.display="none";
+            projectSettingTransferOwnershipPage.style.display="block";
+            projectSettingTransferOwnershipPage.style.animation="page2Flip 0.3s linear 0s forwards";
+        },300);
+    }
+})
+projectSettingTransferOwnershipCancelButton.addEventListener("click",()=>{
+    projectSettingTransferOwnershipPage.style.animation="page1Flip 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        projectSettingTransferOwnershipPage.style.display="none";
+        projectSettingPage.style.display="block";
+        projectSettingPage.style.animation="page2Flip 0.3s linear 0s forwards";
+    },300);
+})
+const projectSettingTransferOwnershipPageComment=document.querySelector("#projectSettingTransferOwnershipPageComment");
+const projectSettingTransferPageSpacialityInput=document.querySelector("#projectSettingTransferPageSpacialityInput");
+projectSettingTransferOwnershipForm.addEventListener("submit",async (e)=>{
+    e.preventDefault();
+    if(projectSettingTeamMembers){
+        projectSettingTransferOwnershipPageComment.innerText="There are no members.";
+        projectSettingTransferOwnershipPageComment.style.display="flex";
+        projectSettingTransferOwnershipPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingTransferOwnershipPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            projectSettingTransferOwnershipPageComment.style.display="none";
+            return;
+        },1300);
+    }
+    const projectSettingOwnerNewPositionInput=document.querySelector('input[name="ownerNewPosition"]:checked');
+    const body={
+        member:projectSettingTransferOwnershipSelection.value,
+        newPosition:projectSettingOwnerNewPositionInput.value,
+        spaciality:projectSettingTransferPageSpacialityInput.value
+    };
+    const response=await fetch(`/dashboard/projects/${projectId}/transferOwnership`,{
+        method:"PATCH",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body:JSON.stringify(body)
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        projectSettingTransferOwnershipPageComment.innerText="Transfer Seuccessfully";
+        projectSettingTransferOwnershipPageComment.style.display="flex";
+        projectSettingTransferOwnershipPageComment.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            projectSettingTransferOwnershipPageComment.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            projectSettingTransferOwnershipPageComment.style.display="none";
+            projectSettingTransferOwnershipPage.style.animation="cancelPage 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                document.body.style.overflow="auto";
+                projectSettingPageHolder.style.display="none";
+                projectSettingPage.style.display="block";
+                projectSettingPage.style.rotateY="0deg";
+                projectSettingTransferOwnershipPage.style.rotateY="90deg";
+                projectSettingTransferOwnershipPage.style.display="none";
+                projectSettingTransferOwnershipPage.style.scale="1";
+            },300);
+        },1300);
+        activityReload();
     }
 })

@@ -13,8 +13,9 @@ body{
 }
 
 #nav-bar{
-    width:100vw;
-    height:10vh;
+    width:100%;
+    padding-top:5px;
+    padding-bottom:5px;
     background-color:rgb(2, 34, 47);
     position:sticky;
     top:0px;
@@ -28,7 +29,6 @@ body{
 }
 .button{
     background-color:transparent;
-    width:15vw;
     color:rgb(118, 184, 169);
     border:none;
     font-size:2rem;
@@ -40,40 +40,37 @@ body{
 .button:hover{
     color:white;
 }
-#logo{
-    height:10vh;
-    width:9vw;
-    border-radius:50%;
-    background-image:url("./images/logo.png");
-    background-size:cover;
-    color:blue;
+.logo{
+    color:rgb(184, 214, 228);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:3rem;
 }
 
 #mainSection{
-    width:100vw;
+    width:100%;
     background-color:rgb(15, 60, 80);
     margin-bottom:30px;
 }
 #heroSection{
-    height:80vh;
-    width:100vw;
     background-color:transparent;
     display:flex;
-    align-items:center;
-    margin-top:50px;
+    margin-top:80px;
     margin-bottom:20px;
+    padding-bottom:70px;
 }
 #images{
-    height:80vh;
-    width:40vw;
+    width:50%;
     background-color:transparent;
     display:flex;
     justify-content:center;
     align-items:center;
+    margin-right:30px;
 }
 #image{
-    height:60vh;
-    width:30vw;
+    height:500px;
+    width:500px;
     background-image:url("./images/heroImage1.webp");
     background-size:cover;
     background-repeat:no-repeat;
@@ -82,35 +79,22 @@ body{
         0px 30px 40px rgba(0,0,0,0.8);
 }
 #heroSectionTextArea{
-    height:60vh;
-    width:60vw;
-    display:flex;
-    flex-wrap:wrap;
-    align-content:center;
-    justify-content:center;
+    width:50%;
     background-color:transparent;
 }
-#heroSectionHeader{
-    width:60vw;
-}
 .heading{
-    font-size:3rem;
-    margin-left:40px;
-    line-height:80px;
+    font-size:2.5rem;
+    margin-bottom:20px;
     font-weight: bolder;
     color:rgb(156, 211, 234);
 }
 .para{
     font-size:2rem;
-    margin-top:20px;
-    margin-left:40px;
-    margin-right:120px;
-    line-height:70px;
+    padding-right:30px;
+    line-height:60px;
     color:rgb(156, 211, 234);
 }
 #heroButtonContainer{
-    height:10vh;
-    width:55vw;
     display:flex;
     justify-content:flex-start;
     align-items:center;
@@ -120,7 +104,7 @@ body{
 #heroButton1,#heroButton2,#workingButton,#ctaButton1,#ctaButton2{
     background-color:rgb(2, 17, 23);
     border-radius:30px;
-    height:8vh;
+    /* height:8vh; */
     font-size:2rem;
     color:rgb(118, 184, 169);
     margin-right:50px;
@@ -128,6 +112,9 @@ body{
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
     transition:all 0.3s linear 0s;
+    padding:10px;
+    padding-left:20px;
+    padding-right:20px;
 }
 #heroButton1:hover{
     color:white;
@@ -135,7 +122,9 @@ body{
 #heroButton2:hover{
     color:white;
 }
-
+button{
+    cursor:pointer;
+}
 hr{
     border:2px solid rgb(5, 32, 33);
 }
@@ -143,39 +132,51 @@ hr{
 #problemSection{
     margin-top:40px;
     margin-bottom:40px;
+    padding-left:60px;
 }
 #problemCardSection,#roadmapCardContainer{
     margin-top:70px;
-    margin-left:10px;
+    /* margin-left:10px; */
     display:flex;
-    justify-content:space-around;
+    justify-content:space-between;
+    align-items:center;
     flex-wrap:wrap;
+    padding-right:40px;
 }
 .problemCard,.featureCard,.workingCard,.roadmapCards{
-    height:15vh;
-    width:28vw;
+    width:400px;
     background-color:rgb(80, 122, 141);
     border-radius:20px;
     margin-bottom:50px;
-    margin-left:10px;
-    padding:15px;
+    padding:10px;
+    padding-left:15px;
+    padding-bottom:15px;
     transition:all 0.2s linear 0s;
     box-shadow:
         0 5px 10px rgba(0,0,0,0.8),
         0px 20px 30px rgba(0,0,0,0.8);
 }
+.workingCard{
+    width:fit-content;
+    margin-top:0px;
+    margin-bottom:0px;
+    width:700px;
+}
+.featureCard{
+    margin-bottom:0px;
+}
 .problemHeading,.featureHeading,.workingHeading,.roadmapHeading{
-    font-size:2rem;
-    line-height:50px;
+    display:flex;
+    align-items:center;
+    font-size:1.8rem;
     color:rgb(29, 52, 58);
-    margin-left:15px;
 }
 .problemPara,.featurePara,.workingPara,.roadmapPara{
     font-size:1.3rem;
-    margin-top:5px;
+    margin-top:10px;
     line-height:40px;
     color:rgb(194, 224, 237);
-    margin-left:20px;
+    /* margin-left:20px; */
 }
 .problemCard:hover{
     transform:translateY(-10px);
@@ -184,80 +185,77 @@ hr{
 #solutionSection{
     margin-top:40px;
     margin-bottom:120px;
+    padding-left:60px;
 }
 #dashboardContainer{
-    height:72vh;
-    width:100vw;
+    width:100%;
     display:flex;
     margin-top:60px;
-    margin-left:60px;
 }
 #solutionDashboard{
-    height:72vh;
-    width:65vw;
-    background-image:url("./images/dashboardPreview.png");
-    background-size:contain;
+    width:1000px;
+    height:500px;
+    background-image:url("./images/Devflow dashboard.png");
+    background-size:cover;
     box-shadow:
         10px 10px 10px rgba(0,0,0,0.8),
         0px 30px 40px rgba(0,0,0,0.8);
-    margin-right:60px;
+    /* margin-right:60px; */
     border-radius:20px;
-}
-#solutionChecklist{
-    height:72vh;
-    width:25vw;
+    margin-right:80px;
 }
 .solutionPara{
     font-size:2rem;
-    margin-top:20px;
-    margin-left:40px;
-    line-height:70px;
+    margin-top:40px;
+    padding-left:40px;
     color:rgb(156, 211, 234);
 }
-
+#solutionChecklist{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
 #featuresSection,#workSection,#roadmapSection,#CTAsection{
     margin-top:40px;
     margin-bottom:50px;
+    padding-left:60px;
 }
 #featureCardContainer{
     margin-top:70px;
-    margin-left:10px;
+    padding-right:40px;
+    /* margin-left:10px; */
 }
 .featureCard:hover{
     transform:translateY(-10px);
 }
 .featureCard{
-    width:25vw;
+    width:400px;
     box-shadow:
         10px 20px 10px rgba(0,0,0,0.8),
         10px 30px 30px rgba(0,0,0,0.8);
 }
 #cardContainer1{
-    width:100vw;
-    height:20vh;
+    width:100%;
     display:flex;
     justify-content:space-between;
 }
 #cardContainer2{
-    width:100vw;
-    height:20vh;
+    width:100%;
     display:flex;
-    justify-content:space-between;
-    margin-top:50px;
+    justify-content:space-evenly;
+    margin-top:60px;
 }
 #cardContainer3{
-    width:100vw;
-    height:20vh;
+    width:100%;
     display:flex;
-    justify-content:space-between;
-    margin-top:70px;
+    justify-content:space-evenly;
+    margin-top:50px;
 }
 #cardContainer4{
-    width:100vw;
-    height:20vh;
+    width:100%;
     display:flex;
     justify-content:space-between;
-    margin-top:70px;
+    margin-top:60px;
 }
 .featureCard:hover{
     transform:scale(1.1);
@@ -267,14 +265,14 @@ hr{
 #timeline{
     margin-top:70px;
     display:flex;
-    justify-content:flex-start;
+    /* justify-content:flex-start; */
+    padding-left:10px;
 }
 #line{
-    height:100vh;
     width:5px;
     background-color:rgb(88, 103, 105);
     border-radius:10px;
-    margin-left:60px;
+    height:700px;
     display:flex;
     flex-direction:column;
     justify-content:space-around;
@@ -287,18 +285,11 @@ hr{
     background-color:rgb(0, 122, 130);
 }
 #workingCardContainer{
-    height:100vh;
     display:flex;
     flex-direction:column;
+    padding-left:50px;
+    height:700px;
     justify-content:space-around;
-}
-.workingCard{
-    margin-bottom:0px;
-    padding:20px;
-    height:12vh;
-    width:48vw;
-    margin-left:50px;
-    margin-top:5px;
 }
 .workingPara{
     font-size:1.5rem;
@@ -306,8 +297,8 @@ hr{
 }
 #workingButton{
     transition:all 0.3s linear 0s;
-    margin-left:50px;
-    margin-top:40px;
+    /* margin-left:50px; */
+    margin-top:30px;
 }
 #workingButton:hover{
     color:white;
@@ -315,6 +306,7 @@ hr{
 
 .roadmapCards{
     padding:0px;
+    padding-bottom:10px;
     border:3px dashed rgb(1, 36, 50);
     background-color:rgba(80, 122, 141,0.6);
 }
@@ -331,17 +323,13 @@ hr{
     justify-content:center;
     margin:0px;
 }
-
-#CTAsection{
-    margin-top:80px;
-}
 #ctaButton1,#ctaButton2{
-    margin-left:50px;
+    /* margin-left:50px; */
     margin-top:50px;
     animation:btnAnimation 0.3s linear 0s infinite alternate;
     animation:btnAnimation2 0.3s linear 0s infinite alternate;
-    height:12vh;
-    font-size:2.5rem;
+    /* height:12vh; */
+    /* font-size:2rem; */
 }
 #ctaButton1:hover{
     color:white;
@@ -367,27 +355,21 @@ hr{
 }
 
 #footer{
-    width:100vw;
+    width:100%;
     background-color:rgb(2, 34, 47);
     padding-top:10px;
-}
-#footerHeading{
-    font-size:3rem;
-    font-weight: bolder;
-    color:rgb(61, 125, 152);
-    line-height:70px;
-    margin-left:20px;
 }
 .footerPara{
     line-height:50px;
     color:rgb(156, 211, 234);
 }
 #endSection{
-    width:100vw;
-    height:5vh;
+    width:100%;
     display:flex;
     justify-content:center;
     align-items:center;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 #endPara{
     font-size:1.2rem;
@@ -397,16 +379,12 @@ hr{
     display:flex;
     justify-content:space-evenly;
     align-items:center;
-    margin-top:40px;
+    margin-top:30px;
 }
 #footerLogo{
-    display:inline-block;
-    height:13vh;
-    width:7vw;
-    border-radius:50%;
-    background-image:url("./images/logo.png");
-    background-size:cover;
-    background-color:white;
+    display:flex;
+    justify-content:center;
+    width:100%;
 }
 #footerHeadingContainer{
     display:flex;

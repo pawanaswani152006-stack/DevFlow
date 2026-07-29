@@ -4,14 +4,14 @@ const router1=express.Router();
 const {checkAuth,checkForProject}=require("../middlewares/dash.js");
 const {createProj,getProjects,getProfile,editName,setNewPass,sendNewEmailChangeLink,verifyEmail,checkForNewEmailVerification,cancelNewEmailSetProcess,resendSetNewEmailLink,resendAvailableTime,logOut,getProjectInfo}=require("../controllers/dashControl.js");
 const path=require("path");
-const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName}=require("../controllers/teamControl.js");
+const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName,getPosition}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
-const {createTask,getTasks,deleteTask,getStatus,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
+const {createTask,getTasks,deleteTask,getStatus,getTaskInfo,updateStatus,editTaskCard}=require("../controllers/taskControl.js");
 const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
-const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf}=require("../controllers/notesControl.js");
+const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf,getPdfName,editPdf,deletePdf}=require("../controllers/notesControl.js");
 const project=require("../models/dashboard.js");
-const {getOverviewInfo,projectUpdate,updateProjectStatus,deleteProject}=require("../controllers/overviewControl.js");
+const {getOverviewInfo,projectUpdate,updateProjectStatus,deleteProject,transferOwnership}=require("../controllers/overviewControl.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
@@ -277,6 +277,15 @@ router1.get("/:projectId/task/:taskId",checkAuth,checkForProject,(req,res)=>{
     }
 })
 
+router1.get("/:projectId/editTask/:taskId",checkAuth,checkForProject,(req,res)=>{
+    try{
+        getTaskInfo(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
 router1.patch("/:projectId/task/:taskId",checkAuth,checkForProject,(req,res)=>{
     try{
         updateStatus(req,res);
@@ -398,6 +407,69 @@ router1.post("/:projectId/teamPdf",checkAuth,checkForProject,upload.single("pdf"
 router1.get("/:projectId/pdf",checkAuth,checkForProject,(req,res)=>{
     try{
         getPdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/:pdfId/getPdfName",checkAuth,checkForProject,(req,res)=>{
+    try{
+        getPdfName(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/:pdfId/editTeamPdf",checkAuth,checkForProject,restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        editPdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/:pdfId/editPersonalPdf",checkAuth,checkForProject,(req,res)=>{
+    try{
+        editPdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.delete("/:projectId/:pdfId/deleteTeamPdf",checkAuth,checkForProject,restrictTo("Admin","Owner"),(req,res)=>{
+    try{
+        deletePdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.delete("/:projectId/:pdfId/deletePersonalPdf",checkAuth,checkForProject,(req,res)=>{
+    try{
+        deletePdf(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.patch("/:projectId/transferOwnership",checkAuth,checkForProject,restrictTo("Owner"),(req,res)=>{
+    try{
+        transferOwnership(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.get("/:projectId/getPosition",checkAuth,checkForProject,(req,res)=>{
+    try{
+        getPosition(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});
