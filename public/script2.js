@@ -1,3 +1,15 @@
+async function canGoSignPage(){
+    const response=await fetch(`/canGoSignPage`,{
+        method:"get"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        return;
+    }else if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
+}
+canGoSignPage();
 const params=new URLSearchParams(window.location.search);
 const mode=params.get("mode");
 
@@ -89,8 +101,11 @@ form1.addEventListener("submit",async (e)=>{
     });
     
     let result=await res.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.isSuccess){
-        location.href="/dashboard";
+        location.replace("/dashboard");
     }
     if(result.msg1 || result.msg2){
         msg="Invalid email or password";
@@ -139,6 +154,9 @@ form2.addEventListener("submit",async (e)=>{
 
     let msg=null;
     let result=await res.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.isSuccess){
         location.href="waiting.html"
     }
@@ -211,6 +229,9 @@ forgotPassForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         currentUserId=result.id;
         forgotPage1.style.animation="fadeOut 0.3s linear 0s forwards";
@@ -230,6 +251,9 @@ async function checkingForResetPassVerification(){
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         forgotPage2.style.animation="fadeOut 0.3s linear 0s forwards";
         setTimeout(()=>{
@@ -255,6 +279,9 @@ forgotPageBackToSignInButton.addEventListener("click",async ()=>{
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
         setTimeout(()=>{
@@ -280,6 +307,9 @@ forgotPageNewPassCancelButton.addEventListener("click",async ()=>{
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         forgotPassPage.style.animation="pageFlip 0.3s linear 0s forwards";
         setTimeout(()=>{
@@ -305,6 +335,9 @@ forgotPageUseAnotherEmailButton.addEventListener("click",async ()=>{
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         forgotEmailInput.value="";
         forgotPage2.style.animation="fadeOut 0.3s linear 0s forwards";
@@ -348,6 +381,9 @@ passwordResetForm.addEventListener("submit",async (e)=>{
             body:JSON.stringify(body)
         });
         const result=await response.json();
+        if(result.msg==="authenticated"){
+            location.replace("/dashboard");
+        }
         if(result.msg==="success"){
             forgotPageComment.innerText="Password Changed Successfully";
             forgotPageComment.style.display="flex";
@@ -387,6 +423,9 @@ forgotPageResendButton.addEventListener("click",async ()=>{
         method:"get"
     });
     const result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         checkForPass=setInterval(checkingForResetPassVerification,1000);
         clock=setInterval(countdownFunction,1000);
@@ -413,6 +452,9 @@ async function countdownFunction(){
         method:"get"
     });
     let result=await response.json();
+    if(result.msg==="authenticated"){
+        location.replace("/dashboard");
+    }
     if(result.msg==="success"){
         forgotPageResendButton.style.backgroundColor="rgb(79, 88, 91)";
         forgotPageResendButton.disabled=true;

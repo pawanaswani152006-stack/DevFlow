@@ -7,6 +7,7 @@ const sessionModel=require("../models/refreshSession.js");
 const {sendVarificationEmail,sendPassResetEmail}=require("../utils/sendMail.js");
 const emailVarificationModel=require("../models/emailVarificationModel.js");
 const resetPassModel=require("../models/resetPasswordModel.js");
+const newUserVerificationModel=require("../models/newUserVerificationModel.js");
 
 const secretKey=process.env.secretKey;
 let isSuccess=false;
@@ -31,10 +32,13 @@ async function createUser(req,res){
         if(password!==reEnteredPassword){
             return res.status(400).json({reMsg:"Re-entered password is different."});
         }
-        const user=await newUser.create({
+        await newUserVerificationModel.deleteOne({email:email});
+        const user=await newUserVerificationModel.create({
             fullName:fullName,
             email:email,
-            password:password
+            password:password,
+            isVerified:false,
+            expiresAt:new Date(Date.now()+(30*60*1000))
         });
         const rawToken=crypto.randomBytes(32).toString("hex");
         const hashedToken=crypto.createHash("sha256")
@@ -94,6 +98,9 @@ async function varifyUser(req,res){
                 .update(password)
                 .digest("hex");
         if(hashedPassword===user.password){
+            if(user.isDeleted){
+                return res.json({msg:"Invalid email or password"});
+            }
             if(!user.isVarified){
                 return res.json({msg:"Verify your email first."});
             }
@@ -146,7 +153,7 @@ async function emailVarification(req,res){
         if(!emailVarificationEntity){
             return res.json({msg:"link expired"});
         }
-        const user=await newUser.findByIdAndUpdate(emailVarificationEntity.userId,{
+        const user=await newUserVerificationModel.findByIdAndUpdate(emailVarificationEntity.userId,{
             isVarified:true
         });
         await emailVarificationModel.findByIdAndDelete(emailVarificationEntity._id);
@@ -191,7 +198,7 @@ async function getUser(req,res){
             return res.json({expire:true});
         }
         const userId=await jwt.verify(verifyUserToken,secretKey);
-        const user=await newUser.findById(userId.userId).select("isVarified");
+        const user=await newUserVerificationModel.findById(userId.userId).select("isVarified");
         if(!user){
             return res.json({msg:"user can't be find."});
         }
@@ -205,10 +212,17 @@ async function getUser(req,res){
 async function goDashboard(req,res){
     try{
         const userId=req.params.userId;
-        const user=await newUser.findById(userId);
+        const user=await newUserVerificationModel.findById(userId);
+        const verifiedUser=await newUser.create({
+            fullName:user.fullName,
+            email:user.email,
+            password:user.password,
+            isVarified:user.isVarified
+        });
+        await newUserVerificationModel.findByIdAndDelete(user._id);
         const token=await jwt.sign({
-            id:user._id,
-            email:user.email
+            id:verifiedUser._id,
+            email:verifiedUser.email
         },
         secretKey,
         {
@@ -216,7 +230,7 @@ async function goDashboard(req,res){
         });
         const jti=crypto.randomUUID();
         const refreshToken=await jwt.sign({
-            id:user._id,
+            id:verifiedUser._id,
             jti:jti
         },
         secretKey,
@@ -232,7 +246,7 @@ async function goDashboard(req,res){
             maxAge:(90*24*60*60*1000)
         });
         await sessionModel.create({
-            userId:user._id.toString(),
+            userId:verifiedUser._id.toString(),
             jti:jti,
             expiresAt:new Date(Date.now()+(90*24*60*60*1000))
         });
@@ -248,7 +262,7 @@ async function goDashboard(req,res){
 async function resendEmail(req,res){
     try{
         const userId=req.params.userId;
-        const user=await newUser.findById(userId).select("email");
+        const user=await newUserVerificationModel.findById(userId).select("email");
         if(!user){
             return res.json({msg:"user can't be find."});
         }
@@ -300,7 +314,7 @@ async function resendEmail(req,res){
 async function getEmail(req,res){
     try{
         const userId=req.params.userId;
-        const user=await newUser.findById(userId).select("email");
+        const user=await newUserVerificationModel.findById(userId).select("email");
         return res.json({msg:"success",email:user.email});
     }catch(error){
         console.log("Error:",error);
@@ -322,7 +336,7 @@ async function changeEmail(req,res){
         if(existingUser){
             return res.json({msg:"account already exist."});
         }
-        const user=await newUser.findByIdAndUpdate(userId,{
+        const user=await newUserVerificationModel.findByIdAndUpdate(userId,{
             email:body.email
         },{
             new:true
@@ -339,10 +353,13 @@ async function changeEmail(req,res){
             }
         }
         const rawToken=crypto.randomBytes(32).toString("hex");
+        const hashedToken=crypto.createHash("sha256")
+            .update(rawToken)
+            .digest("hex");
         const varificationLink=`http://localhost:8000/verifyEmail?token=${encodeURIComponent(rawToken)}`;
         sendVarificationEmail(user.email,varificationLink);
         const emailVerificationEntity=await emailVarificationModel.findOneAndUpdate({userId:userId},{
-            token:rawToken,
+            token:hashedToken,
             expiresAt:new Date(Date.now()+(15*60*1000)),
             resendAvailableAt:new Date(Date.now()+(60*1000))
         })

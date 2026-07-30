@@ -274,10 +274,9 @@ hr{
     margin-top:20px;
 }
 .statusRepresenter{
-    height:20px;
-    width:20px;
+    height:30px;
+    width:30px;
     border-radius:50%;
-    background-color:green;
 }
 .projectAnsPara{
     color:rgb(2, 56, 49);
@@ -296,7 +295,7 @@ hr{
     backdrop-filter:blur(2px);
     display:none;
 }
-#newProject,#profilePage,#profileEditPage,#profileEditPassPage,#profileEditEmailPage{
+#newProject,#profilePage,#profileEditPage,#profileEditPassPage,#profileEditEmailPage,#profileSettingDeleteAccountPage{
     border-radius:50px;
     background-color:rgba(196, 225, 227,0.7);
     box-shadow:0 0 20px cyan;
@@ -307,7 +306,10 @@ hr{
 #profilePage{
     display:none;
 }
-#profileEditPage,#profileEditPassPage,#profileEditEmailPage{
+#profileSettingDeleteAccountPage{
+    width:700px;
+}
+#profileEditPage,#profileEditPassPage,#profileEditEmailPage,#profileSettingDeleteAccountPage{
     display:none;
     transform:rotateY(90deg);
     transition:all 0.3sec linear 0s;
@@ -397,7 +399,7 @@ hr{
     outline:none;
 }
 
-#newButtonHolder,#profilePageButtonHolder,#profileEditPageButtonHolder,#profileEditPassPageButtonHolder,#profileEditEmailPageButtonHolder,#profileEditEmailWaitingPageButtonHolder{
+#newButtonHolder,#profilePageButtonHolder,#profileEditPageButtonHolder,#profileEditPassPageButtonHolder,#profileEditEmailPageButtonHolder,#profileEditEmailWaitingPageButtonHolder,#profileSettingDeletePageButtonHolder{
     width:100%;
     display:flex;
     justify-content:space-around;
@@ -424,7 +426,7 @@ hr{
 #profileEditEmailPageButtonHolder{
     margin-bottom:30px;
 }
-.newButton,.profilePageButton,.profileEditPageButton,.profileEditPassPageButton,.profileEditEmailPageButton,.profileEditEmailWaitingPageButton{
+.newButton,.profilePageButton,.profileEditPageButton,.profileEditPassPageButton,.profileEditEmailPageButton,.profileEditEmailWaitingPageButton,.profileSettingDeletePageButton{
     background-color:rgb(3, 45, 62);
     border-radius:30px;
     font-size:2rem;

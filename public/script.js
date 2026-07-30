@@ -80,4 +80,3 @@ let signIn2=document.querySelector("#ctaButton2");
 signIn2.addEventListener("click",()=>{
     location.href="signIn.html?mode=signIn";
 });
-

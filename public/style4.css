@@ -791,7 +791,8 @@ p{
 .singleNoteHolder{
     margin-top:30px;
     padding-bottom:30px;
-    border-bottom:4px solid rgb(3, 26, 23);
+    border-bottom:3px solid rgb(3, 26, 23);
+    animation:activityAnimation 0.3s linear forwards;
 }
 .singleNoteTimeline{
     font-size:1.3rem;
@@ -833,6 +834,7 @@ p{
     max-width:300px;
     margin-right:30px;
     margin-bottom:50px;
+    animation:activityAnimation 0.3s linear forwards;
 }
 .personalPDFNamePara{
     font-size:1.5rem;
@@ -961,12 +963,17 @@ p{
     line-height:50px;
     /* display:inline-block; */
 }
-#projectSettingOptions{
+#projectSettingOptions,#projectSettingMemberOption{
     color:#03171b;
     font-size:1.5rem;
     white-space:pre-wrap;
     word-break:break-word;
     line-height:40px;
+}
+#projectSettingMemberOption{
+    line-height:0px;
+    margin-top:15px;
+    margin-bottom:20px;
 }
 .projectSettingOptionButton{
     background-color:transparent;

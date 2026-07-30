@@ -25,6 +25,10 @@ let userSignUpSchema=new mongoose.Schema({
     isVarified:{
         type:Boolean,
         default:false
+    },
+    isDeleted:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true});
 

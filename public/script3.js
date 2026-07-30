@@ -63,7 +63,7 @@ form.addEventListener("submit",async (e)=>{
     allProjects.push(result.project);
     if(result.success===true){
         cancelAnimation();
-        let div=await projectCard(result.project.owner.fullName,projectName.value,textArea.value,dateCreater(date.value),result.project._id);
+        let div=await projectCard(result.project.owner.fullName,projectName.value,textArea.value.trim(),dateCreater(date.value),result.project._id,result.project.status);
         setTimeout(()=>{
             emptyState.forEach((state)=>{
                 state.style.animation="emptyFade 0.1s linear 0s forwards"; 
@@ -128,7 +128,7 @@ async function reload(){
         });
     }else{
         projects.arr.forEach((project)=>{
-            let div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id);
+            let div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id,project.status);
             div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
@@ -140,11 +140,19 @@ async function reload(){
 }
 reload();
 
-function projectCard(owner,projectName,description,deadline,projectId){
+function projectCard(owner,projectName,description,deadline,projectId,projectCardStatus){
     let div=document.createElement("div");
     let cardButton=document.createElement("button");
     div.classList.add("project");
     cardButton.classList.add("projectAnimationHolder");
+    let backgroundColor;
+    if(projectCardStatus==="Active"){
+        backgroundColor="green";
+    }else if(projectCardStatus==="On Hold"){
+        backgroundColor="yellow";
+    }else{
+        backgroundColor="blue";
+    }
     div.innerHTML=
         `<div class="projectImage"><i>DF</i></div>
         <div class="projectData">
@@ -154,7 +162,7 @@ function projectCard(owner,projectName,description,deadline,projectId){
             <p class="projectPara">Description: <span class="projectAnsPara">${description}</span></p>
             <p class="projectPara">Owner: <span class="projectAnsPara">${owner}</span></p>
             <p class="projectPara">Due: <span class="projectAnsPara">${deadline}</span></p>
-            <div class="status"><div class="statusRepresenter" style="margin-bottom:15px;"></div><p class="projectPara" style="margin-left:5px;line-height:15px;font-size:1.5rem;color:rgb(2, 56, 49);">Active</p></div>
+            <div class="status"><div class="statusRepresenter" style="margin-bottom:15px;background-color:${backgroundColor}"></div><p class="projectPara" style="margin-left:10px;line-height:15px;font-size:2rem;color:rgb(2, 56, 49);">${projectCardStatus}</p></div>
         </div>`;
     cardButton.appendChild(div);
     cardButton.dataset.projectId=projectId;
@@ -192,7 +200,7 @@ function renderProjects(){
         grid.style.marginTop="60px";
         grid.style.display="flex";
         filtered.forEach((project)=>{
-         div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id);
+         div=projectCard(project.owner.fullName,project.projectName,project.description,dateCreater(project.deadline),project._id,project.status);
          div.style.animation="cardAnimation 0.5s linear 0s forwards";
         });
     }
@@ -624,5 +632,47 @@ logoutButton.addEventListener("click",async ()=>{
                 location.replace("/signIn.html?mode=signIn");
             },300)
         },1300);
+    }
+})
+
+const profilePageDeleteButton=document.querySelector("#profilePageDeleteButton");
+const profileSettingDeleteAccountPage=document.querySelector("#profileSettingDeleteAccountPage");
+const profileSettingDeletePageDeleteButton=document.querySelector("#profileSettingDeletePageDeleteButton");
+const profileSettingDeletePageCancelButton=document.querySelector("#profileSettingDeletePageCancelButton");
+const profileSettingDeletePageButtonHolder=document.querySelector("#profileSettingDeletePageButtonHolder");
+
+profilePageDeleteButton.addEventListener("click",()=>{
+    profilePage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profilePage.style.display="none";
+        profileSettingDeleteAccountPage.style.display="block";
+        profileSettingDeleteAccountPage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+profileSettingDeletePageCancelButton.addEventListener("click",()=>{
+    profileSettingDeleteAccountPage.style.animation="pageFlip1 0.3s linear 0s forwards";
+    setTimeout(()=>{
+        profileSettingDeleteAccountPage.style.display="none";
+        profilePage.style.display="block";
+        profilePage.style.animation="pageFlip2 0.3s linear 0s forwards";
+    },300);
+})
+let isDeleteAccountProcess=false;
+profileSettingDeletePageDeleteButton.addEventListener("click",async ()=>{
+    if(isDeleteAccountProcess){
+        return;
+    }
+    isDeleteAccountProcess=true;
+    profileSettingDeletePageDeleteButton.style.display="none";
+    profileSettingDeletePageDeleteButton.disabled=true;
+    profileSettingDeletePageCancelButton.disabled=true;
+    profileSettingDeletePageCancelButton.innerText="Wait for process";
+    profileSettingDeletePageButtonHolder.style.justifyContent="center";
+    const response=await fetch(`/dashboard/projects/deleteAccount`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        location.replace("/signIn.html?mode=signUp");
     }
 })

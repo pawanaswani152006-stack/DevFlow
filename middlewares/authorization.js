@@ -8,29 +8,21 @@ function restrictTo(...validPositions){
             let position="Member";
             const projectId=req.params.projectId;
             const project=await projectModel.findById(req.params.projectId).select("owner").populate("owner","fullName");
-            console.log(project.owner._id.toString());
-            console.log(req.user.id);
             if(req.user.id===project.owner._id.toString()){
-                console.log("yha per");
-                req.position="Owner";
-                next();
-                return;
+                position="Owner";
+            }else{
+                const projectTeamCollection=await teamModel.findOne({
+                    projectId:projectId,
+                    member:req.user.id
+                })
+                if(projectTeamCollection.position==="Admin"){
+                    position="Admin";
+                }
             }
-            console.log("nhi yha per");
-            const projectTeamCollection=await teamModel.findOne({
-                projectId:projectId,
-                member:req.user.id
-            })
-            if(projectTeamCollection.position==="Admin"){
-                console.log("hello");
-                position="Admin";
-            }
-            console.log(position,validPositions);
             if(!validPositions.includes(position)){
-                console.log("hello bro");
                 return res.json({msg:"not authorized for that action"});
             }
-            req.position="Admin";
+            req.position=position;
             next(); 
         }catch(err){
             console.log("Error:",err);

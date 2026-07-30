@@ -83,6 +83,9 @@
                 <p class="profilePagePara">Joined At:</p>
                 <p class="profilePagePara profilePageAnsPara" id="profilePageJoinedAtHolder"></p>
             </div>
+            <div class="profileDataHolder" style="margin-top:15px;">
+                <p class="profileEditPageOption">If you want to delete your account than <button class="profileEditPageOptionButton" id="profilePageDeleteButton">Click here</button></p>
+            </div>
             <div id="profilePageButtonHolder">
                 <button class="profilePageButton" id="profilePageEditButton" style="padding-left:35px;padding-right:35px;">Edit Profile</button>
                 <button class="profilePageButton" id="profilePageCloseButton">Close Profile</button>
@@ -161,6 +164,15 @@
                 <p id="profileEditEmailWaitingPageExpireComment">The reset link will expire in 15 minutes.</p>
             </div>
             <p class="profilePageComments" id="profilePageEditEmailComment"></p>
+        </div>
+        <div id="profileSettingDeleteAccountPage">
+            <h1 class="profileHeading" style="margin-bottom:20px;">Delete Account</h1>
+            <p class="profilePagePara" style="margin-bottom:10px;margin-left:20px;">Warning</p>
+            <p class="profilePagePara" style="margin-left:20px;font-size:1.5rem;line-height:35px;">Deleting your account is permanent and cannot be undone. Your personal data will be removed, and any projects you own will be permanently deleted unless ownership is transferred beforehand.</p>
+            <div id="profileSettingDeletePageButtonHolder" style="margin-bottom:25px;">
+                <button class="profileSettingDeletePageButton" id="profileSettingDeletePageDeleteButton">Delete</button>
+                <button class="profileSettingDeletePageButton" id="profileSettingDeletePageCancelButton">Cancel</button>
+            </div>
         </div>
     </div>
     <script src="/script3.js"></script>

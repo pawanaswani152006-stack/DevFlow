@@ -2,7 +2,7 @@ const express=require("express");
 const multer=require("multer");
 const router1=express.Router();
 const {checkAuth,checkForProject}=require("../middlewares/dash.js");
-const {createProj,getProjects,getProfile,editName,setNewPass,sendNewEmailChangeLink,verifyEmail,checkForNewEmailVerification,cancelNewEmailSetProcess,resendSetNewEmailLink,resendAvailableTime,logOut,getProjectInfo}=require("../controllers/dashControl.js");
+const {createProj,getProjects,getProfile,editName,setNewPass,sendNewEmailChangeLink,verifyEmail,checkForNewEmailVerification,cancelNewEmailSetProcess,resendSetNewEmailLink,resendAvailableTime,logOut,getProjectInfo,deleteAccount}=require("../controllers/dashControl.js");
 const path=require("path");
 const {addTeamMember,getTeamMembers,manageTeamMember,updateRole,deleteMember,getTeamMembersName,getPosition}=require("../controllers/teamControl.js");
 const restrictTo=require("../middlewares/authorization.js");
@@ -11,7 +11,7 @@ const {getActivities}=require("../controllers/activityControl.js");
 const {getOptions,getMessages,deleteMsg,editMsg}=require("../controllers/chatControl.js");
 const {createNote,getNotes,deleteNote,editNote,pdf,getPdf,teamPdf,getPdfName,editPdf,deletePdf}=require("../controllers/notesControl.js");
 const project=require("../models/dashboard.js");
-const {getOverviewInfo,projectUpdate,updateProjectStatus,deleteProject,transferOwnership}=require("../controllers/overviewControl.js");
+const {getOverviewInfo,projectUpdate,updateProjectStatus,deleteProject,transferOwnership,leaveTeam}=require("../controllers/overviewControl.js");
 
 const storage=multer.memoryStorage();
 const upload=multer({
@@ -24,6 +24,15 @@ const upload=multer({
 router1.get("/",checkAuth,(req,res)=>{
     try{
         getProjects(req,res);
+    }catch(err){
+        console.log("error",err);
+        return res.json({msg:"something went wrong"});
+    }
+})
+
+router1.delete("/deleteAccount",checkAuth,(req,res)=>{
+    try{
+        deleteAccount(req,res);
     }catch(err){
         console.log("error",err);
         return res.json({msg:"something went wrong"});
@@ -470,6 +479,15 @@ router1.patch("/:projectId/transferOwnership",checkAuth,checkForProject,restrict
 router1.get("/:projectId/getPosition",checkAuth,checkForProject,(req,res)=>{
     try{
         getPosition(req,res);
+    }catch(err){
+        console.log("Error:",err);
+        res.json({msg:"something went wrong."});
+    }
+})
+
+router1.delete("/:projectId/leaveTeam",checkAuth,checkForProject,restrictTo("Member","Admin"),(req,res)=>{
+    try{
+        leaveTeam(req,res);
     }catch(err){
         console.log("Error:",err);
         res.json({msg:"something went wrong."});

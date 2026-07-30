@@ -5,6 +5,7 @@ let clock;
 let intervalId;
 const resendButton=document.querySelector("#resendButton");
 const changeButton=document.querySelector("#changeButton");
+
 async function countdownFunction(){
     if(currUserId===null){
         return;

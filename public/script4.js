@@ -1152,13 +1152,6 @@ document.addEventListener("click",(e)=>{
             messageDisplay.style.animation="chatScreenOnAnimation 0.3s linear 0s forwards";
         },300);
         chatReload();
-        setTimeout(()=>{
-            requestAnimationFrame(()=>{
-                console.log(MsgHolder.scrollHeight);
-                console.log(MsgHolder.clientHeight);
-                MsgHolder.scrollTop=MsgHolder.scrollHeight;
-            })
-        },300);
 
     }
 })
@@ -1953,6 +1946,8 @@ let currProjectName;
 let currProjectDeadline;
 let currProjectDescription;
 
+const projectSettingMemberOption=document.querySelector("#projectSettingMemberOption");
+
 projectSetting.addEventListener("click",async ()=>{
     const projectId=document.location.pathname.split("/").pop();
     const response=await fetch(`/dashboard/projects/${projectId}/projectInfo`,{
@@ -1962,14 +1957,17 @@ projectSetting.addEventListener("click",async ()=>{
     if(result.msg==="success"){
         console.log(result.position);
         if(result.position==="Member"){
+            projectSettingMemberOption.style.display="";
             projectSettingOptions.style.display="none";
             projectSettingEditButton.style.display="none";
             projectSettingButtonHolder.style.justifyContent="center";
         }else if(result.position==="Admin"){
+            projectSettingMemberOption.style.display="";
             projectSettingOptions.style.display="none";
             projectSettingEditButton.style.display="flex";
             projectSettingButtonHolder.style.justifyContent="space-around";
         }else{
+            projectSettingMemberOption.style.display="none";
             projectSettingOptions.style.display="";
             projectSettingEditButton.style.display="flex";
             projectSettingButtonHolder.style.justifyContent="space-around";
@@ -2265,5 +2263,29 @@ projectSettingTransferOwnershipForm.addEventListener("submit",async (e)=>{
             },300);
         },1300);
         activityReload();
+    }
+})
+
+const projectSettingLeaveTeamButton=document.querySelector("#projectSettingLeaveTeamButton");
+const projectSettingPageLeaveTeamComment=document.querySelector("#projectSettingPageLeaveTeamComment");
+let isLeavingProcess=false;
+
+projectSettingLeaveTeamButton.addEventListener("click",async ()=>{
+    const projectId=document.location.pathname.split("/").pop();
+    if(isLeavingProcess){
+        return;
+    }
+    isLeavingProcess=true;
+    projectSettingEditButton.style.display="none";
+    projectSettingEditButton.disabled=true;
+    projectSettingCloseButton.disabled=true;
+    projectSettingCloseButton.innerText="Wait for process";
+    projectSettingButtonHolder.style.justifyContent="center";
+    const response=await fetch(`/dashboard/projects/${projectId}/leaveTeam`,{
+        method:"delete"
+    });
+    const result=await response.json();
+    if(result.msg==="success"){
+        location.replace("/dashboard");
     }
 })

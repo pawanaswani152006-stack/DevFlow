@@ -8,6 +8,7 @@ const chatModel=require("../models/chatModel.js");
 const pdfModel=require("../models/pdfModel.js");
 const personalNoteModel=require("../models/personalNoteModel.js");
 const {createActivity}=require("./activityControl.js");
+const cloudinary = require("../config/cloudinary");
 
 async function getOverviewInfo(req,res){
     try{
@@ -167,10 +168,42 @@ async function transferOwnership(req,res){
     }
 }
 
+async function leaveTeam(req,res){
+    try{
+        const projectId=req.params.projectId;
+        const userId=req.user.id;
+        const user=await newUser.findById(userId).select("fullName");
+        const pdfs=await pdfModel.find({projectId:projectId,sender:userId,scope:"personal"}).select("storageId");
+        if(pdfs.length!==0){
+            await Promise.all(
+                pdfs.map(pdf=>
+                    cloudinary.uploader.destroy(pdf.storageId,{
+                        resource_type:"image"
+                    })
+                )
+            );
+        }
+        await Promise.all([
+            personalNoteModel.deleteMany({projectId:projectId,userId:userId}),
+            pdfModel.deleteMany({projectId:projectId,sender:userId,scope:"personal"}),
+            chatModel.deleteMany({projectId:projectId,chatType:"dm",sender:userId}),
+            chatModel.deleteMany({projectId:projectId,chatType:"dm",receiver:userId}),
+            teamModel.findOneAndDelete({projectId:projectId,member:userId})
+        ]);
+        const activityMessage=`${user.fullName} leave team.`;
+        createActivity(req.user.id.toString(),activityMessage,req.params.projectId,"member_removed",res);
+        return res.json({msg:"success"})
+    }catch(err){
+        console.log("Error:",err);
+        return res.json({msg:"something went wrong."});
+    }
+}
+
 module.exports={
     getOverviewInfo,
     projectUpdate,
     updateProjectStatus,
     deleteProject,
-    transferOwnership
+    transferOwnership,
+    leaveTeam
 };

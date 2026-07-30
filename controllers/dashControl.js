@@ -8,6 +8,12 @@ const validator=require("validator");
 const jwt=require("jsonwebtoken");
 const {sendVarificationEmail}=require("../utils/sendMail.js");
 const sessionModel = require("../models/refreshSession.js");
+const activityModel=require("../models/acitivityModel.js");
+const chatModel=require("../models/chatModel.js");
+const pdfModel=require("../models/pdfModel.js");
+const personalNoteModel=require("../models/personalNoteModel.js");
+const taskModel=require("../models/taskModel.js");
+const cloudinary = require("../config/cloudinary");
 
 const secretKey=process.env.secretKey;
 
@@ -117,6 +123,7 @@ async function setNewPass(req,res){
 
 async function sendNewEmailChangeLink(req,res){
     try{
+        console.log("hello");
         const body=req.body;
         if(!body.newEmail){
             return res.json({msg:"email is required."});
@@ -124,6 +131,12 @@ async function sendNewEmailChangeLink(req,res){
         if(!validator.isEmail(body.newEmail)){
             return res.json({msg:"Enter a valid email"});
         }
+        console.log("yha per");
+        const user=await newUser.findOne({email:body.newEmail});
+        if(user){
+            return res.json({msg:"account already exist"});
+        }
+        console.log("hello bro");
         const token=crypto.randomBytes(32).toString("hex");
         const hashedToken=crypto.createHash("sha256")
             .update(token)
@@ -374,6 +387,72 @@ async function getProjectInfo(req,res){
     }
 }
 
+async function deleteAccount(req,res){
+    try{
+        const userId=req.user.id;
+        const ownedProject=await project.find({owner:userId}).select("_id");
+        const projectIds=ownedProject.map(p=>p._id);
+        if(projectIds.length!==0){
+            const pdfs=await pdfModel.find({projectId:{$in:projectIds}}).select("storageId");
+            if(pdfs.length!==0){
+                await Promise.all(
+                    pdfs.map(pdf=>
+                        cloudinary.uploader.destroy(pdf.storageId,{
+                            resource_type:"image"
+                        })
+                    )
+                );
+            }
+            await Promise.all([
+                teamModel.deleteMany({projectId:{$in:projectIds}}),
+                taskModel.deleteMany({projectId:{$in:projectIds}}),
+                activityModel.deleteMany({projectId:{$in:projectIds}}),
+                personalNoteModel.deleteMany({projectId:{$in:projectIds}}),
+                pdfModel.deleteMany({projectId:{$in:projectIds}}),
+                chatModel.deleteMany({projectId:{$in:projectIds}}),
+                project.deleteMany({_id:{$in:projectIds}})
+            ]);
+        }
+        const teamProjects=await teamModel.find({member:userId}).select("projectId");
+        const teamProjectIds=teamProjects.map(p=>p.projectId);
+        if(teamProjectIds.length!==0){
+            const teamPdfs=await pdfModel.find({projectId:{$in:teamProjectIds},scope:"personal",sender:userId}).select("storageId");
+            if(teamPdfs.length!==0){
+                await Promise.all(
+                    teamPdfs.map(pdf=>
+                        cloudinary.uploader.destroy(pdf.storageId,{
+                            resource_type:"image"
+                        })
+                    )
+                );
+            }
+            await Promise.all([
+                teamModel.deleteOne({projectId:{$in:teamProjectIds},member:userId}),
+                personalNoteModel.deleteMany({projectId:{$in:teamProjectIds},userId:userId}),
+                pdfModel.deleteMany({projectId:{$in:teamProjectIds},scope:"personal",sender:userId}),
+                chatModel.deleteMany({projectId:{$in:teamProjectIds},sender:userId,chatType:"dm"}),
+                chatModel.deleteMany({projectId:{$in:teamProjectIds},receiver:userId,chatType:"dm"}),
+            ]);
+        }
+        const refreshToken=req.cookies.refreshToken;
+        const decodedToken=await jwt.verify(refreshToken,secretKey);
+        const jti=decodedToken.jti;
+        await sessionModel.findOneAndDelete({jti:jti});
+        res.clearCookie("Token");
+        res.clearCookie("refreshToken");
+        await newUser.findByIdAndUpdate(userId,{
+            fullName:"Former User",
+            email:`dev@-${userId}-flow.com`,
+            isDeleted:true,
+            isVarified:false
+        });
+        return res.json({msg:"success"});
+    }catch(error){
+        console.log("Error:",error);
+        return res.json({msg:"Something went wrong."});
+    }
+}
+
 module.exports={
     createProj,
     getProjects,
@@ -387,5 +466,6 @@ module.exports={
     resendSetNewEmailLink,
     resendAvailableTime,
     logOut,
-    getProjectInfo
+    getProjectInfo,
+    deleteAccount
 }
