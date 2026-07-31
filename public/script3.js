@@ -44,6 +44,7 @@ cancelBtn.addEventListener("click",cancelAnimation);
 
 const projectName=document.querySelector("#projectName");
 const date=document.querySelector("#date");
+const newProjectPageCommentHolder=document.querySelector("#newProjectPageCommentHolder");
 const textArea=document.querySelector("#textArea");
 form.addEventListener("submit",async (e)=>{
     e.preventDefault();
@@ -60,8 +61,19 @@ form.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await res.json();
-    allProjects.push(result.project);
+    if(result.success===false){
+        newProjectPageCommentHolder.style.display="flex";
+        newProjectPageCommentHolder.style.animation="commentFadeIn 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            newProjectPageCommentHolder.style.animation="commentFadeOut 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                newProjectPageCommentHolder.style.display="none";
+                return;
+            },300);
+        },1300);
+    }
     if(result.success===true){
+        allProjects.push(result.project);
         cancelAnimation();
         let div=await projectCard(result.project.owner.fullName,projectName.value,textArea.value.trim(),dateCreater(date.value),result.project._id,result.project.status);
         setTimeout(()=>{
@@ -175,6 +187,7 @@ function projectCard(owner,projectName,description,deadline,projectId,projectCar
 
 function renderProjects(){
     let filtered=allProjects;
+    console.log(filtered);
     if(filtered.length!==0){
        if(currentFilter !== "All"){
             filtered=filtered.filter((project)=>{

@@ -19,12 +19,9 @@ async function addTeamMember(req,res){
         if(!position){
             return res.json({positionMsg:"please provide position"});
         }
-        if(!validator.isEmail(memberEmail)){
-            return res.json({emailValidMsg:"please provide a valid email"});
-        }
         const user=await newUser.findOne({email:memberEmail});
         if(!user){
-            return res.json({userExistMsg:"Email doesn't exists"});
+            return res.json({msg:"Email doesn't exists"});
         }
         const owner=await projectModel.findById(projectId).select("owner");
         if(user._id.toString()===owner.owner.toString()){
@@ -35,7 +32,7 @@ async function addTeamMember(req,res){
             memberEmail:memberEmail
         })
         if(memberExist){
-            return res.json({existMsg:"Already in your team"});
+            return res.json({msg:"member already exist."});
         }
         const member=await teamModel.create({
             projectId:projectId,

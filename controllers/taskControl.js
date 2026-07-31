@@ -166,7 +166,6 @@ async function editTaskCard(req,res){
         if(isNaN(customizedDeadline.getTime())){
             return res.json({msg:"invalid deadline"});
         }
-        console.log("paar");
         await taskModel.findByIdAndUpdate(taskId,{
             task:task,
             assignedTo:assignTo,

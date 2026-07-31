@@ -622,3 +622,14 @@ button:hover{
     color:rgb(1, 26, 28);
     font-size:2rem;
 }
+#newProjectPageCommentHolder{
+    font-size:1.5rem;
+    opacity:0;
+    transform:translateY(10px);
+    color:red;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    display:none;
+}

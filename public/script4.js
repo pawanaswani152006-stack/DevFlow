@@ -112,6 +112,8 @@ notes.addEventListener("click",()=>{
 });
 
 inviteCardButton.addEventListener("click",()=>{
+    emailInput.value="";
+    spacialityInput.value="";
     invitePageHolder.style.display="flex";
     document.body.style.overflow="hidden";
     invitePage.style.animation="invitePage 0.3s linear 0s forwards";
@@ -206,6 +208,7 @@ async function reload(){
 }
 reload();
 
+const inviteMemberPageCommentHolder=document.querySelector("#inviteMemberPageCommentHolder");
 inviteForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const positionInput=document.querySelector('input[name="position"]:checked');
@@ -223,6 +226,30 @@ inviteForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await member.json();
+    if(result.msg==="Email doesn't exists"){
+        inviteMemberPageCommentHolder.innerText="Email is not registered in DevFlow";
+        inviteMemberPageCommentHolder.style.display="flex";
+        inviteMemberPageCommentHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            inviteMemberPageCommentHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                inviteMemberPageCommentHolder.style.display="none";
+                return;
+            },300);
+        },1300);
+    }
+    if(result.msg==="member already exist."){
+        inviteMemberPageCommentHolder.innerText="Member already in your team";
+        inviteMemberPageCommentHolder.style.display="flex";
+        inviteMemberPageCommentHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            inviteMemberPageCommentHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                inviteMemberPageCommentHolder.style.display="none";
+                return;
+            },300);
+        },1300);
+    }
     if(result.msg==="success"){
         reload();
         activityReload();
@@ -383,7 +410,7 @@ function dateCreater(customizedDate){
         year: "numeric"
     });
 }
-
+const taskAssignPageCommentHolder=document.querySelector("#taskAssignPageCommentHolder");
 taskAssignForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const projectId=window.location.pathname.split("/").pop();
@@ -407,6 +434,17 @@ taskAssignForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const result=await taskCreated.json();
+    if(result.msg==="deadline can't be in past."){
+        taskAssignPageCommentHolder.style.display="flex";
+        taskAssignPageCommentHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            taskAssignPageCommentHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                taskAssignPageCommentHolder.style.display="none";
+                return;
+            },300);
+        },1300);
+    }
     if(result.msg==="success"){
         activityReload();
         noTaskStateHolder.style.display="none";
@@ -854,6 +892,7 @@ taskEditCancelBtn.addEventListener("click",()=>{
         document.body.style.overflow="auto";
     },300);
 })
+const taskAssignEditPageCommentHolder=document.querySelector("#taskAssignEditPageCommentHolder");
 taskEditForm.addEventListener("submit",async (e)=>{
     e.preventDefault();
     const projectId=document.location.pathname.split("/").pop();
@@ -873,6 +912,17 @@ taskEditForm.addEventListener("submit",async (e)=>{
         body:JSON.stringify(body)
     });
     const response=await result.json();
+    if(response.msg==="deadline can't be in past."){
+        taskAssignEditPageCommentHolder.style.display="flex";
+        taskAssignEditPageCommentHolder.style.animation="emptyCommentShow 0.3s linear 0s forwards";
+        setTimeout(()=>{
+            taskAssignEditPageCommentHolder.style.animation="emptyCommentHide 0.3s linear 0s forwards";
+            setTimeout(()=>{
+                taskAssignEditPageCommentHolder.style.display="none";
+                return;
+            },300);
+        },1300);
+    }
     if(response.msg==="success"){
         taskEditPage.style.animation="cancelPage 0.3s linear 0s forwards";
         setTimeout(()=>{

@@ -1004,3 +1004,14 @@ p{
     margin-bottom:30px;
     margin-top:15px;
 }
+.taskDeadlineComment{
+    font-size:1.5rem;
+    opacity:0;
+    transform:translateY(20px);
+    color:red;
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    display:none;
+}

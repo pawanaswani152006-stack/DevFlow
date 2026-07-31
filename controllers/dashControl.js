@@ -30,7 +30,7 @@ async function createProj(req,res){
         }else if(!deadline){
             return res.json({deadline:"Deadline should not be empty."});
         }else if(deadline<today){
-            return res.json({deadline:"Date should be correct."});
+            return res.json({success:false});
         }else if(!textArea){
             return res.json({textArea:"Please fill the desription"});
         }
