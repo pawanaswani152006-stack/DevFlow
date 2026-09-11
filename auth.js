@@ -54,4 +54,5 @@ io.on("connection",(socket)=>{
     });
 })
 
-server.listen(8000,()=>console.log("server started..."));
+const PORT=process.env.PORT || 8000;
+server.listen(PORT,()=>console.log("server started..."));

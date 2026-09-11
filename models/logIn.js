@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const crypto=require("crypto");
 
-mongoose.connect("mongodb://127.0.0.1:27017/DevFlow")
+mongoose.connect(process.env.MONGO_URI)
     .then(()=>console.log("Data base is connected."))
     .catch((err)=>console.log("Error:",err));
 
