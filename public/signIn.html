@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="style2.css">
-    <title>Sign In</title>
+    <title>DevFlow — Sign in</title>
 </head>
 <body>
 
-    <div id="message">
+    <div id="message" role="alert" aria-live="assertive">
         <p id="msgPara"></p>
     </div>
 
@@ -26,7 +26,7 @@
 
                         <p class="para" style="margin-top:25px;">Email</p>
 
-                        <input id="email" type="email" required placeholder="example@gmail.com" name="email">
+                        <input id="email" type="email" required placeholder="example@gmail.com" name="email" autocomplete="email">
 
                     </div>
 
@@ -34,7 +34,7 @@
 
                         <p class="para">Password</p>
 
-                        <input id="password" type="password" required placeholder="Enter your password" name="password">
+                        <input id="password" type="password" required placeholder="Enter your password" name="password" autocomplete="current-password">
 
                         <div id="forgotBtnContainer">
 
@@ -53,7 +53,7 @@
 
                 <div class="create">
 
-                    <p class="para2">New to DevFlow? <button class="createBtn" id="createBtn1">Create an account</button></p>
+                    <p class="para2">New to DevFlow? <button type="button" class="createBtn" id="createBtn1">Create an account</button></p>
 
                 </div>
 
@@ -77,7 +77,7 @@
 
                         <p class="para para22">Full Name</p>
 
-                        <input type="text" placeholder="John Doe" required name="fullName" id="fullNameSignUp">
+                        <input type="text" placeholder="John Doe" required name="fullName" id="fullNameSignUp" autocomplete="name">
 
                     </div>
 
@@ -85,7 +85,7 @@
 
                         <p class="para para22">Email</p>
 
-                        <input type="email" placeholder="name@example.com" required name="email" id="emailSignUp">
+                        <input type="email" placeholder="name@example.com" required name="email" id="emailSignUp" autocomplete="email">
 
                     </div>
 
@@ -93,7 +93,7 @@
 
                         <p class="para para22">Password</p>
 
-                        <input type="password" required placeholder="At least 8 characters" name="password" id="passwordSignUp">
+                        <input type="password" required placeholder="At least 8 characters" name="password" id="passwordSignUp" autocomplete="new-password">
 
                     </div>
 
@@ -101,7 +101,7 @@
 
                         <p class="para para22">Confirm Password</p>
 
-                        <input type="password" required placeholder="Re-enter your password" name="reEnteredPassword" id="reEnteredPassword">
+                        <input type="password" required placeholder="Re-enter your password" name="reEnteredPassword" id="reEnteredPassword" autocomplete="new-password">
 
                     </div>
 

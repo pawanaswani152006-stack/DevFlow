@@ -9,36 +9,38 @@
 </head>
 <body>
     <header id="navBar">
-        <h1 id="logo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
+        <h1 id="logo"><i>Dev<span>Flow</span></i></h1>
         <div id="searchContainer">
             <div id="searchIconContainer">
                 <i id="searchIcon" class="fa-solid fa-magnifying-glass"></i>
             </div>
             <input id="navInput" type="text" placeholder="Search by project name...">
         </div>  
-        <button id="createButton"><span id="newIcon">+</span><pre> New Project</pre></button>
-        <button id="option">👤</button>
+        <button id="createButton" type="button"><span id="newIcon">+</span><span>New Project</span></button>
+        <button id="option" type="button" aria-label="Open profile">👤</button>
     </header>
 
-    <div id="welcomeSection">
+    <main>
+    <section id="welcomeSection" aria-labelledby="welcomePara1">
         <p id="welcomePara1"></p>
         <p id="welcomePara2">Ready to continue building today?</p>
         <div id="filterContainer">
             <p id="welcomePara3">Choose a project to continue...</p>
             <div id="filterButtonContainer">
-                <button class="filterButton" id="allButton" style="padding-left:30px;padding-right:30px;">All</button>
-                <button class="filterButton" id="activeButton">Active</button>
-                <button class="filterButton" id="onHoldButton">On Hold</button>
-                <button class="filterButton" id="completedButton">Completed</button>
+                <button class="filterButton" id="allButton" type="button">All</button>
+                <button class="filterButton" id="activeButton" type="button">Active</button>
+                <button class="filterButton" id="onHoldButton" type="button">On Hold</button>
+                <button class="filterButton" id="completedButton" type="button">Completed</button>
             </div>
         </div>
-    </div>
+    </section>
     <hr>
-    <div id="grid">
-        <h1 class="gridEmptyState" id="gridHeading"><span style="font-size:3rem;">📁</span> No Projects Yet</h1>
+    <section id="grid" aria-live="polite">
+        <h1 class="gridEmptyState" id="gridHeading"><span class="empty-state-icon">📁</span> No Projects Yet</h1>
         <p class="gridEmptyState" id="gridPara1">Your workspace is waiting.</p>
         <p class="gridEmptyState" id="gridPara2">Create your first project to start building.</p>
-    </div>
+    </section>
+    </main>
     <form id="form" method="post" action="/dashboard/projects">
         <div id="newProjectHolder">
             <div id="newProject">
@@ -62,7 +64,7 @@
                     <button type="submit" class="newButton" id="newProjectCreateButton">Create</button>
                     <button type="button" class="newButton" id="newProjectCancelButton">Cancel</button>
                 </div>
-                <p id="newProjectPageCommentHolder">Deadline can't be in past</p>;
+                <p id="newProjectPageCommentHolder">Deadline can't be in past</p>
             </div>
          </div>
     </form>

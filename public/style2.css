@@ -375,3 +375,192 @@ input{
         opacity:0;
     }
 }
+
+/* DevFlow auth experience — responsive visual layer */
+:root {
+    --auth-ink: #091521;
+    --auth-panel: rgba(15, 39, 57, .82);
+    --auth-line: rgba(176, 225, 244, .18);
+    --auth-text: #e8f8ff;
+    --auth-muted: #9cc3d3;
+    --auth-teal: #50d5bd;
+    --auth-blue: #4ab5f8;
+}
+
+* { box-sizing: border-box; }
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background:
+        radial-gradient(circle at 10% 10%, rgba(74, 181, 248, .18), transparent 28rem),
+        radial-gradient(circle at 90% 88%, rgba(80, 213, 189, .14), transparent 25rem),
+        var(--auth-ink);
+}
+body::before {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    content: '';
+    opacity: .35;
+    background-image: linear-gradient(rgba(141, 207, 232, .055) 1px, transparent 1px), linear-gradient(90deg, rgba(141, 207, 232, .055) 1px, transparent 1px);
+    background-size: 3rem 3rem;
+    mask-image: linear-gradient(to bottom, black, transparent 80%);
+}
+
+.form {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    padding: clamp(1.25rem, 5vw, 4rem);
+}
+#formElementsContainer, #formElementContainer2, #forgotPassDataHolder {
+    width: min(100%, 31rem);
+    min-width: 0;
+    max-width: 31rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--auth-line);
+    border-radius: 1.35rem;
+    color: var(--auth-text);
+    background: linear-gradient(145deg, rgba(27, 64, 87, .88), rgba(12, 31, 46, .94));
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, .32), inset 0 1px 0 rgba(255, 255, 255, .06);
+    backdrop-filter: blur(18px);
+}
+#forgotPassDataHolder { width: min(100%, 35rem); max-width: 35rem; }
+.formHeading {
+    display: block;
+    padding: 0;
+    color: var(--auth-text);
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    letter-spacing: -.055em;
+    text-align: left;
+}
+.formHeading::after {
+    display: block;
+    width: 3.25rem;
+    height: .2rem;
+    margin-top: .9rem;
+    border-radius: 999px;
+    content: '';
+    background: linear-gradient(90deg, var(--auth-teal), var(--auth-blue));
+}
+.para, .para22, .forgotPagePara {
+    margin: 1.35rem 0 .5rem;
+    color: var(--auth-text);
+    font-size: .92rem;
+    font-weight: 700;
+    line-height: 1.4;
+}
+.para22 { margin-top: 0; }
+#elements > div + div, #elements2 > div + div { margin-top: 1.2rem !important; }
+input {
+    width: 100%;
+    padding: .85rem 1rem;
+    border: 1px solid rgba(173, 220, 240, .2);
+    border-radius: .7rem;
+    color: var(--auth-text);
+    background: rgba(4, 19, 30, .52);
+    box-shadow: none;
+    font-size: 1rem;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+input::placeholder { color: #6f98aa; }
+input:focus { border-color: var(--auth-teal); outline: 0; background: rgba(4, 19, 30, .78); box-shadow: 0 0 0 4px rgba(80, 213, 189, .12); }
+#forgotBtnContainer { margin-top: .75rem; text-align: right; }
+.createBtn, #forgotBtn {
+    padding: .2rem 0;
+    color: var(--auth-teal);
+    font-size: .9rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.createBtn:hover, #forgotBtn:hover { color: #a5f5e6; text-decoration: underline; }
+.submit { margin-top: 1.8rem; }
+.sign, .forgotPageButton {
+    min-height: 3rem;
+    margin: 0;
+    padding: .7rem 1.25rem;
+    border: 0;
+    border-radius: .7rem;
+    color: #06241f;
+    background: var(--auth-teal);
+    box-shadow: none;
+    font-size: 1rem;
+    font-weight: 800;
+    transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.sign:hover, .forgotPageButton:hover { color: #06241f; background: #90eddd; box-shadow: 0 .7rem 1.5rem rgba(80, 213, 189, .18); transform: translateY(-2px); }
+.sign:active, .forgotPageButton:active { transform: translateY(0) scale(.98); }
+#mainSignIn, #sign2 { width: 100%; font-size: 1rem; }
+#sign2 { padding: .7rem 1.25rem; }
+.create, #create2 { margin: 1.3rem 0 0; }
+.para2 { color: var(--auth-muted); font-size: .9rem; text-align: center; }
+
+#message {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 30;
+    width: min(calc(100vw - 2rem), 26rem);
+    min-height: 3.7rem;
+    height: auto;
+    padding: .85rem 1rem;
+    border: 1px solid rgba(255, 143, 143, .55);
+    border-radius: .8rem;
+    color: #ffd5d5;
+    background: rgba(98, 24, 32, .92);
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, .3);
+    font-size: .95rem;
+    line-height: 1.45;
+}
+
+#forgotPageSteps {
+    margin: 1.2rem 0 0;
+    padding: 1rem;
+    overflow: auto;
+    border: 1px solid var(--auth-line);
+    border-radius: .7rem;
+    color: var(--auth-muted);
+    background: rgba(4, 19, 30, .35);
+    font: .9rem/1.9 Arial, sans-serif;
+    white-space: pre-wrap;
+}
+#forgotPageButtonHolder, #forgotPageNewPassButtonHolder { justify-content: flex-start; gap: .75rem; margin-top: 1.5rem; }
+#forgotWaitingMainText, .forgotWaitingPara { margin: 1rem 0 0; color: var(--auth-muted); font-size: 1rem; line-height: 1.65; }
+#forgotWaitingPageButtonHolder { gap: .25rem; }
+#forgotPageWaitingButtonHolder2, #forgotWaitingPageCountDownHolder { flex-wrap: wrap; gap: .75rem; }
+.forgotWaitingPageButton { margin-top: 1rem; font-size: .9rem; }
+#countdown { margin: 1rem 0 0; color: var(--auth-teal); font-size: .9rem; }
+#forgotPageComment { color: var(--auth-teal); font-size: .95rem; }
+
+@media (max-width: 560px) {
+    .form { align-items: flex-start; padding: 1rem; padding-top: 2rem; }
+    #formElementsContainer, #formElementContainer2, #forgotPassDataHolder { border-radius: 1rem; padding: 1.35rem; }
+    #forgotPageButtonHolder, #forgotPageNewPassButtonHolder { flex-direction: column; align-items: stretch; }
+    #forgotPageButtonHolder .forgotPageButton, #forgotPageNewPassButtonHolder .forgotPageButton { width: 100%; }
+    #forgotPageWaitingButtonHolder2 { display: grid; width: 100%; grid-template-columns: 1fr; }
+    #forgotPageWaitingButtonHolder2 .forgotPageButton { width: 100%; margin-left: 0 !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Warm auth theme — no form or authentication logic changed. */
+:root { --auth-ink: #21342f; --auth-panel: rgba(255,253,250,.88); --auth-line: rgba(46,73,65,.16); --auth-text: #21342f; --auth-muted: #667d75; --auth-teal: #c75f4c; --auth-blue: #7668b7; }
+body { background: radial-gradient(circle at 7% 5%, rgba(238,196,157,.48), transparent 28rem), radial-gradient(circle at 94% 88%, rgba(204,193,234,.54), transparent 26rem), #f8f4ee; }
+body::before { opacity: .55; background-image: linear-gradient(rgba(90,113,105,.075) 1px, transparent 1px), linear-gradient(90deg, rgba(90,113,105,.075) 1px, transparent 1px); }
+#formElementsContainer, #formElementContainer2, #forgotPassDataHolder { color: var(--auth-text); border-color: var(--auth-line); background: rgba(255,253,250,.86); box-shadow: 0 1.5rem 4rem rgba(72,49,29,.12), inset 0 1px 0 rgba(255,255,255,.8); }
+.formHeading, .para, .para22, .forgotPagePara { color: var(--auth-text); }
+.formHeading::after { background: linear-gradient(90deg, var(--auth-teal), var(--auth-blue)); }
+input { color: var(--auth-text); border-color: var(--auth-line); background: rgba(255,255,255,.84); }
+input::placeholder { color: #80948e; }
+input:focus { border-color: var(--auth-teal); background: #fff; box-shadow: 0 0 0 4px rgba(199,95,76,.13); }
+.sign, .forgotPageButton { color: #fffaf5; background: var(--auth-teal); }
+.sign:hover, .forgotPageButton:hover { color: #fffaf5; background: #aa4c3e; box-shadow: 0 .7rem 1.5rem rgba(199,95,76,.18); }
+.createBtn, #forgotBtn, #forgotPageComment, #countdown { color: #9f473c; }
+.para2, #forgotWaitingMainText, .forgotWaitingPara, #forgotPageSteps { color: var(--auth-muted); }
+#forgotPageSteps { border-color: var(--auth-line); background: rgba(118,104,183,.06); }

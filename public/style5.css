@@ -159,3 +159,20 @@ button:hover{
     margin-top:15px;
     display:none;
 }
+
+/* Responsive warm verification screen. */
+:root { --wait-ink: #21342f; --wait-muted: #667d75; --wait-coral: #c75f4c; --wait-lilac: #7668b7; --wait-line: rgba(46,73,65,.16); }
+*, *::before, *::after { box-sizing: border-box; }
+body { min-width: 320px; min-height: 100dvh; overflow-x: hidden; background: radial-gradient(circle at 8% 5%, rgba(238,196,157,.48), transparent 27rem), radial-gradient(circle at 92% 90%, rgba(204,193,234,.5), transparent 26rem), #f8f4ee; }
+#waitingPageHolder { width: 100%; min-height: 100dvh; height: auto; padding: clamp(1rem,5vw,3rem); }
+#waitingPageDataHolder, #changeEmailDataHolder { width: min(100%, 38rem); padding: clamp(1.4rem,4vw,2.4rem); border: 1px solid var(--wait-line); border-radius: 1.1rem; color: var(--wait-ink); background: rgba(255,253,250,.88); box-shadow: 0 1.5rem 4rem rgba(72,49,29,.12); }
+.logo { color: var(--wait-ink); font-size: clamp(2.3rem,8vw,4rem); letter-spacing: -.07em; }
+.logo span { color: var(--wait-coral) !important; }
+.waitingPagePara { color: var(--wait-muted); font-size: clamp(1rem,2.5vw,1.2rem); line-height: 1.6; }
+#waitingPageSteps { padding: 1rem; overflow: auto; border: 1px solid var(--wait-line); border-radius: .75rem; color: var(--wait-muted); background: rgba(118,104,183,.06); font: .95rem/1.9 Arial,sans-serif; white-space: pre-wrap; }
+.waitingPageButton { min-height: 2.8rem; border-radius: .65rem; color: #fffaf5; background: var(--wait-coral); font-size: .95rem; }
+.waitingPageButton:hover { color: #fffaf5; background: #aa4c3e; }
+#emailInput { min-height: 2.8rem; color: var(--wait-ink); border: 1px solid var(--wait-line); border-radius: .65rem; background: #fff; font-size: 1rem; }
+#emailChangeButtonHolder, #countHolder { flex-wrap: wrap; gap: .75rem; justify-content: flex-start; }
+#countdown, #waitingPageComments, #emailChangeComments { color: #9f473c; font-size: .9rem; }
+@media (max-width: 520px) { #waitingPageHolder { align-items: flex-start; padding: 1rem; padding-top: 2rem; } #emailChangeButtonHolder { display:grid; grid-template-columns:1fr; } .emailChangeButtons { width:100%; } }

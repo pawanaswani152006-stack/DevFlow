@@ -1,3 +1,25 @@
+:root{
+    /* Responsive Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+
+    /* Responsive Font Sizes */
+    --font-size-nav: clamp(1.2rem, 2vw, 2rem);
+    --font-size-heading: clamp(1.8rem, 5vw, 2.5rem);
+    --font-size-para: clamp(1rem, 2vw, 2rem);
+    --font-size-card-heading: clamp(1.3rem, 2.5vw, 1.8rem);
+    --font-size-card-para: clamp(0.9rem, 1.5vw, 1.3rem);
+
+    /* Colors (unchanged) */
+    --color-dark-bg: rgb(15, 60, 80);
+    --color-darker-bg: rgb(2, 34, 47);
+    --color-text: rgb(156, 211, 234);
+    --color-card-bg: rgb(80, 122, 141);
+}
+
 *{
     margin:0px;
     border:border-box;
@@ -9,19 +31,33 @@ div{
 }
 
 body{
-    background-color:rgb(15, 60, 80);
+    background-color:var(--color-dark-bg);
+}
+
+/* Reveal animation for Intersection Observer */
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+}
+
+.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 #nav-bar{
     width:100%;
     padding-top:5px;
     padding-bottom:5px;
-    background-color:rgb(2, 34, 47);
+    background-color:var(--color-darker-bg);
     position:sticky;
     top:0px;
     display:flex;
     justify-content:space-evenly;
     align-items:center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
     box-shadow:
         10px 10px 10px rgba(0,0,0,0.6),
         0px 30px 40px rgba(0,0,0,0.6);
@@ -31,8 +67,10 @@ body{
     background-color:transparent;
     color:rgb(118, 184, 169);
     border:none;
-    font-size:2rem;
+    font-size: var(--font-size-nav);
     transition:all 0.3s ease 0s;
+    padding: clamp(0.3rem, 0.5vw, 0.5rem);
+    white-space: nowrap;
 }
 .button:active{
     transform:scale(0.8);
@@ -45,76 +83,86 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:3rem;
+    font-size: clamp(2rem, 4vw, 3rem);
+    white-space: nowrap;
 }
 
 #mainSection{
     width:100%;
-    background-color:rgb(15, 60, 80);
+    background-color:var(--color-dark-bg);
     margin-bottom:30px;
+    padding: 0 clamp(0.5rem, 2vw, 1rem);
 }
 #heroSection{
     background-color:transparent;
     display:flex;
-    margin-top:80px;
-    margin-bottom:20px;
-    padding-bottom:70px;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    margin-top:clamp(3rem, 8vw, 5rem);
+    margin-bottom:var(--space-md);
+    padding-bottom:clamp(2rem, 5vw, 4rem);
 }
 #images{
-    width:50%;
+    flex: 1 1 clamp(15rem, 90vw, 25rem);
+    min-width: 15rem;
     background-color:transparent;
     display:flex;
     justify-content:center;
     align-items:center;
-    margin-right:30px;
 }
 #image{
-    height:500px;
-    width:500px;
-    background-image:url("./images/heroImage1.webp");
+    width: clamp(15rem, 90vw, 30rem);
+    aspect-ratio: 1;
+    background-image:url("./images/hero-devflow-v2.jpg");
     background-size:cover;
     background-repeat:no-repeat;
+    border-radius: clamp(1rem, 2vw, 1.5rem);
     box-shadow:
         10px 10px 10px rgba(0,0,0,0.8),
         0px 30px 40px rgba(0,0,0,0.8);
 }
 #heroSectionTextArea{
-    width:50%;
+    flex: 1 1 clamp(15rem, 90vw, 30rem);
+    min-width: 15rem;
     background-color:transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 .heading{
-    font-size:2.5rem;
-    margin-bottom:20px;
+    font-size: var(--font-size-heading);
+    margin-bottom:var(--space-md);
     font-weight: bolder;
-    color:rgb(156, 211, 234);
+    color:var(--color-text);
+    line-height: 1.3;
 }
 .para{
-    font-size:2rem;
-    padding-right:30px;
-    line-height:60px;
-    color:rgb(156, 211, 234);
+    font-size: var(--font-size-para);
+    padding-right:clamp(0rem, 2vw, 2rem);
+    line-height:clamp(1.4rem, 3vw, 3.75rem);
+    color:var(--color-text);
 }
 #heroButtonContainer{
     display:flex;
     justify-content:flex-start;
     align-items:center;
     background-color:transparent;
-    margin-top:30px;
+    margin-top:var(--space-lg);
+    flex-wrap: wrap;
+    gap: var(--space-md);
 }
 #heroButton1,#heroButton2,#workingButton,#ctaButton1,#ctaButton2{
     background-color:rgb(2, 17, 23);
     border-radius:30px;
-    /* height:8vh; */
-    font-size:2rem;
+    font-size: clamp(1.2rem, 2vw, 2rem);
     color:rgb(118, 184, 169);
-    margin-right:50px;
     box-shadow:
         0 10px 10px rgba(0,0,0,0.3),
         0px 20px 30px rgba(0,0,0,0.3);
     transition:all 0.3s linear 0s;
-    padding:10px;
-    padding-left:20px;
-    padding-right:20px;
+    padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.25rem);
+    min-height: 2.5rem;
+    white-space: nowrap;
 }
 #heroButton1:hover{
     color:white;
@@ -130,136 +178,114 @@ hr{
 }
 
 #problemSection{
-    margin-top:40px;
-    margin-bottom:40px;
-    padding-left:60px;
+    margin-top:var(--space-lg);
+    margin-bottom:var(--space-lg);
+    padding-left:clamp(1rem, 3vw, 3.75rem);
+    padding-right:clamp(1rem, 3vw, 2.5rem);
 }
 #problemCardSection,#roadmapCardContainer{
-    margin-top:70px;
-    /* margin-left:10px; */
+    margin-top:clamp(2rem, 5vw, 4.375rem);
     display:flex;
     justify-content:space-between;
     align-items:center;
     flex-wrap:wrap;
-    padding-right:40px;
+    gap: clamp(1rem, 2vw, 2rem);
 }
 .problemCard,.featureCard,.workingCard,.roadmapCards{
-    width:400px;
-    background-color:rgb(80, 122, 141);
-    border-radius:20px;
-    margin-bottom:50px;
-    padding:10px;
-    padding-left:15px;
-    padding-bottom:15px;
+    flex: 1 1 clamp(14rem, 90vw, 25rem);
+    background-color:var(--color-card-bg);
+    border-radius:clamp(1rem, 2vw, 1.25rem);
+    padding:clamp(0.6rem, 1vw, 1rem);
     transition:all 0.2s linear 0s;
     box-shadow:
         0 5px 10px rgba(0,0,0,0.8),
         0px 20px 30px rgba(0,0,0,0.8);
 }
 .workingCard{
-    width:fit-content;
-    margin-top:0px;
-    margin-bottom:0px;
-    width:700px;
+    flex: 1 1 clamp(20rem, 90vw, 43.75rem);
 }
 .featureCard{
-    margin-bottom:0px;
+    min-height: 100%;
 }
 .problemHeading,.featureHeading,.workingHeading,.roadmapHeading{
     display:flex;
     align-items:center;
-    font-size:1.8rem;
+    font-size: var(--font-size-card-heading);
     color:rgb(29, 52, 58);
+    line-height: 1.3;
 }
 .problemPara,.featurePara,.workingPara,.roadmapPara{
-    font-size:1.3rem;
-    margin-top:10px;
-    line-height:40px;
+    font-size: var(--font-size-card-para);
+    margin-top:var(--space-sm);
+    line-height:clamp(1.5rem, 2vw, 2.5rem);
     color:rgb(194, 224, 237);
-    /* margin-left:20px; */
 }
 .problemCard:hover{
     transform:translateY(-10px);
 }
 
 #solutionSection{
-    margin-top:40px;
-    margin-bottom:120px;
-    padding-left:60px;
+    margin-top:var(--space-lg);
+    margin-bottom:clamp(3rem, 8vw, 7.5rem);
+    padding-left:clamp(1rem, 3vw, 3.75rem);
+    padding-right:clamp(1rem, 3vw, 2.5rem);
 }
 #dashboardContainer{
     width:100%;
     display:flex;
-    margin-top:60px;
+    flex-wrap: wrap;
+    margin-top:clamp(2rem, 4vw, 3.75rem);
+    gap: clamp(1.5rem, 3vw, 5rem);
+    align-items: center;
 }
 #solutionDashboard{
-    width:1000px;
-    height:500px;
+    flex: 1 1 clamp(16rem, 90vw, 62.5rem);
+    aspect-ratio: 2;
+    min-width: 16rem;
     background-image:url("./images/Devflow dashboard.png");
     background-size:cover;
+    background-position: center;
     box-shadow:
         10px 10px 10px rgba(0,0,0,0.8),
         0px 30px 40px rgba(0,0,0,0.8);
-    /* margin-right:60px; */
-    border-radius:20px;
-    margin-right:80px;
+    border-radius:clamp(1rem, 2vw, 1.25rem);
 }
 .solutionPara{
-    font-size:2rem;
-    margin-top:40px;
-    padding-left:40px;
-    color:rgb(156, 211, 234);
+    font-size: var(--font-size-para);
+    margin-top:var(--space-lg);
+    padding-left:0;
+    color:var(--color-text);
 }
 #solutionChecklist{
     display:flex;
     flex-direction:column;
     justify-content:center;
+    flex: 1 1 clamp(15rem, 90vw, 25rem);
 }
 #featuresSection,#workSection,#roadmapSection,#CTAsection{
-    margin-top:40px;
-    margin-bottom:50px;
-    padding-left:60px;
+    margin-top:var(--space-lg);
+    margin-bottom:clamp(2rem, 4vw, 3.125rem);
+    padding-left:clamp(1rem, 3vw, 3.75rem);
+    padding-right:clamp(1rem, 3vw, 2.5rem);
 }
 #featureCardContainer{
-    margin-top:70px;
-    padding-right:40px;
-    /* margin-left:10px; */
+    margin-top:clamp(2rem, 5vw, 4.375rem);
 }
 .featureCard:hover{
     transform:translateY(-10px);
 }
 .featureCard{
-    width:400px;
     box-shadow:
         10px 20px 10px rgba(0,0,0,0.8),
         10px 30px 30px rgba(0,0,0,0.8);
 }
-#cardContainer1{
+#cardContainer1,#cardContainer2,#cardContainer3,#cardContainer4{
     width:100%;
     display:flex;
     justify-content:space-between;
-}
-#cardContainer2{
-    width:100%;
-    display:flex;
-    justify-content:space-evenly;
-    margin-top:60px;
-}
-#cardContainer3{
-    width:100%;
-    display:flex;
-    justify-content:space-evenly;
-    margin-top:50px;
-}
-#cardContainer4{
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    margin-top:60px;
-}
-.featureCard:hover{
-    transform:scale(1.1);
-    border:5px solid rgb(1, 36, 50);
+    flex-wrap: wrap;
+    gap: clamp(1rem, 2vw, 2rem);
+    margin-top: clamp(0rem, 3vw, 3.75rem);
 }
 
 #timeline{
@@ -402,3 +428,358 @@ hr{
   opacity: 1;
   transform: translateY(0);
 }
+
+/* Responsive homepage improvements */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { min-width: 320px; overflow-x: hidden; }
+.logo span { color: rgb(22, 131, 178); }
+.menu-toggle { display: none; width: 2.75rem; height: 2.5rem; border: 1px solid rgba(156, 211, 234, .45); border-radius: .5rem; background: transparent; }
+.menu-toggle span:not(.sr-only) { display: block; width: 1.3rem; height: 2px; margin: .28rem auto; background: rgb(156, 211, 234); transition: transform .2s ease, opacity .2s ease; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+#nav-bar { z-index: 20; justify-content: space-between; padding-left: clamp(1rem, 4vw, 3.75rem); padding-right: clamp(1rem, 4vw, 3.75rem); }
+#navLinks { display: flex; align-items: center; gap: clamp(.25rem, 1vw, 1rem); }
+.nav-cta { background: rgba(118, 184, 169, .15); }
+#heroSection { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; max-width: 1400px; margin-left: auto; margin-right: auto; }
+#images, #heroSectionTextArea { min-width: 0; }
+#image { width: min(100%, 30rem); }
+#problemCardSection, #roadmapCardContainer { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+#problemCardSection > .reveal, #roadmapCardContainer > .reveal, #cardContainer1 > .reveal, #cardContainer2 > .reveal, #cardContainer3 > .reveal, #cardContainer4 > .reveal { min-width: 0; }
+.problemCard, .featureCard, .roadmapCards { height: 100%; }
+#dashboardContainer { display: grid; grid-template-columns: minmax(0, 2fr) minmax(13rem, 1fr); align-items: center; }
+#dashboardContainer > .reveal { min-width: 0; }
+#solutionDashboard { width: 100%; }
+#dashboardContainer > hr { display: none; }
+#featureCardContainer { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); }
+#cardContainer1, #cardContainer2, #cardContainer3, #cardContainer4 { display: grid; gap: clamp(1rem, 2vw, 2rem); margin-top: 0; }
+#line, #workingCardContainer { height: auto; min-height: 44rem; }
+.workingPara { font-size: clamp(.95rem, 1.5vw, 1.5rem); line-height: 1.6; }
+.roadmapHeading { font-size: clamp(1.2rem, 2vw, 2rem); line-height: 1.35; }
+.roadmapPara { font-size: clamp(1rem, 1.8vw, 1.5rem); line-height: 1.4; }
+#footerParaContainer { flex-wrap: wrap; gap: .5rem clamp(1rem, 4vw, 3rem); padding: 0 1rem; text-align: center; }
+#endSection { padding-left: 1rem; padding-right: 1rem; text-align: center; }
+.reveal { transform: translateY(28px); }
+
+@media (max-width: 900px) {
+    #featureCardContainer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #problemCardSection, #roadmapCardContainer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+    #nav-bar { min-height: 4rem; position: sticky; }
+    .menu-toggle { display: block; }
+    #navLinks { position: absolute; top: 100%; left: 0; right: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-height: 0; padding: 0 clamp(1rem, 4vw, 2rem); overflow: hidden; background: rgb(2, 34, 47); box-shadow: 0 15px 20px rgba(0, 0, 0, .25); transition: max-height .25s ease, padding .25s ease; }
+    #navLinks.is-open { max-height: 15rem; padding-top: .6rem; padding-bottom: .8rem; }
+    #navLinks .button { width: 100%; text-align: left; }
+    .menu-toggle[aria-expanded='true'] span:nth-child(2) { transform: translateY(6px) rotate(45deg); }
+    .menu-toggle[aria-expanded='true'] span:nth-child(3) { opacity: 0; }
+    .menu-toggle[aria-expanded='true'] span:nth-child(4) { transform: translateY(-6px) rotate(-45deg); }
+    #heroSection { grid-template-columns: 1fr; margin-top: 2.5rem; text-align: center; }
+    #images { order: -1; }
+    #image { width: min(100%, 25rem); }
+    #heroSectionTextArea { align-items: center; }
+    #heroButtonContainer { justify-content: center; }
+    #dashboardContainer { grid-template-columns: 1fr; }
+    #solutionChecklist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .solutionPara { margin-top: 0; }
+    #featureCardContainer, #problemCardSection, #roadmapCardContainer { grid-template-columns: 1fr; }
+    #timeline { gap: 1.25rem; padding-left: 0; }
+    #line, #workingCardContainer { min-height: 0; }
+    #line { min-height: 31rem; }
+    #workingCardContainer { gap: 1.5rem; justify-content: flex-start; }
+    #footerParaContainer { flex-direction: column; }
+}
+
+/* DevFlow refresh: warm, editorial product palette (presentation only). */
+:root { --ink: #21342f; --copy: #29443e; --muted: #647a73; --teal: #c75f4c; --blue: #7668b7; --surface: #fffdfa; --surface-raised: rgba(255,255,255,.8); --line: rgba(46, 73, 65, .15); }
+body { background: radial-gradient(circle at 8% 4%, rgba(238, 196, 157, .38), transparent 27rem), radial-gradient(circle at 95% 16%, rgba(198, 187, 232, .4), transparent 24rem), #f8f4ee; }
+#nav-bar { border-color: var(--line); background: rgba(255, 250, 244, .8); }
+.logo, .heading { color: var(--ink); }
+.logo span { color: var(--teal); }
+.button { color: var(--copy); }
+.button:hover { color: var(--ink); background: rgba(118,104,183,.1); }
+.nav-cta, #heroButton1, #workingButton, #ctaButton1 { color: #fffaf5; border-color: var(--teal); background: var(--teal); }
+.nav-cta:hover, #heroButton1:hover, #workingButton:hover, #ctaButton1:hover { color: #fffaf5; background: #ab4e3e; }
+#heroButton2, #ctaButton2 { color: var(--ink); border-color: var(--line); background: rgba(255,255,255,.72); }
+.para, .problemPara, .featurePara, .workingPara, .roadmapPara, .footerPara { color: var(--muted); }
+.eyebrow, .solutionPara { color: #9f473c; }
+#image { border-color: rgba(118,104,183,.23); box-shadow: 1.25rem 1.25rem 0 rgba(118,104,183,.16), 0 2rem 4rem rgba(62,43,27,.16); }
+.problemCard, .featureCard, .workingCard, .roadmapCards { border-color: var(--line); background: rgba(255,255,255,.78); box-shadow: 0 .8rem 2rem rgba(69,49,30,.08); }
+.problemCard::before, .featureCard::before, .roadmapCards::before { background: linear-gradient(90deg, var(--teal), var(--blue)); }
+.problemHeading, .featureHeading, .workingHeading, .roadmapHeading { color: var(--ink); }
+.problemCard:hover, .featureCard:hover, .roadmapCards:hover { border-color: rgba(199,95,76,.5); }
+#solutionDashboard { border-color: var(--line); box-shadow: 1rem 1rem 0 rgba(199,95,76,.14); }
+.solutionPara { border-color: var(--line); color: var(--copy); background: rgba(255,255,255,.66); }
+#line { background: linear-gradient(var(--teal), var(--blue)); }
+.steps { border-color: #f8f4ee; background: var(--teal); box-shadow: 0 0 0 2px var(--teal); }
+.workingCard { border-left-color: var(--teal); background: rgba(255,255,255,.78); }
+.roadmapCards { background: linear-gradient(145deg, rgba(238,222,244,.76), rgba(255,255,255,.86)); }
+.roadmapPara { color: #9f473c; }
+#CTAsection { border-color: rgba(199,95,76,.25); background: linear-gradient(125deg, #efc7a8, #cfc5e8); }
+#CTAsection::before { background: rgba(255,252,246,.45); }
+#CTAsection::after { background: rgba(118,104,183,.14); }
+#footer { border-color: rgba(255,255,255,.1); background: #29443e; }
+#footer .logo, #endPara { color: #fffaf5; }
+#footer .footerPara { color: #d3e2d9; }
+
+/* Landing-page rhythm: prevents oversized blank areas at desktop and phone widths. */
+#heroSection {
+    min-height: auto;
+    gap: clamp(2rem, 5vw, 5rem);
+    padding-top: clamp(3.5rem, 7vw, 5.75rem);
+    padding-bottom: clamp(3.5rem, 7vw, 5.75rem);
+}
+#problemSection, #solutionSection, #featuresSection, #workSection, #roadmapSection, #CTAsection {
+    padding-top: clamp(3rem, 6vw, 5rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+}
+#problemCardSection, #roadmapCardContainer, #featureCardContainer, #dashboardContainer, #timeline { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+#footerParaContainer { margin-top: 1.5rem; }
+
+@media (max-width: 700px) {
+    #heroSection { gap: 1.75rem; padding-top: 2.5rem; padding-bottom: 3rem; }
+    .heading, #problemSection > .heading, #solutionSection > .heading, #featuresSection > .heading, #workSection > .heading, #roadmapSection > .heading, #CTAsection > .heading { font-size: clamp(2rem, 10vw, 2.8rem); }
+    .para { line-height: 1.65; }
+    #heroSectionTextArea > .para { margin-top: 1.15rem; }
+    #heroButtonContainer { margin-top: 1.5rem; }
+    #CTAsection > .reveal { margin-top: 1.25rem; }
+}
+
+
+@media (max-width: 430px) {
+    #navLinks { grid-template-columns: 1fr; }
+    #solutionChecklist { grid-template-columns: 1fr; }
+    #line { min-height: 35rem; }
+    #ctaButton1, #ctaButton2 { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    .reveal { opacity: 1; transform: none; }
+}
+
+/* DevFlow visual system — intentional overrides for the landing page */
+:root {
+    --ink: #091521;
+    --surface: #102538;
+    --surface-raised: rgba(20, 48, 70, .72);
+    --line: rgba(161, 209, 230, .16);
+    --copy: #c8e7f4;
+    --muted: #8eb8cb;
+    --teal: #50d5bd;
+    --blue: #4ab5f8;
+    --purple: #a78bfa;
+}
+
+body {
+    color: var(--copy);
+    background:
+        radial-gradient(circle at 12% 0%, rgba(74, 181, 248, .15), transparent 28rem),
+        radial-gradient(circle at 88% 18%, rgba(80, 213, 189, .12), transparent 24rem),
+        var(--ink);
+}
+
+#nav-bar {
+    min-height: 5rem;
+    border-bottom: 1px solid rgba(161, 209, 230, .11);
+    background: rgba(9, 21, 33, .78);
+    box-shadow: none;
+    backdrop-filter: blur(18px);
+}
+
+.logo { letter-spacing: -.08em; }
+#navLinks { gap: .35rem; }
+.button { border-radius: .65rem; font-weight: 600; letter-spacing: .01em; }
+.button:hover { background: rgba(255, 255, 255, .07); color: var(--teal); }
+.nav-cta { padding-right: 1rem; padding-left: 1rem; color: #06241f; background: var(--teal); }
+.nav-cta:hover { color: #06241f; background: #8cebd9; }
+
+#mainSection { padding-right: clamp(1rem, 5vw, 5.5rem); padding-left: clamp(1rem, 5vw, 5.5rem); }
+#heroSection { position: relative; min-height: auto; gap: clamp(2rem, 5vw, 5rem); padding-top: clamp(3.5rem, 7vw, 5.75rem); padding-bottom: clamp(3.5rem, 7vw, 5.75rem); }
+#heroSectionTextArea { position: relative; z-index: 1; }
+.eyebrow { margin: 0 0 1.35rem; color: var(--teal); font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
+.heading { max-width: 13ch; margin-bottom: .15rem; color: #ecfaff; font-size: clamp(2.45rem, 5.1vw, 5rem); letter-spacing: -.065em; line-height: 1.02; }
+.para { color: var(--muted); font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.75; }
+#heroSectionTextArea > .para { max-width: 55ch; margin-top: 1.6rem; }
+#heroButtonContainer { gap: .75rem; margin-top: 2rem; }
+#heroButton1, #heroButton2, #workingButton, #ctaButton1, #ctaButton2 { min-height: 3.2rem; padding: .75rem 1.35rem; border: 1px solid var(--line); color: var(--copy); background: rgba(255,255,255,.06); box-shadow: none; font-weight: 700; }
+#heroButton1, #workingButton, #ctaButton1 { color: #06241f; border-color: var(--teal); background: var(--teal); }
+#heroButton1:hover, #workingButton:hover, #ctaButton1:hover { color: #06241f; background: #8cebd9; }
+#heroButton2:hover, #ctaButton2:hover { background: rgba(255,255,255,.12); color: white; }
+#image { position: relative; overflow: hidden; border: 1px solid rgba(172, 228, 249, .2); border-radius: 1.5rem; box-shadow: 1.25rem 1.25rem 0 rgba(74, 181, 248, .12), 0 2rem 5rem rgba(0,0,0,.36); }
+
+hr { border-color: var(--line); }
+#problemSection, #solutionSection, #featuresSection, #workSection, #roadmapSection, #CTAsection { max-width: 1400px; padding-top: clamp(3rem, 6vw, 5rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+#problemSection > .heading, #solutionSection > .heading, #featuresSection > .heading, #workSection > .heading, #roadmapSection > .heading, #CTAsection > .heading { max-width: 18ch; font-size: clamp(2rem, 3.7vw, 3.6rem); line-height: 1.08; }
+
+#problemCardSection, #roadmapCardContainer { gap: 1rem; }
+.problemCard, .featureCard, .workingCard, .roadmapCards { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 1rem; background: linear-gradient(145deg, rgba(31, 70, 95, .72), rgba(15, 40, 58, .76)); box-shadow: none; }
+.problemCard::before, .featureCard::before, .roadmapCards::before { position: absolute; top: 0; left: 0; width: 100%; height: 3px; content: ''; background: linear-gradient(90deg, var(--blue), var(--teal)); opacity: .7; }
+.problemCard:hover, .featureCard:hover, .roadmapCards:hover { border-color: rgba(80, 213, 189, .5); transform: translateY(-5px); }
+.problemHeading, .featureHeading, .workingHeading, .roadmapHeading { color: #e9f8ff; font-size: clamp(1.1rem, 1.5vw, 1.35rem); }
+.problemPara, .featurePara, .workingPara, .roadmapPara { color: var(--muted); }
+
+#solutionSection { position: relative; }
+#dashboardContainer { gap: clamp(1.5rem, 6vw, 6rem); }
+#solutionDashboard { border: 1px solid var(--line); border-radius: 1.15rem; box-shadow: 1rem 1rem 0 rgba(167, 139, 250, .13); }
+#solutionChecklist { gap: .8rem; }
+.solutionPara { padding: .8rem 1rem; border: 1px solid var(--line); border-radius: .65rem; color: var(--copy); background: rgba(255, 255, 255, .035); font-size: clamp(1rem, 1.5vw, 1.2rem); }
+
+#featureCardContainer { gap: 1rem; }
+#cardContainer1, #cardContainer2, #cardContainer3, #cardContainer4 { gap: 1rem; }
+.featureCard { min-height: 11rem; }
+.section-callout { color: #e9f8ff; font-size: clamp(1.35rem, 2.5vw, 2.15rem); font-weight: 700; line-height: 1.35; }
+
+#timeline { gap: clamp(1.25rem, 4vw, 3rem); }
+#line { width: 2px; background: linear-gradient(var(--blue), var(--teal)); }
+.steps { width: 1rem; height: 1rem; margin-left: -7px; border: 3px solid var(--ink); background: var(--teal); box-shadow: 0 0 0 2px var(--teal); }
+.workingCard { border-left: 3px solid var(--teal); background: rgba(20, 48, 70, .75); }
+
+.roadmapCards { min-height: 9rem; display: grid; place-content: center; gap: .65rem; background: linear-gradient(145deg, rgba(71, 58, 117, .52), rgba(17, 42, 60, .78)); }
+.roadmapPara { color: var(--teal); font-size: .74rem; letter-spacing: .14em; }
+#CTAsection { max-width: 100%; margin-right: calc(clamp(1rem, 5vw, 5.5rem) * -1); margin-left: calc(clamp(1rem, 5vw, 5.5rem) * -1); padding-right: clamp(1rem, 5vw, 5.5rem); padding-left: clamp(1rem, 5vw, 5.5rem); background: linear-gradient(125deg, rgba(47, 107, 135, .45), rgba(57, 59, 115, .5)); }
+#CTAsection > .heading, #CTAsection > .para { margin-right: auto; margin-left: auto; }
+#ctaButton1, #ctaButton2 { animation: none; }
+.cta-supporting-copy { color: var(--copy); }
+
+#footer { border-top: 1px solid var(--line); background: #06111b; }
+.footerPara { color: var(--muted); }
+#endPara { color: #7999aa; }
+
+@media (max-width: 700px) {
+    #nav-bar { min-height: 4.25rem; }
+    #navLinks { border-top: 1px solid var(--line); background: rgba(9, 21, 33, .98); }
+    #navLinks .button { padding: .8rem .5rem; }
+    #heroSection { min-height: auto; padding-top: 2.5rem; padding-bottom: 3rem; }
+    .heading, #problemSection > .heading, #solutionSection > .heading, #featuresSection > .heading, #workSection > .heading, #roadmapSection > .heading, #CTAsection > .heading { max-width: 16ch; font-size: clamp(2.1rem, 11vw, 3.15rem); }
+    .eyebrow { font-size: .65rem; }
+    #image { border-radius: 1rem; box-shadow: .75rem .75rem 0 rgba(74, 181, 248, .12), 0 1.5rem 3rem rgba(0,0,0,.3); }
+    #CTAsection { margin-right: -1rem; margin-left: -1rem; padding-right: 1rem; padding-left: 1rem; }
+}
+
+/* Compact layout corrections: allow content to decide card and timeline height. */
+#problemSection, #solutionSection, #featuresSection, #workSection, #roadmapSection, #CTAsection {
+    padding-top: clamp(3.5rem, 7vw, 5.75rem);
+    padding-bottom: clamp(3.5rem, 7vw, 5.75rem);
+}
+
+#problemCardSection, #roadmapCardContainer, #featureCardContainer {
+    margin-top: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.problemCard, .featureCard, .workingCard, .roadmapCards {
+    min-height: 0;
+    padding: clamp(1rem, 1.8vw, 1.35rem);
+}
+
+.featureCard { min-height: 0; }
+#featureCardContainer { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#cardContainer1, #cardContainer2, #cardContainer3, #cardContainer4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#cardContainer1 > .reveal, #cardContainer2 > .reveal, #cardContainer3 > .reveal, #cardContainer4 > .reveal { min-width: 0; }
+
+#timeline { align-items: stretch; margin-top: clamp(1.75rem, 3vw, 2.75rem); }
+#timeline > .reveal { display: flex; }
+#line { height: auto; min-height: 100%; }
+#workingCardContainer { min-height: 0; height: auto; gap: 1rem; justify-content: start; }
+.workingCard { max-width: none; }
+
+.roadmapCards { min-height: 0; }
+
+@media (max-width: 900px) {
+    #featureCardContainer { grid-template-columns: 1fr; }
+    #cardContainer1, #cardContainer2, #cardContainer3, #cardContainer4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+    #cardContainer1, #cardContainer2, #cardContainer3, #cardContainer4 { grid-template-columns: 1fr; }
+    #timeline { grid-template-columns: 1rem minmax(0, 1fr); gap: 1rem; }
+    #line { min-height: 100%; }
+    #workingCardContainer { gap: .85rem; }
+}
+
+/* Restrained motion and a focused final call-to-action. */
+#image { animation: hero-float 6s ease-in-out infinite; }
+#heroButton1, #heroButton2, #workingButton, #ctaButton1, #ctaButton2 { transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease, color .22s ease; }
+#heroButton1:hover, #workingButton:hover, #ctaButton1:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(80, 213, 189, .22); }
+#heroButton2:hover, #ctaButton2:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0, 0, 0, .18); }
+
+#problemCardSection > .reveal:nth-child(2), #roadmapCardContainer > .reveal:nth-child(2), #cardContainer1 > .reveal:nth-child(2), #cardContainer2 > .reveal:nth-child(2), #cardContainer3 > .reveal:nth-child(2), #cardContainer4 > .reveal:nth-child(2) { transition-delay: .08s; }
+#problemCardSection > .reveal:nth-child(3), #roadmapCardContainer > .reveal:nth-child(3) { transition-delay: .16s; }
+#problemCardSection > .reveal:nth-child(4), #roadmapCardContainer > .reveal:nth-child(4) { transition-delay: .24s; }
+#problemCardSection > .reveal:nth-child(5), #roadmapCardContainer > .reveal:nth-child(5) { transition-delay: .32s; }
+#problemCardSection > .reveal:nth-child(6), #roadmapCardContainer > .reveal:nth-child(6) { transition-delay: .4s; }
+
+#solutionDashboard { transition: transform .35s ease, box-shadow .35s ease; }
+#solutionDashboard:hover { transform: translateY(-5px) rotate(-.35deg); box-shadow: 1.25rem 1.25rem 0 rgba(167, 139, 250, .15), 0 1.5rem 3rem rgba(0, 0, 0, .25); }
+.steps { animation: step-glow 2.8s ease-in-out infinite; }
+.steps:nth-child(2) { animation-delay: .35s; }
+.steps:nth-child(3) { animation-delay: .7s; }
+.steps:nth-child(4) { animation-delay: 1.05s; }
+
+#CTAsection {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-top: 1px solid rgba(80, 213, 189, .25);
+    border-bottom: 1px solid rgba(74, 181, 248, .18);
+    background: linear-gradient(125deg, #102e43, #25345c);
+}
+#CTAsection::before, #CTAsection::after { position: absolute; z-index: -1; border-radius: 50%; content: ''; filter: blur(3px); }
+#CTAsection::before { top: -10rem; left: -7rem; width: 24rem; height: 24rem; background: rgba(80, 213, 189, .17); animation: ambient-drift 10s ease-in-out infinite alternate; }
+#CTAsection::after { right: -8rem; bottom: -12rem; width: 27rem; height: 27rem; background: rgba(74, 181, 248, .18); animation: ambient-drift 12s ease-in-out infinite alternate-reverse; }
+#CTAsection > .heading { max-width: 13ch; }
+#CTAsection > .para:first-of-type { max-width: 57ch; }
+#CTAsection > .reveal { margin-top: 2rem; }
+#ctaButton1, #ctaButton2 { min-width: 9.5rem; }
+
+@keyframes hero-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes step-glow {
+    0%, 100% { box-shadow: 0 0 0 2px var(--teal), 0 0 0 rgba(80, 213, 189, 0); }
+    50% { box-shadow: 0 0 0 2px var(--teal), 0 0 18px rgba(80, 213, 189, .42); }
+}
+
+@keyframes ambient-drift {
+    from { transform: translate3d(0, 0, 0) scale(1); }
+    to { transform: translate3d(2.5rem, 1.5rem, 0) scale(1.1); }
+}
+
+@media (max-width: 700px) {
+    #image { animation-duration: 7s; }
+    #CTAsection { padding-top: 3rem; padding-bottom: 3rem; }
+    #CTAsection > .reveal { width: 100%; }
+}
+
+/* Final palette precedence for the landing page. */
+body { background: radial-gradient(circle at 8% 4%, rgba(238,196,157,.38), transparent 27rem), radial-gradient(circle at 95% 16%, rgba(198,187,232,.4), transparent 24rem), #f8f4ee; }
+#nav-bar { border-color: var(--line); background: rgba(255,250,244,.8); }
+.logo, .heading { color: var(--ink); }
+.logo span { color: var(--teal); }
+.button { color: var(--copy); }
+.button:hover { color: var(--ink); background: rgba(118,104,183,.1); }
+.nav-cta, #heroButton1, #workingButton, #ctaButton1 { color: #fffaf5; border-color: var(--teal); background: var(--teal); }
+.nav-cta:hover, #heroButton1:hover, #workingButton:hover, #ctaButton1:hover { color: #fffaf5; background: #ab4e3e; }
+#heroButton2, #ctaButton2 { color: var(--ink); border-color: var(--line); background: rgba(255,255,255,.72); }
+.para, .problemPara, .featurePara, .workingPara, .roadmapPara, .footerPara { color: var(--muted); }
+.eyebrow, .solutionPara { color: #9f473c; }
+#image { border-color: rgba(118,104,183,.23); box-shadow: 1.25rem 1.25rem 0 rgba(118,104,183,.16), 0 2rem 4rem rgba(62,43,27,.16); }
+.problemCard, .featureCard, .workingCard, .roadmapCards { border-color: var(--line); background: rgba(255,255,255,.78); box-shadow: 0 .8rem 2rem rgba(69,49,30,.08); }
+.problemCard::before, .featureCard::before, .roadmapCards::before { background: linear-gradient(90deg, var(--teal), var(--blue)); }
+.problemHeading, .featureHeading, .workingHeading, .roadmapHeading { color: var(--ink); }
+#solutionDashboard { border-color: var(--line); box-shadow: 1rem 1rem 0 rgba(199,95,76,.14); }
+.solutionPara { border-color: var(--line); color: var(--copy); background: rgba(255,255,255,.66); }
+#line { background: linear-gradient(var(--teal), var(--blue)); }
+.steps { border-color: #f8f4ee; background: var(--teal); box-shadow: 0 0 0 2px var(--teal); }
+.workingCard { border-left-color: var(--teal); background: rgba(255,255,255,.78); }
+.roadmapCards { background: linear-gradient(145deg, rgba(238,222,244,.76), rgba(255,255,255,.86)); }
+.roadmapPara { color: #9f473c; }
+#CTAsection { border-color: rgba(199,95,76,.25); background: linear-gradient(125deg, #efc7a8, #cfc5e8); }
+#CTAsection::before { background: rgba(255,252,246,.45); }
+#CTAsection::after { background: rgba(118,104,183,.14); }
+#footer { border-color: rgba(255,255,255,.1); background: #29443e; }
+#footer .logo, #endPara { color: #fffaf5; }
+#footer .footerPara { color: #d3e2d9; }

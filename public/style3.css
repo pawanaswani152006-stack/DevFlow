@@ -633,3 +633,268 @@ button:hover{
     align-items:center;
     display:none;
 }
+
+/* DevFlow dashboard visual system — presentation only; existing JS controls remain unchanged. */
+:root {
+    --dash-ink: #091521;
+    --dash-panel: rgba(16, 40, 58, .84);
+    --dash-panel-strong: #102c40;
+    --dash-line: rgba(177, 225, 244, .16);
+    --dash-text: #e9f8ff;
+    --dash-muted: #95bdcf;
+    --dash-teal: #50d5bd;
+    --dash-blue: #4ab5f8;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--dash-text);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(74, 181, 248, .14), transparent 27rem),
+        radial-gradient(circle at 92% 16%, rgba(80, 213, 189, .1), transparent 25rem),
+        var(--dash-ink);
+}
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(80, 213, 189, .6); outline-offset: 3px; }
+
+#navBar {
+    display: grid;
+    grid-template-columns: auto minmax(14rem, 1fr) auto auto;
+    gap: clamp(.75rem, 2vw, 1.5rem);
+    min-height: 5rem;
+    padding: .75rem clamp(1rem, 4vw, 3.75rem);
+    border: 0;
+    border-bottom: 1px solid rgba(177, 225, 244, .11);
+    border-radius: 0;
+    background: rgba(6, 19, 30, .82);
+    box-shadow: none;
+    backdrop-filter: blur(18px);
+}
+#logo { margin: 0; color: var(--dash-text); font-size: clamp(1.8rem, 3.5vw, 2.5rem); letter-spacing: -.08em; white-space: nowrap; }
+#logo span { color: var(--dash-blue); }
+#searchContainer { width: 100%; min-width: 0; }
+#searchIconContainer { padding: .65rem .8rem; border: 1px solid var(--dash-line); border-right: 0; border-radius: .65rem 0 0 .65rem; background: rgba(255, 255, 255, .06); }
+#searchIcon { color: var(--dash-muted); font-size: 1rem; }
+#navInput { width: 100%; min-width: 0; min-height: 2.65rem; padding: .55rem .8rem; border: 1px solid var(--dash-line); border-radius: 0 .65rem .65rem 0; color: var(--dash-text); background: rgba(4, 19, 30, .5); font-size: .95rem; }
+#navInput::placeholder { color: #769dae; }
+#createButton { min-height: 2.65rem; margin: 0; padding: .4rem 1rem; border: 0; border-radius: .65rem; color: #06241f; background: var(--dash-teal); font-size: .95rem; font-weight: 800; white-space: nowrap; }
+#createButton:hover { color: #06241f; background: #92eddd; }
+#createButton > span:last-child { font: inherit; }
+#newIcon { margin-right: .35rem; font-size: 1.4rem; line-height: 1; }
+#option { width: 2.65rem; height: 2.65rem; margin: 0; padding: 0; border: 1px solid var(--dash-line); color: var(--dash-text); background: rgba(255, 255, 255, .07); font-size: 1.05rem; }
+
+#welcomeSection { max-width: 1400px; margin: 0 auto; padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 4vw, 3.75rem) 2.25rem; }
+#welcomePara1 { color: var(--dash-text); font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 800; letter-spacing: -.055em; }
+#welcomePara2, #welcomePara3 { color: var(--dash-muted); font-size: clamp(1rem, 1.8vw, 1.25rem); }
+#welcomePara2 { margin-top: .8rem; }
+#filterContainer { margin: 2.2rem 0 0; }
+#welcomePara3 { margin-bottom: 1rem; }
+#filterButtonContainer { flex-wrap: wrap; gap: .6rem; }
+.filterButton { min-height: 2.45rem; margin: 0; padding: .45rem .9rem; border: 1px solid var(--dash-line); border-radius: 999px; color: var(--dash-muted); background: rgba(255, 255, 255, .035); box-shadow: none; font-size: .9rem; font-weight: 700; }
+.filterButton:hover { color: var(--dash-text); border-color: rgba(80, 213, 189, .55); }
+.filterButton[style*="rgb(15, 56, 56)"] { border-color: var(--dash-teal) !important; color: #06241f !important; background: var(--dash-teal) !important; }
+
+hr { border-color: var(--dash-line); }
+#grid { max-width: 1400px; gap: 1.15rem; margin: 0 auto 4rem; padding: clamp(1.75rem, 4vw, 3.75rem); }
+.projectAnimationHolder { flex: 1 1 17rem; max-width: 22rem; margin: 0; border-radius: .9rem; text-align: left; }
+.projectAnimationHolder:hover { transform: translateY(-6px); }
+.project { height: 100%; overflow: hidden; border: 1px solid var(--dash-line); border-radius: .9rem; color: var(--dash-text); background: linear-gradient(145deg, rgba(29, 67, 90, .9), rgba(12, 31, 46, .96)); box-shadow: none; }
+.project:hover { box-shadow: 0 1rem 2rem rgba(0, 0, 0, .22); }
+.projectImage { min-height: 5.75rem; padding: 1rem; border-radius: .85rem .85rem 0 0; color: #eafaff; background: linear-gradient(125deg, #2377ab, #4e4c99); font-size: 2rem; line-height: 1; }
+.projectData { min-width: 0; max-width: none; }
+.projectNameContainer { margin: 0; padding: 1rem 1rem .25rem; }
+.projectName { margin: 0; color: var(--dash-text); font-size: 1.2rem; line-height: 1.3; }
+.projectPara { margin: 0; padding: .25rem 1rem; color: var(--dash-muted); font-size: .9rem; line-height: 1.55; }
+.projectAnsPara { color: var(--dash-text); }
+.status { margin: .65rem 0 0; padding: .8rem 1rem; border-top: 1px solid var(--dash-line); }
+.statusRepresenter { width: .65rem; height: .65rem; margin-bottom: 0 !important; }
+.status .projectPara { padding: 0 !important; color: var(--dash-text) !important; font-size: .85rem !important; }
+.gridEmptyState, .noSearchState { margin-left: 0; color: var(--dash-muted); }
+#gridHeading, #noSearchHeading { color: var(--dash-text); font-size: clamp(1.5rem, 3vw, 2.1rem); }
+#gridPara1, #gridPara2, #noSearchPara2 { color: var(--dash-muted); font-size: 1rem; }
+
+#newProjectHolder, #profileHolder { padding: 1rem; background: rgba(2, 12, 20, .72); backdrop-filter: blur(9px); }
+#newProject, #profilePage, #profileEditPage, #profileEditPassPage, #profileEditEmailPage, #profileSettingDeleteAccountPage {
+    width: min(100%, 38rem);
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--dash-line);
+    border-radius: 1.15rem;
+    color: var(--dash-text);
+    background: linear-gradient(145deg, #183c54, #0b2132);
+    box-shadow: 0 1.75rem 4rem rgba(0, 0, 0, .4);
+}
+#profileSettingDeleteAccountPage { width: min(100%, 38rem); }
+#newProjectHeading, .profileHeading { display: block; margin: 0 0 1.5rem; padding: 0; color: var(--dash-text); font-size: clamp(1.8rem, 4vw, 2.4rem); text-align: left; }
+.newPara, .profilePagePara { margin: 0 0 .5rem; color: var(--dash-text); font-size: .92rem; font-weight: 700; }
+#newProjectDataContainer, .profileEditNameHolder, .profileEditPassPageDataHolder, #profileEditEmailPageDataHolder { padding: 0; margin: 0 0 1.1rem; }
+.newInput, #date { width: 100%; height: auto; min-height: 2.75rem; padding: .7rem .85rem; border: 1px solid var(--dash-line); border-radius: .65rem; color: var(--dash-text); background: rgba(3, 17, 27, .55); font-size: .95rem; }
+#textArea { width: 100%; min-height: 6.25rem; }
+#dateBox { display: block; margin: 0 0 1.1rem !important; }
+#newButtonHolder, #profilePageButtonHolder, #profileEditPageButtonHolder, #profileEditPassPageButtonHolder, #profileEditEmailPageButtonHolder, #profileEditEmailWaitingPageButtonHolder, #profileSettingDeletePageButtonHolder { justify-content: flex-start; flex-wrap: wrap; gap: .7rem; min-width: 0; margin: 1.5rem 0 0; }
+.newButton, .profilePageButton, .profileEditPageButton, .profileEditPassPageButton, .profileEditEmailPageButton, .profileEditEmailWaitingPageButton, .profileSettingDeletePageButton { min-height: 2.7rem; padding: .6rem 1rem; border-radius: .65rem; color: #06241f; background: var(--dash-teal); box-shadow: none; font-size: .9rem; font-weight: 800; }
+.newButton:hover, .profilePageButton:hover, .profileEditPageButton:hover, .profileEditPassPageButton:hover, .profileEditEmailPageButton:hover, .profileEditEmailWaitingPageButton:hover, .profileSettingDeletePageButton:hover { color: #06241f; background: #90eddd; }
+#newProjectCancelButton, #profilePageCloseButton, #profilePageCancelEditNameButton, #profilePageChangePasswordCancelButton, #profilePageEmailEditCancelButton, #profilePageWaitingPageCancelButton, #profileSettingDeletePageCancelButton { color: var(--dash-text); border: 1px solid var(--dash-line); background: rgba(255, 255, 255, .06); }
+
+#profileFullName { margin: 0 0 1.2rem; color: var(--dash-text); font-size: 1.3rem; }
+.profileDataHolder { justify-content: space-between; gap: 1rem; margin: .75rem 0; padding: .75rem 0; border-bottom: 1px solid var(--dash-line); font-size: 1rem; }
+.profilePageAnsPara { margin: 0; color: var(--dash-muted); text-align: right; }
+.profileEditPageOption { flex-wrap: wrap; margin: .65rem 0; color: var(--dash-muted); font-size: .9rem; }
+.profileEditPageOptionButton { color: var(--dash-teal); font-size: inherit; }
+#profileEditEmailPagePara, #profileEditEmailPageSteps, .profileEditEmailWaitingPagePara, #profileEditEmailWaitingPageExpireComment { margin: 1rem 0; color: var(--dash-muted); font-size: .95rem; line-height: 1.65; }
+#profileEditEmailPageSteps { padding: .85rem; overflow: auto; border: 1px solid var(--dash-line); border-radius: .65rem; background: rgba(3, 17, 27, .4); white-space: pre-wrap; }
+#profileEditEmailPageElement2 { margin: 0; }
+#profileEditEmailPageCountdownHolder { flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+#countdown { margin: 0; color: var(--dash-teal); font-size: .9rem; }
+#logoutButton { color: #ff9b9b; font-size: .95rem; }
+#profilePageComment, #profilePageEditNameComment, #profilePageEditPasswordComment, #profilePageEditEmailComment, #newProjectPageCommentHolder { color: #ffb2b2; font-size: .9rem; }
+
+@media (max-width: 780px) {
+    #navBar { grid-template-columns: 1fr auto; }
+    #searchContainer { grid-column: 1 / -1; grid-row: 2; }
+    #createButton { grid-column: 1; grid-row: 3; width: max-content; }
+    #option { grid-column: 2; grid-row: 1; }
+    #grid { padding: 1.5rem 1rem; }
+    .projectAnimationHolder { flex-basis: min(100%, 20rem); max-width: none; }
+}
+
+@media (max-width: 500px) {
+    #welcomeSection { padding-right: 1rem; padding-left: 1rem; }
+    #filterButtonContainer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .filterButton { width: 100%; }
+    #newProjectHolder, #profileHolder { align-items: flex-start; padding-top: 1rem; }
+    #newProject, #profilePage, #profileEditPage, #profileEditPassPage, #profileEditEmailPage, #profileSettingDeleteAccountPage { border-radius: .9rem; }
+    #newButtonHolder, #profilePageButtonHolder, #profileEditPageButtonHolder, #profileEditPassPageButtonHolder, #profileEditEmailPageButtonHolder, #profileEditEmailWaitingPageButtonHolder, #profileSettingDeletePageButtonHolder { display: grid; grid-template-columns: 1fr; }
+    .newButton, .profilePageButton, .profileEditPageButton, .profileEditPassPageButton, .profileEditEmailPageButton, .profileEditEmailWaitingPageButton, .profileSettingDeletePageButton { width: 100%; }
+}
+
+/* Warm workspace theme — preserves dashboard project/profile behaviour. */
+:root { --dash-ink: #f8f4ee; --dash-panel: rgba(255,253,250,.9); --dash-panel-strong: #fffdfa; --dash-line: rgba(46,73,65,.16); --dash-text: #21342f; --dash-muted: #667d75; --dash-teal: #c75f4c; --dash-blue: #7668b7; }
+body { background: radial-gradient(circle at 8% 0%, rgba(238,196,157,.45), transparent 27rem), radial-gradient(circle at 92% 16%, rgba(204,193,234,.44), transparent 25rem), var(--dash-ink); }
+#navBar { border-color: var(--dash-line); background: rgba(255,250,244,.84); }
+#logo span { color: var(--dash-teal); }
+#navInput { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.74); }
+#searchIconContainer, #option { border-color: var(--dash-line); color: var(--dash-text); background: rgba(118,104,183,.08); }
+#createButton { color: #fffaf5; background: var(--dash-teal); }
+#createButton:hover { color: #fffaf5; background: #aa4c3e; }
+#welcomePara1, #gridHeading, #noSearchHeading { color: var(--dash-text); }
+#welcomePara2, #welcomePara3, #gridPara1, #gridPara2, #noSearchPara2 { color: var(--dash-muted); }
+.filterButton { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.72); }
+.filterButton[style*="rgb(15, 56, 56)"] { color: #fffaf5 !important; border-color: var(--dash-teal) !important; background: var(--dash-teal) !important; }
+.project { color: var(--dash-text); border-color: var(--dash-line); background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(246,238,229,.92)); }
+.projectImage { color: #fffaf5; background: linear-gradient(125deg, var(--dash-teal), var(--dash-blue)); }
+.projectName, .projectAnsPara, .status .projectPara { color: var(--dash-text) !important; }
+.projectPara, .gridEmptyState, .noSearchState { color: var(--dash-muted); }
+#newProjectHolder, #profileHolder { background: rgba(51,43,34,.35); }
+#newProject, #profilePage, #profileEditPage, #profileEditPassPage, #profileEditEmailPage, #profileSettingDeleteAccountPage { color: var(--dash-text); border-color: var(--dash-line); background: linear-gradient(145deg, #fffdfa, #f3e9df); }
+#newProjectHeading, .profileHeading, .newPara, .profilePagePara, #profileFullName { color: var(--dash-text); }
+.newInput, #date { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.8); }
+.newButton, .profilePageButton, .profileEditPageButton, .profileEditPassPageButton, .profileEditEmailPageButton, .profileEditEmailWaitingPageButton, .profileSettingDeletePageButton { color: #fffaf5; background: var(--dash-teal); }
+#newProjectCancelButton, #profilePageCloseButton, #profilePageCancelEditNameButton, #profilePageChangePasswordCancelButton, #profilePageEmailEditCancelButton, #profilePageWaitingPageCancelButton, #profileSettingDeletePageCancelButton { color: var(--dash-text); background: rgba(255,255,255,.72); }
+
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Responsive dashboard refinements — visual layout only; script3.js state and selectors are unchanged. */
+html { min-width: 320px; }
+body { min-height: 100dvh; }
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    align-items: stretch;
+}
+
+.projectAnimationHolder {
+    width: 100%;
+    max-width: none;
+}
+
+.empty-state-icon {
+    display: inline-grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-right: .45rem;
+    place-items: center;
+    border: 1px solid var(--dash-line);
+    border-radius: .6rem;
+    font-size: 1.25rem;
+    vertical-align: middle;
+    background: rgba(80, 213, 189, .08);
+}
+
+#newProjectHolder,
+#profileHolder {
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+#newProject,
+#profilePage,
+#profileEditPage,
+#profileEditPassPage,
+#profileEditEmailPage,
+#profileSettingDeleteAccountPage {
+    margin: auto;
+    overscroll-behavior: contain;
+}
+
+@media (max-width: 780px) {
+    #navBar {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: .7rem 1rem;
+    }
+
+    #searchContainer { grid-row: 2; }
+    #createButton {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        width: 100%;
+    }
+}
+
+@media (max-width: 500px) {
+    #navBar { padding: .7rem 1rem; }
+    #logo { font-size: 2rem; }
+    #grid { margin-bottom: 2rem; padding: 1.25rem 1rem 2rem; }
+    #welcomePara1 { font-size: clamp(1.8rem, 10vw, 2.4rem); }
+    #welcomePara2, #welcomePara3 { line-height: 1.55; }
+    .projectImage { min-height: 5rem; }
+    .profileDataHolder { align-items: flex-start; flex-direction: column; gap: .3rem; }
+    .profilePageAnsPara { text-align: left; }
+    #newProjectHolder, #profileHolder { padding: .65rem; }
+    #newProject, #profilePage, #profileEditPage, #profileEditPassPage, #profileEditEmailPage, #profileSettingDeleteAccountPage {
+        max-height: calc(100dvh - 1.3rem);
+        padding: 1.1rem;
+    }
+    #profileEditEmailPageSteps { font-size: .84rem; }
+}
+
+/* Final palette precedence for dashboard elements defined after the main theme. */
+body { background: radial-gradient(circle at 8% 0%, rgba(238,196,157,.45), transparent 27rem), radial-gradient(circle at 92% 16%, rgba(204,193,234,.44), transparent 25rem), var(--dash-ink); }
+#navBar { border-color: var(--dash-line); background: rgba(255,250,244,.84); }
+#logo span { color: var(--dash-teal); }
+#navInput { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.74); }
+#searchIconContainer, #option { border-color: var(--dash-line); color: var(--dash-text); background: rgba(118,104,183,.08); }
+#createButton { color: #fffaf5; background: var(--dash-teal); }
+#createButton:hover { color: #fffaf5; background: #aa4c3e; }
+#welcomePara1, #gridHeading, #noSearchHeading { color: var(--dash-text); }
+#welcomePara2, #welcomePara3, #gridPara1, #gridPara2, #noSearchPara2 { color: var(--dash-muted); }
+.filterButton { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.72); }
+.filterButton[style*="rgb(15, 56, 56)"] { color: #fffaf5 !important; border-color: var(--dash-teal) !important; background: var(--dash-teal) !important; }
+.project { color: var(--dash-text); border-color: var(--dash-line); background: linear-gradient(145deg, rgba(255,255,255,.94), rgba(246,238,229,.92)); }
+.projectImage { color: #fffaf5; background: linear-gradient(125deg, var(--dash-teal), var(--dash-blue)); }
+.projectName, .projectAnsPara, .status .projectPara { color: var(--dash-text) !important; }
+.projectPara, .gridEmptyState, .noSearchState { color: var(--dash-muted); }
+#newProjectHolder, #profileHolder { background: rgba(51,43,34,.35); }
+#newProject, #profilePage, #profileEditPage, #profileEditPassPage, #profileEditEmailPage, #profileSettingDeleteAccountPage { color: var(--dash-text); border-color: var(--dash-line); background: linear-gradient(145deg, #fffdfa, #f3e9df); }
+#newProjectHeading, .profileHeading, .newPara, .profilePagePara, #profileFullName { color: var(--dash-text); }
+.newInput, #date { color: var(--dash-text); border-color: var(--dash-line); background: rgba(255,255,255,.8); }
+.newButton, .profilePageButton, .profileEditPageButton, .profileEditPassPageButton, .profileEditEmailPageButton, .profileEditEmailWaitingPageButton, .profileSettingDeletePageButton { color: #fffaf5; background: var(--dash-teal); }
+#newProjectCancelButton, #profilePageCloseButton, #profilePageCancelEditNameButton, #profilePageChangePasswordCancelButton, #profilePageEmailEditCancelButton, #profilePageWaitingPageCancelButton, #profileSettingDeletePageCancelButton { color: var(--dash-text); background: rgba(255,255,255,.72); }

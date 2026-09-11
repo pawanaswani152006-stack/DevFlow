@@ -1,0 +1,45 @@
+/* Final landing-page layer. It intentionally loads after style.css. */
+:root { --lp-ink:#243b35; --lp-copy:#3d5850; --lp-muted:#6f837b; --lp-paper:#fcf8f2; --lp-card:#fffdfa; --lp-line:rgba(48,76,67,.15); --lp-coral:#c85f4c; --lp-lilac:#776bb6; }
+* { box-sizing:border-box; }
+body { min-width:320px; color:var(--lp-copy); background:radial-gradient(circle at 4% 0%,rgba(245,203,160,.55),transparent 27rem),radial-gradient(circle at 96% 18%,rgba(205,194,236,.58),transparent 25rem),var(--lp-paper); }
+#nav-bar { min-height:4.7rem; padding:.65rem clamp(1rem,5vw,5rem); border-bottom:1px solid var(--lp-line); background:rgba(255,252,247,.82); box-shadow:none; backdrop-filter:blur(18px); }
+.logo { color:var(--lp-ink); font-size:clamp(1.8rem,3vw,2.5rem); letter-spacing:-.08em; }
+.logo span { color:var(--lp-coral)!important; }
+#navLinks { gap:.3rem; }
+.button { border-radius:.65rem; color:var(--lp-copy); font-size:.92rem; font-weight:750; }
+.button:hover { color:var(--lp-ink); background:rgba(119,107,182,.1); }
+.nav-cta,#heroButton1,#workingButton,#ctaButton1 { color:#fffaf5; border:1px solid var(--lp-coral); background:var(--lp-coral); }
+.nav-cta:hover,#heroButton1:hover,#workingButton:hover,#ctaButton1:hover { color:#fffaf5; background:#ad4e3e; }
+#heroButton2,#ctaButton2 { color:var(--lp-ink); border:1px solid var(--lp-line); background:rgba(255,255,255,.74); }
+#mainSection { padding:0 clamp(1rem,5vw,5rem); background:transparent; }
+#heroSection { max-width:1320px; min-height:auto; gap:clamp(2rem,6vw,6rem); margin:0 auto; padding:clamp(3.5rem,8vw,6rem) 0; }
+#image { border:1px solid rgba(119,107,182,.24); border-radius:1.2rem; box-shadow:1rem 1rem 0 rgba(119,107,182,.16),0 1.5rem 3rem rgba(68,49,30,.13); }
+.eyebrow { color:#a54b3e; font-size:.72rem; letter-spacing:.15em; }
+.heading { max-width:12ch; color:var(--lp-ink); font-size:clamp(2.5rem,5.4vw,5rem); line-height:1.02; letter-spacing:-.065em; }
+.para { max-width:62ch; color:var(--lp-muted); font-size:clamp(1rem,1.5vw,1.16rem); line-height:1.7; }
+#heroSectionTextArea>.para { margin-top:1.35rem; }
+#heroButtonContainer { gap:.75rem; margin-top:1.7rem; }
+#heroButton1,#heroButton2,#workingButton,#ctaButton1,#ctaButton2 { min-height:3rem; padding:.65rem 1.1rem; border-radius:.7rem; font-size:.95rem; box-shadow:none; }
+hr { border-color:var(--lp-line); }
+#problemSection,#solutionSection,#featuresSection,#workSection,#roadmapSection,#CTAsection { max-width:1320px; margin:0 auto; padding:clamp(3rem,7vw,5.5rem) 0; }
+#problemSection>.heading,#solutionSection>.heading,#featuresSection>.heading,#workSection>.heading,#roadmapSection>.heading,#CTAsection>.heading { max-width:17ch; color:var(--lp-ink); font-size:clamp(2rem,4vw,3.5rem); }
+#problemCardSection,#roadmapCardContainer,#featureCardContainer,#dashboardContainer,#timeline { margin-top:clamp(1.5rem,3vw,2.5rem); }
+.problemCard,.featureCard,.workingCard,.roadmapCards { border:1px solid var(--lp-line); border-radius:1rem; background:rgba(255,253,250,.88); box-shadow:0 .75rem 2rem rgba(68,49,30,.07); }
+.problemCard::before,.featureCard::before,.roadmapCards::before { background:linear-gradient(90deg,var(--lp-coral),var(--lp-lilac)); }
+.problemHeading,.featureHeading,.workingHeading,.roadmapHeading { color:var(--lp-ink); }
+.problemPara,.featurePara,.workingPara,.roadmapPara { color:var(--lp-muted); }
+.problemCard:hover,.featureCard:hover,.roadmapCards:hover { border-color:rgba(200,95,76,.55); transform:translateY(-4px); }
+#solutionDashboard { border:1px solid var(--lp-line); box-shadow:.85rem .85rem 0 rgba(200,95,76,.13); }
+.solutionPara { color:var(--lp-copy); border-color:var(--lp-line); background:rgba(255,255,255,.65); }
+#line { background:linear-gradient(var(--lp-coral),var(--lp-lilac)); }
+.steps { border-color:var(--lp-paper); background:var(--lp-coral); box-shadow:0 0 0 2px var(--lp-coral); }
+.workingCard { border-left-color:var(--lp-coral); }
+.roadmapCards { background:linear-gradient(145deg,rgba(239,225,245,.8),rgba(255,253,250,.94)); }
+.roadmapPara { color:#a54b3e; }
+#CTAsection { max-width:none; margin-right:calc(clamp(1rem,5vw,5rem) * -1); margin-left:calc(clamp(1rem,5vw,5rem) * -1); padding-right:clamp(1rem,5vw,5rem); padding-left:clamp(1rem,5vw,5rem); background:linear-gradient(125deg,#f0c7a6,#cdc4e8); }
+#CTAsection>.heading,#CTAsection>.para { margin-right:auto; margin-left:auto; }
+#footer { padding-top:1rem; border-top:0; background:#29443e; }
+#footer .logo,#endPara { color:#fffaf5; }
+#footer .footerPara { color:#d3e2d9; }
+@media (max-width:700px) { #nav-bar{min-height:4.2rem;} #navLinks{background:rgba(255,252,247,.98);border-top:1px solid var(--lp-line);} .menu-toggle{border-color:var(--lp-line);} .menu-toggle span:not(.sr-only){background:var(--lp-ink);} #heroSection{gap:1.75rem;padding:2.5rem 0 3rem;text-align:center;} .heading,#problemSection>.heading,#solutionSection>.heading,#featuresSection>.heading,#workSection>.heading,#roadmapSection>.heading,#CTAsection>.heading{font-size:clamp(2rem,10vw,2.85rem);} #heroSectionTextArea>.para{margin-top:1rem;} #heroButtonContainer{justify-content:center;} #problemSection,#solutionSection,#featuresSection,#workSection,#roadmapSection,#CTAsection{padding:3rem 0;} }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;} }

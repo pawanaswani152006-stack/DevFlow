@@ -3,6 +3,31 @@ const mode2=params.get("mode1");
 if(mode2==="signIn.html"){
     location.href="signIn.html?mode=signIn";
 }
+
+const menuToggle = document.querySelector("#menuToggle");
+const navLinks = document.querySelector("#navLinks");
+
+function closeMenu() {
+    if (!menuToggle || !navLinks) return;
+    navLinks.classList.remove("is-open");
+    menuToggle.setAttribute("aria-expanded", "false");
+}
+
+if (menuToggle && navLinks) {
+    menuToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("is-open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    navLinks.addEventListener("click", (event) => {
+        if (event.target.matches("button")) closeMenu();
+    });
+
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 700) closeMenu();
+    });
+}
+
 const revealElements = document.querySelectorAll(".reveal");
 
 const observer = new IntersectionObserver((entries) => {
@@ -12,7 +37,8 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, {
-  threshold: 0.15
+  threshold: 0.15,
+  rootMargin: "0px 0px -24px 0px"
 });
 
 revealElements.forEach((element) => {

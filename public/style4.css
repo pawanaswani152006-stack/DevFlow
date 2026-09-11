@@ -1015,3 +1015,583 @@ p{
     align-items:center;
     display:none;
 }
+
+/* Responsive project workspace — presentation only. Existing script4.js selectors,
+   inline state changes, requests, and navigation remain untouched. */
+:root {
+    --project-ink: #091521;
+    --project-panel: #102c40;
+    --project-panel-soft: rgba(24, 60, 84, .84);
+    --project-line: rgba(177, 225, 244, .16);
+    --project-text: #e9f8ff;
+    --project-muted: #95bdcf;
+    --project-teal: #50d5bd;
+    --project-blue: #4ab5f8;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { min-width: 320px; }
+body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+    color: var(--project-text);
+    background:
+        radial-gradient(circle at 8% 0%, rgba(74, 181, 248, .14), transparent 28rem),
+        radial-gradient(circle at 92% 12%, rgba(80, 213, 189, .1), transparent 26rem),
+        var(--project-ink);
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid rgba(80, 213, 189, .65);
+    outline-offset: 3px;
+}
+
+#mainArea {
+    display: grid;
+    grid-template-columns: minmax(13.75rem, 17rem) minmax(0, 1fr);
+    min-height: 100dvh;
+}
+
+#sideBar {
+    width: auto;
+    height: 100dvh;
+    padding: 1.25rem .85rem;
+    border: 0;
+    border-right: 1px solid var(--project-line);
+    border-radius: 0;
+    background: rgba(6, 19, 30, .9);
+    box-shadow: none;
+    backdrop-filter: blur(18px);
+}
+
+#logo {
+    margin: 0 0 1.75rem;
+    padding: 0 .65rem;
+    color: var(--project-text);
+    font-size: clamp(1.8rem, 2.7vw, 2.45rem);
+    letter-spacing: -.08em;
+}
+
+#sideBarButtons, #sideBarButtons > div { width: 100%; }
+.button {
+    width: 100%;
+    min-height: 2.8rem;
+    margin: 0 0 .35rem;
+    padding: .6rem .75rem;
+    gap: .65rem;
+    border-radius: .65rem;
+    color: var(--project-muted);
+    font-size: .95rem;
+    text-align: left;
+}
+.button pre, .row1CardData pre, .projectSettingPara, .statusPara { font: inherit; white-space: pre-wrap; }
+.button:hover { color: var(--project-text); background: rgba(255, 255, 255, .07); transform: none; }
+#overview { background: rgba(80, 213, 189, .16); color: var(--project-teal); }
+
+#work, #taskArea, #activityArea, #discussionArea, #notesArea {
+    min-width: 0;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 3.75rem);
+    background: transparent;
+}
+#taskArea, #activityArea, #discussionArea, #notesArea { padding-top: clamp(1.5rem, 4vw, 3.75rem); }
+
+#workHeading {
+    color: var(--project-text);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    letter-spacing: -.055em;
+    overflow-wrap: anywhere;
+}
+hr { margin-top: clamp(2.25rem, 5vw, 4rem); border-color: var(--project-line); }
+
+#firstRow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(1.75rem, 4vw, 3.5rem);
+}
+.row1Card, #row2Card1, #row2Card2, #row3Card {
+    min-width: 0;
+    margin: 0;
+    border: 1px solid var(--project-line);
+    border-radius: .9rem;
+    background: linear-gradient(145deg, rgba(30, 69, 93, .88), rgba(12, 31, 46, .96));
+    box-shadow: none;
+}
+.row1Card { min-height: 7.5rem; padding: 1rem; }
+.row1CardData { width: 100%; color: var(--project-muted); font-size: .9rem; gap: .55rem; }
+.row1Ans { margin-left: auto; color: var(--project-teal); font-size: 1.2rem; overflow-wrap: anywhere; }
+
+.secondRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2.25rem, 5vw, 4rem);
+}
+#row2Card1, #row2Card2, #row3Card { max-width: none; padding: 1.25rem; }
+.row2CardHeading, #row3CardHeading { color: var(--project-text); font-size: 1.1rem; }
+ul { margin: 1rem 0; color: var(--project-muted); font-size: .95rem; line-height: 1.55; }
+.quickButtons, .manageButton, #manageFormCancelButton { color: var(--project-teal); font-size: .95rem; }
+#thirdRow { justify-content: stretch; margin-top: clamp(2.25rem, 5vw, 4rem); }
+#row3Card { width: min(100%, 38rem); margin-bottom: 0; }
+
+.taskAreaHeading, #activityHeading, #notesHeading, #personalNotesHeading, #personalPdfsHeading, #teamPdfHeading {
+    color: var(--project-text);
+    font-size: clamp(1.45rem, 2.5vw, 2rem);
+    line-height: 1.3;
+    margin-bottom: 1.25rem;
+}
+#notesHeading { line-height: 1.3; }
+#taskHeader, #activityHeader, #notesNavigationHolder, #personalNotesHeader, #teamPDFHeader { border-color: var(--project-line); }
+.taskFilterButtonRow, #activityFilterButtonsHolder, #notesButtonHolder { flex-wrap: wrap; gap: .6rem; margin-bottom: .75rem; }
+.taskFilterButtons, .activityFilterButton, .notesButton, .singleTaskButton, .singleNoteButton, #personalNoteSubmitButton, #personalPdfUploadButton, #teamPdfUploadButton, #taskButton {
+    min-height: 2.5rem;
+    margin: 0;
+    padding: .55rem .85rem;
+    border: 1px solid var(--project-line);
+    border-radius: .65rem;
+    color: var(--project-text);
+    background: rgba(255, 255, 255, .06);
+    font-size: .9rem;
+}
+#taskButton, #personalNoteSubmitButton, #personalPdfUploadButton, #teamPdfUploadButton { color: #06241f; border-color: var(--project-teal); background: var(--project-teal); }
+#taskButton { font-size: 1rem; }
+#taskNewIcon { font-size: 1.4rem; }
+
+#assignedTasks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+.singleTaskHolder {
+    min-width: 0;
+    margin: 0;
+    padding: 1.15rem;
+    border: 1px solid var(--project-line);
+    border-radius: .9rem;
+    background: var(--project-panel-soft);
+    box-shadow: none;
+}
+.taskPara { color: var(--project-text); font-size: 1rem; }
+.taskInfoHolderRow { flex-wrap: wrap; gap: .35rem .75rem; margin-bottom: .7rem; }
+.taskInfoPara { margin: 0; color: var(--project-muted); font-size: .85rem; }
+.taskInfoAns { margin-left: .35rem; color: var(--project-text); }
+.singleTaskButtonHolder { flex-wrap: wrap; gap: .55rem; }
+.taskHr, .activityHr { border-color: var(--project-line); }
+
+.activityPara { color: var(--project-text); font-size: 1rem; line-height: 1.6; }
+.activityTimeline { color: var(--project-muted); font-size: .85rem; }
+.singleActivityHolder { padding: 1rem 0; }
+
+#chatOptions { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: .8rem; margin-top: 0; }
+.chatButtonOption {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--project-line);
+    border-radius: .8rem;
+    color: var(--project-text);
+    background: var(--project-panel-soft);
+    font-size: 1rem;
+}
+#MsgHolder { min-height: min(60dvh, 42rem); margin-top: 1rem; }
+#MsgHeader { padding-top: 0; color: var(--project-text); border-color: var(--project-line); background: var(--project-ink); }
+#msgInput { min-width: 0; width: 100%; color: var(--project-text); background: rgba(255, 255, 255, .06); }
+.singleMsgParaHolder { max-width: min(78%, 42rem); color: #08212b; }
+
+#personalNoteInputHolder { align-items: stretch; gap: .75rem; }
+#personalNotesInput { width: 100%; min-width: 0; max-width: none; min-height: 7rem; margin: 0; border: 1px solid var(--project-line); border-radius: .75rem; color: var(--project-text); background: rgba(255, 255, 255, .06); font-size: 1rem; }
+.NotePara { color: var(--project-text); font-size: 1.1rem; line-height: 1.6; }
+.singleNoteHolder { border-color: var(--project-line); }
+.singleNoteTimeline { color: var(--project-muted); font-size: .85rem; }
+#personalPDFsGrid, #teamPDFsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); gap: 1rem; }
+.personalPDFButton { width: 100%; min-width: 0; max-width: none; margin: 0; }
+.personalPDFName { border-radius: 0 0 .7rem .7rem; }
+.personalPDFNamePara { font-size: .9rem; line-height: 1.4; }
+.EmptyStateTitle { color: var(--project-text); font-size: clamp(1.4rem, 3vw, 2rem); }
+.EmptyStateDescription { color: var(--project-muted); font-size: 1rem; line-height: 1.65; }
+
+#invitePageHolder, #manageFormPlaceHolder, #taskAssignmentPageHolder, #taskManage, #taskEditPageHolder, #pdfUploadHolder, #projectSettingPageHolder, #pdfSettingPageHolder {
+    height: 100dvh;
+    padding: 1rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: rgba(2, 12, 20, .74);
+}
+#invitePage, #manageFormContainer, #taskAssignmentPage, #taskStatusUpdatePage, #taskEditPage, #pdfUploadPage, #projectSettingPage, #projectSettingEditPage, #projectSettingEditStatusPage, #projectSettingDeletePage, #pdfSettingPage, #projectSettingTransferOwnershipPage {
+    width: min(100%, 40rem);
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: clamp(1.2rem, 4vw, 2rem);
+    overflow: auto;
+    border: 1px solid var(--project-line);
+    border-radius: 1rem;
+    color: var(--project-text);
+    background: linear-gradient(145deg, #183c54, #0b2132);
+    box-shadow: 0 1.75rem 4rem rgba(0, 0, 0, .42);
+}
+#projectSettingPage, #projectSettingEditPage, #projectSettingEditStatusPage, #projectSettingDeletePage, #projectSettingTransferOwnershipPage { width: min(100%, 42rem); }
+#inviteHeading, #manageFormHeading, #taskAssignmentHeading, #taskStatusHeading, #taskEditHeading, #pdfFormHeading, #projectSettingHeading, #projectSettingEditPageHeading, #projectSettingEditStatusHeading, #projectSettingDeletePageHeading, #pdfSettingPageHeading, #projectSettingTransferOwnershipHeading { margin: 0 0 1.35rem; padding: 0; color: var(--project-text); font-size: clamp(1.6rem, 4vw, 2.25rem); text-align: left; }
+.input, select, #taskAssignmentDate, #taskEditDate, #projectSettingEditPageDeadlineInput { width: 100%; min-height: 2.7rem; padding: .65rem .8rem; border: 1px solid var(--project-line); border-radius: .65rem; color: var(--project-text); background: rgba(3, 17, 27, .56); font-size: .95rem; }
+.invitePara, .taskAssignmentPara, .taskEditPara, .pdfUploadPara, .projectSettingEditPagePara, #projectSettingEditStatusPara, #projectSettingDeletePagePara, #pdfSettingPagePara, .projectSettingTransferOwnershipPagePara { color: var(--project-text); font-size: .92rem; }
+#inviteButtonsHolder, #taskAssignmentButtonsHolder, #editTaskButtonsHolder, #taskEditButtonsHolder, #pdfFormButtonHolder, #projectSettingButtonHolder, #projectSettingEditPageButtonHolder, #projectSettingEditStatusButtonHolder, #projectSettingDeletePageButtonHolder, #pdfSettingButtonHolder, #projectSettingTransferOwnershipPageButtonHolder { flex-wrap: wrap; justify-content: flex-start; gap: .65rem; min-width: 0; }
+.inviteButton, .taskAssignmentButton, .editTaskButton, .taskEditButton, .pdfUploadButton, .projectSettingButton, .projectSettingEditPageButton, .projectSettingEditStatusButton, .projectSettingDeletePageButton, .pdfSettingButton, .projectSettingTransferOwnershipPageButton { min-height: 2.65rem; padding: .6rem 1rem; border-radius: .65rem; color: #06241f; background: var(--project-teal); font-size: .9rem; box-shadow: none; }
+
+@media (max-width: 1050px) {
+    #firstRow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 820px) {
+    #mainArea { display: block; }
+    #sideBar { position: sticky; top: 0; z-index: 10; width: 100%; height: auto; padding: .65rem 1rem; border-right: 0; border-bottom: 1px solid var(--project-line); }
+    #logo { display: none; }
+    #sideBarButtons { overflow-x: auto; scrollbar-width: none; }
+    #sideBarButtons::-webkit-scrollbar { display: none; }
+    #sideBarButtons > div { display: flex; width: max-content; gap: .4rem; }
+    .button { width: auto; margin: 0; padding: .55rem .75rem; white-space: nowrap; }
+    #work, #taskArea, #activityArea, #discussionArea, #notesArea { padding: 1.5rem 1rem 2.5rem; }
+}
+
+@media (max-width: 600px) {
+    #firstRow, .secondRow { grid-template-columns: 1fr; }
+    .row1Card { min-height: 5.75rem; }
+    #personalNoteInputHolder { flex-direction: column; }
+    #personalNoteSubmitButton { width: 100%; }
+    #MsgHolder { min-height: 52dvh; }
+    .singleMsgParaHolder { max-width: 88%; }
+    #invitePageHolder, #manageFormPlaceHolder, #taskAssignmentPageHolder, #taskManage, #taskEditPageHolder, #pdfUploadHolder, #projectSettingPageHolder, #pdfSettingPageHolder { padding: .65rem; }
+    #invitePage, #manageFormContainer, #taskAssignmentPage, #taskStatusUpdatePage, #taskEditPage, #pdfUploadPage, #projectSettingPage, #projectSettingEditPage, #projectSettingEditStatusPage, #projectSettingDeletePage, #pdfSettingPage, #projectSettingTransferOwnershipPage { max-height: calc(100dvh - 1.3rem); padding: 1.1rem; }
+    #inviteButtonsHolder, #taskAssignmentButtonsHolder, #editTaskButtonsHolder, #taskEditButtonsHolder, #pdfFormButtonHolder, #projectSettingButtonHolder, #projectSettingEditPageButtonHolder, #projectSettingEditStatusButtonHolder, #projectSettingDeletePageButtonHolder, #pdfSettingButtonHolder, #projectSettingTransferOwnershipPageButtonHolder { display: grid; grid-template-columns: 1fr; }
+    .inviteButton, .taskAssignmentButton, .editTaskButton, .taskEditButton, .pdfUploadButton, .projectSettingButton, .projectSettingEditPageButton, .projectSettingEditStatusButton, .projectSettingDeletePageButton, .pdfSettingButton, .projectSettingTransferOwnershipPageButton { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* Type, colour, and spacing calibration. No behavioural selectors are changed. */
+:root {
+    --project-space-1: .5rem;
+    --project-space-2: .75rem;
+    --project-space-3: 1rem;
+    --project-space-4: 1.5rem;
+    --project-space-5: 2.25rem;
+    --project-heading: #f0fbff;
+    --project-copy: #c5e1ec;
+    --project-muted: #9fc2d1;
+}
+
+body { font-size: 16px; line-height: 1.5; }
+p, li, label, input, select, textarea, button { letter-spacing: .005em; }
+
+#work, #taskArea, #activityArea, #discussionArea, #notesArea {
+    padding-top: clamp(1.75rem, 4vw, 4rem);
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+
+#workHeading {
+    max-width: 20ch;
+    margin-bottom: var(--project-space-1);
+    color: var(--project-heading);
+    font-size: clamp(2rem, 4.2vw, 3.4rem);
+    line-height: 1.08;
+}
+
+.taskAreaHeading, #activityHeading, #notesHeading, #personalNotesHeading, #personalPdfsHeading, #teamPdfHeading {
+    max-width: 46ch;
+    color: var(--project-heading);
+    font-size: clamp(1.35rem, 2.25vw, 1.9rem);
+    font-weight: 750;
+    letter-spacing: -.025em;
+}
+
+.row1Card { padding: 1.2rem; }
+.row1CardData { color: var(--project-muted); font-size: .82rem; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; }
+.row1Ans { color: var(--project-teal); font-size: clamp(1rem, 1.5vw, 1.25rem); font-weight: 800; letter-spacing: 0; text-transform: none; }
+.row2CardHeading, #row3CardHeading { margin-bottom: 1rem; color: var(--project-heading); font-size: 1.1rem; letter-spacing: -.015em; }
+.NoRecentParaTitle { color: var(--project-copy); font-size: 1rem; font-weight: 750; }
+.NoRecentParaDescription { color: var(--project-muted); font-size: .9rem; line-height: 1.6; }
+
+.taskAreaHeading + .taskFilterButtonRow, #activityHeading + #activityFilterButtonsHolder { margin-top: 1.25rem; }
+.taskFilterButtons, .activityFilterButton, .notesButton {
+    color: var(--project-copy);
+    font-size: .85rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.taskFilterButtons:hover, .activityFilterButton:hover, .notesButton:hover, .singleTaskButton:hover, .singleNoteButton:hover {
+    border-color: rgba(80, 213, 189, .6);
+    color: var(--project-heading);
+    background: rgba(80, 213, 189, .12);
+}
+
+.singleTaskHolder { padding: 1.25rem; }
+.taskPara { margin-bottom: .9rem; color: var(--project-heading); font-size: 1.05rem; font-weight: 700; line-height: 1.45; }
+.taskInfoHolderRow { padding-top: .7rem; border-top: 1px solid rgba(177, 225, 244, .1); }
+.taskInfoPara { color: var(--project-muted); font-size: .8rem; font-weight: 700; }
+.taskInfoAns { color: var(--project-copy); font-size: .9rem; }
+
+.activityPara { color: var(--project-copy); font-size: 1rem; }
+.activityTimeline { color: var(--project-muted); font-size: .8rem; }
+.EmptyStateTitle { margin: 1.5rem 0 .55rem; color: var(--project-heading); font-size: clamp(1.35rem, 3vw, 1.85rem); line-height: 1.25; }
+.EmptyStateDescription { max-width: 58ch; margin: 0; color: var(--project-muted); font-size: .95rem; }
+
+.chatButtonOption { padding: 1.1rem; color: var(--project-copy); font-weight: 700; }
+.chatButtonOption:hover { border-color: rgba(80, 213, 189, .55); color: var(--project-heading); background: rgba(80, 213, 189, .08); }
+#msgHeading { font-size: clamp(1.15rem, 3vw, 1.5rem); }
+.msgPara { font-size: .95rem; line-height: 1.55; }
+.msgSenderHolder, .singleMsgButtonHolder { font-size: .75rem; }
+
+.NotePara { color: var(--project-copy); font-size: 1rem; line-height: 1.7; }
+.singleNoteTimeline { font-size: .8rem; }
+.personalPDFNamePara, .senderName { color: var(--project-copy); font-size: .85rem; }
+.personalPDFIcon { padding: 1.15rem; font-size: 2rem; }
+
+.input, select, #taskAssignmentDate, #taskEditDate, #projectSettingEditPageDeadlineInput {
+    color: var(--project-heading);
+    font-size: .95rem;
+}
+.input::placeholder, textarea::placeholder { color: #7fa4b4; opacity: 1; }
+.invitePara, .taskAssignmentPara, .taskEditPara, .pdfUploadPara, .projectSettingEditPagePara, #projectSettingEditStatusPara, #projectSettingDeletePagePara, #pdfSettingPagePara, .projectSettingTransferOwnershipPagePara {
+    margin-bottom: .5rem;
+    color: var(--project-copy);
+    font-size: .85rem;
+    font-weight: 750;
+}
+#projectSettingDeletePageDescription, #projectSettingTransferOwnershipDescription, #pdfSettingDeleteButtonPara, #projectSettingOptions, #projectSettingMemberOption {
+    color: var(--project-muted);
+    font-size: .9rem;
+    line-height: 1.65;
+    white-space: pre-wrap;
+}
+.projectSettingPara, .statusPara { color: var(--project-copy); font-size: .9rem; line-height: 1.65; }
+.projectSettingAnsPara, #currStatusAns { color: var(--project-teal); }
+.taskDeadlineComment, .projectSettingCommentPara { margin-top: 1rem; color: #ffb4b4; font-size: .85rem; }
+
+@media (max-width: 600px) {
+    #work, #taskArea, #activityArea, #discussionArea, #notesArea { padding-top: 1.5rem; }
+    .row1Card { min-height: 5.25rem; padding: 1rem; }
+    .taskAreaHeading, #activityHeading, #notesHeading, #personalNotesHeading, #personalPdfsHeading, #teamPdfHeading { font-size: 1.3rem; }
+    .taskFilterButtonRow, #activityFilterButtonsHolder, #notesButtonHolder { gap: .5rem; }
+    .taskFilterButtons, .activityFilterButton, .notesButton { flex: 1 1 auto; justify-content: center; }
+    .singleTaskHolder { padding: 1rem; }
+}
+
+/* Remaining legacy controls and dynamically selected filter states. */
+.taskFilterButtons[style*="rgb(51, 160, 160)"],
+.activityFilterButton[style*="rgb(51, 160, 160)"] {
+    border-color: var(--project-teal) !important;
+    color: #06241f !important;
+    background: var(--project-teal) !important;
+}
+
+.taskFilterButtons[style*="rgb(152, 240, 247)"],
+.activityFilterButton[style*="rgb(152, 240, 247)"] {
+    color: var(--project-copy) !important;
+    background: rgba(255, 255, 255, .06) !important;
+}
+
+.taskFilterButtons[style*="rgb(118, 135, 135)"],
+.activityFilterButton[style*="rgb(91, 107, 107)"] {
+    border-color: transparent !important;
+    color: #7999a8 !important;
+    background: rgba(121, 153, 168, .14) !important;
+}
+
+#leaveMessageDisplay {
+    display: inline-grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-right: .75rem;
+    place-items: center;
+    border: 1px solid var(--project-line);
+    border-radius: .6rem;
+    color: var(--project-copy);
+    background: rgba(255, 255, 255, .05);
+    font-size: 1rem;
+}
+
+#AllMsgsHolder {
+    gap: 0;
+    padding-top: .75rem;
+    border-top: 1px solid var(--project-line);
+}
+
+#msgSendButton {
+    display: grid;
+    width: 2.9rem;
+    min-width: 2.9rem;
+    min-height: 2.75rem;
+    margin: 0;
+    place-items: center;
+    border: 1px solid var(--project-teal);
+    border-left: 0;
+    border-radius: 0 .65rem .65rem 0;
+    color: #06241f;
+    background: var(--project-teal);
+    font-size: 1rem;
+}
+
+#msgInput { min-height: 2.75rem; border-radius: .65rem 0 0 .65rem; }
+.singleMsgParaHolder { padding: .75rem .9rem; border-radius: .8rem; box-shadow: 0 .5rem 1.25rem rgba(0, 0, 0, .14); }
+.singleMsgCopyButton, .singleMsgEditButton, .singleMsgDeleteButton {
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--project-line);
+    border-radius: .45rem;
+    color: var(--project-muted);
+    background: rgba(255, 255, 255, .05);
+    font-size: .8rem;
+}
+.singleMsgButtonHolder { gap: .35rem; }
+
+.notesExitButton {
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-right: .45rem;
+    border: 1px solid var(--project-line);
+    border-radius: .55rem;
+    color: var(--project-copy);
+    background: rgba(255, 255, 255, .05);
+    font-size: .9rem;
+}
+
+#emailHolder, #spacialityHolder, #positionHolder, .taskDataHolder, .taskEditDataHolder, .pdfDataHolder, .projectSettingEditPageDataHolder {
+    margin: 0 0 1.2rem;
+}
+
+#projectSettingEditPageDateHolder {
+    display: grid;
+    gap: .5rem;
+    margin: 0 0 1.2rem;
+}
+
+#pdfFileInput {
+    width: 100%;
+    padding: .65rem;
+    border: 1px dashed rgba(177, 225, 244, .35);
+    border-radius: .65rem;
+    color: var(--project-muted);
+    font-size: .85rem;
+    background: rgba(3, 17, 27, .35);
+}
+
+.overviewRecentCards {
+    padding: 1rem;
+    border: 1px dashed var(--project-line);
+    border-radius: .7rem;
+    background: rgba(255, 255, 255, .025);
+}
+
+@media (max-width: 600px) {
+    #msgSendButton { width: 2.7rem; min-width: 2.7rem; }
+    #projectSettingOptions, #projectSettingMemberOption { font-size: .85rem; }
+}
+
+/* Overview contrast: script-created labels share this legacy inline colour. */
+#overviewProjectDeadlineDataHolder {
+    display: block;
+    margin: 0;
+    color: var(--project-teal);
+    font: inherit;
+    font-size: clamp(.92rem, 1.25vw, 1.1rem);
+    font-weight: 800;
+    line-height: 1.35;
+    white-space: nowrap;
+}
+
+.row1CardData:has(#overviewProjectDeadlineDataHolder) {
+    align-items: flex-start;
+}
+
+#overviewRecentTaskCardDataHolder,
+#overviewRecentActivityDataHolder,
+#teamList {
+    display: grid;
+    gap: .7rem;
+}
+
+#overviewRecentTaskCardDataHolder li,
+#overviewRecentActivityDataHolder li,
+#teamList li {
+    margin: 0;
+    color: var(--project-copy);
+    font-size: .92rem;
+    line-height: 1.55;
+}
+
+#overviewRecentActivityDataHolder li {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+}
+
+/* Covers overview activity/task labels, team roles, and manage-team roles
+   created by script4.js with color: rgb(7, 72, 84). */
+span[style*="color:rgb(7, 72, 84)"] {
+    color: var(--project-copy) !important;
+}
+
+/* Warm project workspace theme — visual variables and surfaces only. */
+:root { --project-ink: #f8f4ee; --project-panel: #fffdfa; --project-panel-soft: rgba(255,253,250,.9); --project-line: rgba(46,73,65,.16); --project-text: #21342f; --project-copy: #355149; --project-muted: #697f78; --project-teal: #c75f4c; --project-blue: #7668b7; --project-heading: #21342f; }
+body { background: radial-gradient(circle at 8% 0%, rgba(238,196,157,.46), transparent 28rem), radial-gradient(circle at 92% 12%, rgba(204,193,234,.46), transparent 26rem), var(--project-ink); }
+#sideBar { border-color: var(--project-line); background: rgba(255,250,244,.88); }
+#logo { color: var(--project-text); }
+#logo span { color: var(--project-teal) !important; }
+.button { color: var(--project-copy); }
+.button:hover { color: var(--project-text); background: rgba(118,104,183,.1); }
+#overview { color: #9f473c; background: rgba(199,95,76,.12); }
+.row1Card, #row2Card1, #row2Card2, #row3Card, .singleTaskHolder, .chatButtonOption { border-color: var(--project-line); background: rgba(255,253,250,.82); box-shadow: 0 .8rem 2rem rgba(72,49,29,.08); }
+.row1CardData, .taskInfoPara, .activityTimeline, .singleNoteTimeline { color: var(--project-muted); }
+.row1Ans, .projectSettingAnsPara, #currStatusAns { color: #9f473c; }
+.taskPara, .activityPara, .NotePara, .chatButtonOption, .row2CardHeading, #row3CardHeading { color: var(--project-text); }
+.taskFilterButtons, .activityFilterButton, .notesButton, .singleTaskButton, .singleNoteButton { color: var(--project-text); border-color: var(--project-line); background: rgba(255,255,255,.72); }
+#taskButton, #personalNoteSubmitButton, #personalPdfUploadButton, #teamPdfUploadButton, #msgSendButton { color: #fffaf5; background: var(--project-teal); border-color: var(--project-teal); }
+#msgInput, #personalNotesInput, .input, select, #taskAssignmentDate, #taskEditDate, #projectSettingEditPageDeadlineInput { color: var(--project-text); border-color: var(--project-line); background: rgba(255,255,255,.82); }
+#MsgHeader { color: var(--project-text); background: var(--project-ink); }
+.singleMsgParaHolder { color: #21342f; background: #fffdfa; border: 1px solid var(--project-line); }
+.personalPDFName { background: #fffdfa; }
+.personalPDFNamePara, .senderName { color: var(--project-text); }
+#invitePageHolder, #manageFormPlaceHolder, #taskAssignmentPageHolder, #taskManage, #taskEditPageHolder, #pdfUploadHolder, #projectSettingPageHolder, #pdfSettingPageHolder { background: rgba(68,52,37,.32); }
+#invitePage, #manageFormContainer, #taskAssignmentPage, #taskStatusUpdatePage, #taskEditPage, #pdfUploadPage, #projectSettingPage, #projectSettingEditPage, #projectSettingEditStatusPage, #projectSettingDeletePage, #pdfSettingPage, #projectSettingTransferOwnershipPage { color: var(--project-text); border-color: var(--project-line); background: linear-gradient(145deg, #fffdfa, #f3e9df); }
+.inviteButton, .taskAssignmentButton, .editTaskButton, .taskEditButton, .pdfUploadButton, .projectSettingButton, .projectSettingEditPageButton, .projectSettingEditStatusButton, .projectSettingDeletePageButton, .pdfSettingButton, .projectSettingTransferOwnershipPageButton { color: #fffaf5; background: var(--project-teal); }
+
+/* Phone navigation and compact workspace layout. */
+@media (max-width: 600px) {
+    #sideBar {
+        padding: .45rem .55rem;
+        backdrop-filter: blur(14px);
+    }
+    #sideBarButtons { overflow: visible; }
+    #sideBarButtons > div {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        gap: .2rem;
+    }
+    .button {
+        width: 2.45rem;
+        min-width: 2.45rem;
+        min-height: 2.45rem;
+        justify-content: center;
+        padding: .45rem;
+        border-radius: .6rem;
+    }
+    .button pre { display: none; }
+    .button i { font-size: .95rem; }
+    #work, #taskArea, #activityArea, #discussionArea, #notesArea {
+        padding: 1.25rem .85rem 2rem;
+    }
+    #workHeading { font-size: clamp(1.8rem, 9vw, 2.35rem); }
+    #firstRow { gap: .7rem; }
+    .secondRow { gap: .8rem; }
+    #row2Card1, #row2Card2, #row3Card { padding: 1rem; }
+    #assignedTasks { grid-template-columns: 1fr; gap: .75rem; }
+    #personalPDFsGrid, #teamPDFsGrid { grid-template-columns: 1fr; }
+    #chatOptions { grid-template-columns: 1fr; }
+    #MsgHolder { min-height: 46dvh; }
+}
+
+@media (max-width: 360px) {
+    #sideBarButtons > div { gap: .05rem; }
+    .button { width: 2.2rem; min-width: 2.2rem; min-height: 2.2rem; }
+    .button i { font-size: .85rem; }
+}

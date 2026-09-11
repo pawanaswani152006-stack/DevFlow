@@ -57,6 +57,19 @@ signIn.addEventListener("click",(e)=>{
 
 let msgBox=document.querySelector("#message");
 let msgPara=document.querySelector("#msgPara");
+function showAuthMessage(message){
+    msgPara.innerText=message;
+    msgBox.style.display="flex";
+    msgBox.style.transform="translateX(440px)";
+    msgBox.style.animation="messageSlide 0.6s ease 0s forwards";
+    setTimeout(()=>{
+        msgBox.style.transform="translateX(0px)";
+        msgBox.style.animation="messageDim 0.2s ease 0s infinite";
+    },600);
+    setTimeout(()=>{
+        msgBox.style.animation="messageFade 0.5s ease 0s forwards";
+    },1800);
+}
 let form1=document.querySelector("#form01");
 form1.addEventListener("submit",async (e)=>{
     e.preventDefault();
@@ -360,12 +373,15 @@ passwordResetForm.addEventListener("submit",async (e)=>{
         const newPass=newPasswordInput.value;
         const confirmPass=newPasswordConfirmInput.value;
         if(!newPass || !confirmPass){
+            showAuthMessage("Please complete both password fields.");
             return;
         }
         if(newPass.length<8){
+            showAuthMessage("Password must be at least 8 characters long.");
             return;
         }
         if(newPass!==confirmPass){
+            showAuthMessage("The passwords do not match.");
             return;
         }
         const body={
@@ -427,6 +443,8 @@ forgotPageResendButton.addEventListener("click",async ()=>{
         location.replace("/dashboard");
     }
     if(result.msg==="success"){
+        clearInterval(checkForPass);
+        clearInterval(clock);
         checkForPass=setInterval(checkingForResetPassVerification,1000);
         clock=setInterval(countdownFunction,1000);
         forgotPageComment.innerText="Sent Successfully";

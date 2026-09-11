@@ -4,24 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Homepage</title>
+    <link rel="stylesheet" href="landing.css">
+    <title>DevFlow — Build better, together</title>
 </head>
 <body>
 
     <header id="nav-bar">
-
-        <h1 class="logo"><i>Dev<span style="color:rgb(22, 131, 178);">Flow</span></i></h1>
-
-        <button class="button" id="featureBtn">Features</button>
-
-        <button class="button" id="howBtn">How it works</button>
-
-        <button class="button" id="aboutBtn">About</button>
-
-        <button class="button" id="signBtn11">Sign In</button>
-
-        <button class="button" id="startBtn">Get Started</button>
-
+        <h1 class="logo"><i>Dev<span>Flow</span></i></h1>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="navLinks">
+            <span class="sr-only">Open navigation menu</span>
+            <span></span><span></span><span></span>
+        </button>
+        <nav id="navLinks" aria-label="Primary navigation">
+            <button class="button" id="featureBtn" type="button">Features</button>
+            <button class="button" id="howBtn" type="button">How it works</button>
+            <button class="button" id="aboutBtn" type="button">About</button>
+            <button class="button" id="signBtn11" type="button">Sign In</button>
+            <button class="button nav-cta" id="startBtn" type="button">Get Started</button>
+        </nav>
     </header>
 
 
@@ -36,6 +36,7 @@
             <div id="heroSectionTextArea">
 
                 <div id="heroSectionHeader">
+                    <p class="eyebrow">PROJECT MANAGEMENT FOR DEVELOPERS</p>
                     <h1 class="heading">Build Projects.</h1>
                     <h1 class="heading">Track Progress.</h1>
                     <h1 class="heading">Collaborate Better.</h1>
@@ -467,7 +468,7 @@
 
         <div id="endSection">
 
-            <p class="reveal" id="endPara">Version 1.0 MVP | © 2026 DevFlow | Designed & Built with ❤️</p>
+            <p id="endPara">Version 1.0 MVP | © 2026 DevFlow | Designed & Built with ❤️</p>
 
         </div>
 
