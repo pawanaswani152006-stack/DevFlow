@@ -35,7 +35,7 @@ let userSignUpSchema=new mongoose.Schema({
 userSignUpSchema.pre("save",function (){
     const user=this;
     if(!user.isModified("password")) return;
-    const salt=crypto.randomBytes(16).toString();
+    const salt=crypto.randomBytes(16).toString("hex");
     const hashedPassword=crypto.createHmac("sha256",salt)
         .update(user.password)
         .digest("hex");
