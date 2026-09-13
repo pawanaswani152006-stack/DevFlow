@@ -14,35 +14,15 @@ const transporter=nodemailer.createTransport({
 });
 
 async function sendVarificationEmail(email,verificationLink){
-    const response=await fetch("https://api.resend.com/emails",{
-        method:"POST",
-        headers:{
-            "Authorization":`Bearer ${process.env.RESEND_API_KEY}`,
-            "Content-Type":"application/json"
-        },
-        body:JSON.stringify({
-            from:"DevFlow <onboarding@resend.dev>",
-            to:email,
-            subject:"Verify your DevFlow account",
-            html:
-                `<h1>Welcome to DevFlow</h1>
-                <p>Click the link below to verify your account.</p>
-                <a href="${verificationLink}">Verify Email</a>`
-        })
-    })
-    if(!response.ok){
-        const error=await response.text();
-        throw new Error(`Resend error:${error}`);
-    }
-    // await transporter.sendMail({
-    //     from:process.env.EMAIL_USER,
-    //     to:email,
-    //     subject:"Verify your DevFlow account",
-    //     html:
-    //         `<h1>Welcome to DevFlow</h1>
-    //         <p>Click the link below to verify your account.</p>
-    //         <a href="${verificationLink}">Verify Email</a>`
-    // });
+    await transporter.sendMail({
+        from:process.env.EMAIL_USER,
+        to:email,
+        subject:"Verify your DevFlow account",
+        html:
+            `<h1>Welcome to DevFlow</h1>
+            <p>Click the link below to verify your account.</p>
+            <a href="${verificationLink}">Verify Email</a>`
+    });
 }
 
 async function sendPassResetEmail(email,verificationLink){
